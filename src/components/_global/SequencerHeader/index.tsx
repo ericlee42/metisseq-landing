@@ -476,9 +476,6 @@ useEffect(() => {
   fetchBatchSequencerInfoRun();
 }, [sequencerCards, chainId]);
 
-
-console.log('filteredFetchBatchSequencerInfoData', fetchBatchSequencerInfoData,filteredFetchBatchSequencerInfoData)
-
 return (
   <>
     <Container>
@@ -531,7 +528,7 @@ return (
           </div>
           <div className="opacity-card flex flex-col items-center flex-1">
             <span className="fz-18 fw-700 inter">
-              <NumberText value={data?.lockedUserParams?.length} />
+              <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
             </span>
             <div className="flex items-center gap-8">
               <span className="fz-14 fw-400 inter">Current number of Sequencers</span>
