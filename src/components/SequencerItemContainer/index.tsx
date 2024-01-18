@@ -116,7 +116,7 @@ const SequencerItemContainer = ({ ele, onClick, avatar, title, totalLockUp, upti
       <div className="flex flex-col w-full gap-4">
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center w-full">
-            <div className="fz-14 color-000 fw-400">Total Lock-up</div>
+            <div className="fz-14 color-000 fw-400">Lock-up</div>
             <div className="flex flex-row items-center gap-4">
               <img src={getImageUrl('@/assets/images/sequencer/avatar.svg')} className="s-13" />
               <div className="fz-14 fw-700 color-000">

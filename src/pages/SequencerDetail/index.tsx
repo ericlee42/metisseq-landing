@@ -28,6 +28,7 @@ import useBalance from '@/hooks/useBalance';
 import { getUser } from '@/services';
 import useBlock from '@/hooks/useBlock';
 import useMetisPrice from '@/hooks/useMetisPrice';
+import NumberText from '@/components/NumberText';
 
 const testMode = true;
 
@@ -657,7 +658,7 @@ export function Component() {
                   </Tooltip>
                 </div>
                 <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
-                  <span>{lockedup}</span>
+                  <span><NumberText value={lockedup || '0'} /></span>
                   <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                   {ifSelf ? (
                     ifInUnlockProgress ? (
@@ -713,7 +714,7 @@ export function Component() {
                 </div>
                 <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                   {/* {lockedup} METIS +  */}
-                  <span>{totalRewards || '0'}</span> <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                  <span><NumberText value={totalRewards || '0'} /></span> <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                 </div>
               </div>
             </div>
