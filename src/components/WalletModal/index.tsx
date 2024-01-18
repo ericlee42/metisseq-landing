@@ -8,6 +8,7 @@ import CheckSequencer from '../CheckSequencer';
 import MyAccount from '../MyAccount';
 import { generateAvatar } from '@/utils/jazzIcon';
 import NetworkSelect from '../NetworkSelect';
+import useDevice from '@/hooks/useDevice';
 
 const Container = styled.div`
   .f-14 {
@@ -50,14 +51,16 @@ const WalletModal = () => {
     }
   };
 
+  const { ifMobile } = useDevice()
+
   return (
-    <Container className="h-50 flex flex-row items-center z-1">
-      <div className="flex flex-row items-center h-full">
+    <Container className={`h-50 flex flex-row items-center z-1 ${ifMobile ? 'w-full' : ''}`}>
+      <div className={`flex h-full ${ifMobile ? 'w-full flex-col gap-12' : 'flex-row items-center '}`}>
         {
-          address ? <NetworkSelect /> : null
+          (address && !ifMobile) ? <NetworkSelect /> : null
         }
-        <div className={`flex flex-row items-center bg-color-000 radius-40 pl-6 ${address ? 'pr-25' : 'pr-6'} h-full z-1`}>
-          <Button onClick={showAccount}>
+        <div className={`${ifMobile ? 'w-full' : ''} flex flex-row items-center bg-color-000 radius-40 pl-6 ${address ? 'pr-25' : 'pr-6'} h-full z-1`}>
+          <Button onClick={showAccount} className={ifMobile ? 'h-50 w-full' : ''}>
             <div className="flex flex-row items-center gap-9">
               {
                 address ? <img className="radiusp-50 s-38" src={generateAvatar(address || '', 200)} /> : null
@@ -73,6 +76,10 @@ const WalletModal = () => {
             </div>
           </Button>
         </div>
+
+        {
+          (address && ifMobile) ? <NetworkSelect /> : null
+        }
 
       </div>
       {/* <Button

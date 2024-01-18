@@ -5,7 +5,7 @@ import { contracts, defaultExpectedApr } from '@/configs/common';
 import fetchOverview from '@/graphql/overview';
 import useAuth from '@/hooks/useAuth';
 import useUpdate from '@/hooks/useUpdate';
-import { getImageUrl, jumpLink } from '@/utils/tools';
+import { formatNumber, getImageUrl, jumpLink } from '@/utils/tools';
 import { useBoolean, useRequest } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
@@ -17,6 +17,8 @@ import { multicall } from '@wagmi/core';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import Loading from '../Loading';
 import NumberText from '@/components/NumberText';
+import useDevice from '@/hooks/useDevice';
+import WalletModal from '@/components/WalletModal';
 
 const StyledModal = styled(Modal)``;
 
@@ -346,171 +348,241 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
   useEffect(() => {
     if (chainId) {
       run(chainId);
-  }
+    }
   }, [chainId]);
 
-const jumpSequencer = (id: string) => {
-  navigate(`/sequencers/${id}`);
-};
+  const jumpSequencer = (id: string) => {
+    navigate(`/sequencers/${id}`);
+  };
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const jumpLinkBecomeSequencer = async () => {
-  navigate('/becomeSequencer');
-};
+  const jumpLinkBecomeSequencer = async () => {
+    navigate('/becomeSequencer');
+  };
 
-const checkWhiteList = async () => {
-  if (!address) return;
-  try {
-    checkLoadingTrue();
-    setIfWhiteListed(false);
+  const checkWhiteList = async () => {
+    if (!address) return;
+    try {
+      checkLoadingTrue();
+      setIfWhiteListed(false);
 
-    const multiP: any = [
-      {
-        ...contracts.lock?.[chainId],
-        functionName: 'whiteListAddresses',
-        args: [address],
-      },
-      {
-        ...contracts.lock?.[chainId],
-        functionName: 'getSequencerId',
-        args: [address],
-      },
-    ];
+      const multiP: any = [
+        {
+          ...contracts.lock?.[chainId],
+          functionName: 'whiteListAddresses',
+          args: [address],
+        },
+        {
+          ...contracts.lock?.[chainId],
+          functionName: 'getSequencerId',
+          args: [address],
+        },
+      ];
 
-    const res = await multicall({
-      contracts: multiP,
+      const res = await multicall({
+        contracts: multiP,
+      });
+
+      const isWhiteListed: any = res?.[0]?.result;
+      const isSequencer: any = res?.[1]?.result;
+
+      if (isSequencer) {
+        setIfWhiteListed(true);
+        setSequencer(true);
+      } else if (isWhiteListed) {
+        jumpLinkBecomeSequencer();
+      } else {
+        setIfWhiteListed(false);
+        setSequencer(false);
+      }
+      checkLoadingFalse();
+      setTrue();
+    } catch (e) {
+      message.error('Invalid');
+      checkLoadingFalse();
+    }
+  };
+
+  const sequencerCards = React.useMemo(() => {
+    if (!data?.lockedUserParams) return [];
+    return data?.lockedUserParams?.map((i) => ({
+      id: i.address,
+      ...i,
+    }));
+  }, [data]);
+
+  const fetchBatchSequencerInfo = async () => {
+    if (!sequencerCards?.length) return undefined;
+    const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencerId)));
+    const batchInfo = await runOnce({
+      sequencerIds: ids,
     });
 
-    const isWhiteListed: any = res?.[0]?.result;
-    const isSequencer: any = res?.[1]?.result;
-
-    if (isSequencer) {
-      setIfWhiteListed(true);
-      setSequencer(true);
-    } else if (isWhiteListed) {
-      jumpLinkBecomeSequencer();
-    } else {
-      setIfWhiteListed(false);
-      setSequencer(false);
-    }
-    checkLoadingFalse();
-    setTrue();
-  } catch (e) {
-    message.error('Invalid');
-    checkLoadingFalse();
-  }
-};
-
-
-const sequencerCards = React.useMemo(() => {
-  if (!data?.lockedUserParams) return [];
-  return data?.lockedUserParams?.map((i) => ({
-    id: i.address,
-    ...i,
-  }));
-}, [data]);
-
-const fetchBatchSequencerInfo = async () => {
-  if (!sequencerCards?.length) return undefined;
-  const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencerId)));
-  const batchInfo = await runOnce({
-    sequencerIds: ids,
-  });
-
-  return batchInfo?.map((i, index) => {
-    return {
-      ...i,
-      ...sequencerCards?.[index],
-    };
-  });
-};
-
-const {
-  run: fetchBatchSequencerInfoRun,
-  data: fetchBatchSequencerInfoData,
-  loading: fetchBatchSequencerInfoLoading,
-  error: fetchBatchSequencerInfoError,
-} = useRequest(fetchBatchSequencerInfo, { manual: true });
-
-// const status = useMemo(() => {
-//   if (ele?.ifInUnlockProgress) {
-//     return { label: 'Exit Period', color: 'E9B261' };
-//   }
-//   if (!ele?.ifInUnlockProgress && !ele?.ifActive) {
-//     return { label: 'Exited', color: 'B3B3B3' };
-//   }
-//   return { label: 'Healthy', color: '00EA5E' };
-// }, [ele?.ifActive, ele?.ifInUnlockProgress]);
-
-const filteredFetchBatchSequencerInfoData = useMemo(
-  () =>
-    fetchBatchSequencerInfoData?.filter((i) => {
-      if (filterBy === 'all') {
-        return true;
-      }
-      if (filterBy === 'healthy') {
-        return !i.ifInUnlockProgress && i.ifActive;
-      }
-    })?.map(i => {
+    return batchInfo?.map((i, index) => {
       return {
         ...i,
-        infos: {
-          ...allSequencerInfo?.[i?.user?.toLowerCase()],
-        },
+        ...sequencerCards?.[index],
       };
-    }),
-  [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
-);
+    });
+  };
 
-const totalReward = useMemo(() => {
-  // ele?.rewardReadable
-  const amount = fetchBatchSequencerInfoData?.reduce((prev, next) => {
-    return BigNumber(prev).plus(next?.rewardReadable).toString();
-  }, 0);
-  return BigNumber(liquidateReward || '0').plus(amount || '0').toString();
-}, [fetchBatchSequencerInfoData, liquidateReward]);
+  const {
+    run: fetchBatchSequencerInfoRun,
+    data: fetchBatchSequencerInfoData,
+    loading: fetchBatchSequencerInfoLoading,
+    error: fetchBatchSequencerInfoError,
+  } = useRequest(fetchBatchSequencerInfo, { manual: true });
 
-useEffect(() => {
-  if (!sequencerCards?.length) return;
-  fetchBatchSequencerInfoRun();
-}, [sequencerCards, chainId]);
+  // const status = useMemo(() => {
+  //   if (ele?.ifInUnlockProgress) {
+  //     return { label: 'Exit Period', color: 'E9B261' };
+  //   }
+  //   if (!ele?.ifInUnlockProgress && !ele?.ifActive) {
+  //     return { label: 'Exited', color: 'B3B3B3' };
+  //   }
+  //   return { label: 'Healthy', color: '00EA5E' };
+  // }, [ele?.ifActive, ele?.ifInUnlockProgress]);
 
-return (
-  <>
-    <Container>
-      <div className="top-banner">
-        <div className="top-content flex flex-col gap-58 pt-100">
-          <div className="gap-48 flex flex-col">
-            <div className="gap-16 flex flex-col">
-              <div className="flex flex-col">
-                <span className="fz-100 fw-700 raleway color-fff">Metis</span>
-                <br />
-                <span className="fz-72 fw-700 raleway color-fff">Sequencer Mining</span>
-              </div>
-              <div className="lh-120 maxw-500 fz-20 fw-500 raleway color-fff">
-                Secure the Metis network and earn mining rewards. An exclusive opportunity for qualified operators.
-              </div>
-            </div>
-            <div className="flex flex-row items-center gap-12">
-              <Button loading={checkLoading} onClick={checkWhiteList} type="dark" className="radius-50 h-53 w-250">
-                <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Become a Sequencer</div>
-              </Button>
+  const filteredFetchBatchSequencerInfoData = useMemo(
+    () =>
+      fetchBatchSequencerInfoData
+        ?.filter((i) => {
+          if (filterBy === 'all') {
+            return true;
+          }
+          if (filterBy === 'healthy') {
+            return !i.ifInUnlockProgress && i.ifActive;
+          }
+        })
+        ?.map((i) => {
+          return {
+            ...i,
+            infos: {
+              ...allSequencerInfo?.[i?.user?.toLowerCase()],
+            },
+          };
+        }),
+    [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
+  );
+
+  const totalReward = useMemo(() => {
+    // ele?.rewardReadable
+    const amount = fetchBatchSequencerInfoData?.reduce((prev, next) => {
+      return BigNumber(prev).plus(next?.rewardReadable).toString();
+    }, 0);
+    return BigNumber(liquidateReward || '0')
+      .plus(amount || '0')
+      .toString();
+  }, [fetchBatchSequencerInfoData, liquidateReward]);
+
+  useEffect(() => {
+    if (!sequencerCards?.length) return;
+    fetchBatchSequencerInfoRun();
+  }, [sequencerCards, chainId]);
+
+  const { ifMobile } = useDevice();
+
+  return (
+    <>
+      {ifMobile ? (
+        <div className="flex flex-col gap-8 p-22 pt-36 pb-36">
+          <span className="fz-40 fw-700 color-000">Metis</span>
+          <span className="fz-30 fw-500 color-000">Sequencer Mining</span>
+        </div>
+      ) : null}
+      <Container className={ifMobile ? 'pl-22 pr-22' : ''}>
+        <div className={`top-banner ${ifMobile ? 'radius-22 w-full p-26 pt-41 pb-41' : ''}`}>
+          {ifMobile ? (<div className="flex flex-col gap-118">
+            <span className="fz-17 fw-500 color-fff lh-130">Secure the Metis network and earn staking rewards. An exclusive opportunity for qualified operators.</span>
+            <div className="flex flex-col items-center gap-12">
+              {
+                address ? (<Button loading={checkLoading} onClick={checkWhiteList} type="dark" className="w-full radius-50 h-53">
+                  <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Become a Sequencer</div>
+                </Button>) : <WalletModal />
+              }
               <Button
                 onClick={() => {
-                jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
-               }}
+                  jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
+                }}
                 type="light"
-                className="radius-50"
+                className="radius-50 w-full"
               >
                 <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Read Docs</div>
               </Button>
             </div>
-          </div>
+          </div>) : (
+            <div className="top-content flex flex-col gap-58 pt-100">
+              <div className="gap-48 flex flex-col">
+                <div className="gap-16 flex flex-col">
+                  <div className="flex flex-col">
+                    <span className="fz-100 fw-700 raleway color-fff">Metis</span>
+                    <br />
+                    <span className="fz-72 fw-700 raleway color-fff">Sequencer Mining</span>
+                  </div>
+                  <div className="lh-120 maxw-500 fz-20 fw-500 raleway color-fff">
+                    Secure the Metis network and earn mining rewards. An exclusive opportunity for qualified operators.
+                  </div>
+                </div>
+                <div className="flex flex-row items-center gap-12">
+                  <Button loading={checkLoading} onClick={checkWhiteList} type="dark" className="radius-50 h-53 w-250">
+                    <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Become a Sequencer</div>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
+                    }}
+                    type="light"
+                    className="radius-50"
+                  >
+                    <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Read Docs</div>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {
+            ifMobile ? (null) : (
+              <div className="flex flex-row items-center gap-8 info-card-container w-1150">
+                <div className="opacity-card flex flex-col items-center flex-1">
+                  <span className="fz-18 fw-700 inter">
+                    <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
+                  </span>
+
+                  <div className="flex items-center gap-8">
+                    <span className="fz-14 fw-400 inter">Total METIS locked</span>
+                  </div>
+                </div>
+                <div className="opacity-card flex flex-col items-center flex-1">
+                  <span className="fz-18 fw-700 inter">{BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
+                  <div className="flex items-center gap-8">
+                    <span className="fz-14 fw-400 inter">Expected APR</span>
+                  </div>
+                </div>
+                <div className="opacity-card flex flex-col items-center flex-1">
+                  <span className="fz-18 fw-700 inter">
+                    <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
+                  </span>
+                  <div className="flex items-center gap-8">
+                    <span className="fz-14 fw-400 inter">Current number of Sequencers</span>
+                  </div>
+                </div>
+                <div className="opacity-card flex flex-col items-center flex-1">
+                  <span className="fz-18 fw-700 inter">
+                    <NumberText value={totalReward} />
+                  </span>
+                  <div className="flex items-center gap-8">
+                    <span className="fz-14 fw-400 inter">Total rewards distributed</span>
+                  </div>
+                </div>
+              </div>
+            )
+          }
         </div>
 
-        <div className="flex flex-row items-center gap-8 info-card-container w-1150">
-          <div className="opacity-card flex flex-col items-center flex-1">
+        {ifMobile ? (<div className="mt-17 flex flex-col items-center gap-8 info-card-container w-full position-relative">
+          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
             <span className="fz-18 fw-700 inter">
               <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
             </span>
@@ -519,14 +591,13 @@ return (
               <span className="fz-14 fw-400 inter">Total METIS locked</span>
             </div>
           </div>
-          <div className="opacity-card flex flex-col items-center flex-1">
-            <span className="fz-18 fw-700 inter">
-              {BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
+          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
+            <span className="fz-18 fw-700 inter">{BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
             <div className="flex items-center gap-8">
               <span className="fz-14 fw-400 inter">Expected APR</span>
             </div>
           </div>
-          <div className="opacity-card flex flex-col items-center flex-1">
+          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
             <span className="fz-18 fw-700 inter">
               <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
             </span>
@@ -534,7 +605,7 @@ return (
               <span className="fz-14 fw-400 inter">Current number of Sequencers</span>
             </div>
           </div>
-          <div className="opacity-card flex flex-col items-center flex-1">
+          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
             <span className="fz-18 fw-700 inter">
               <NumberText value={totalReward} />
             </span>
@@ -542,121 +613,111 @@ return (
               <span className="fz-14 fw-400 inter">Total rewards distributed</span>
             </div>
           </div>
-        </div>
-      </div>
+        </div>) : null}
 
-      <div className="main-section maxw-1140 m-auto flex flex-col pt-90 pb-153 wp-100">
-        <div className="flex flex-row items-center justify-between">
-          <div className="fz-36 fw-700 color-000">Sequencers</div>
-          {/* <div>
-            <Input />
-            <div>
-              <span>Sort By</span>
-            </div>
-            <div>
-              <span>Health Status</span>
-            </div>
-          </div> */}
-        </div>
-        <div className="mb-35 h-1 w-full bg-color-CDCDCD mt-20" />
-        {!filteredFetchBatchSequencerInfoData && fetchBatchSequencerInfoLoading ? (
-          <div className="h-200 w-full flex flex-row justify-center items-center">
-            <Loading size={32} />
+        <div className="main-section maxw-1140 m-auto flex flex-col pt-90 pb-153 wp-100">
+          <div className="flex flex-row items-center justify-between">
+            <div className={`${ifMobile ? 'fz-32' : 'fz-36'} fw-700 color-000`}>Sequencers</div>
           </div>
-        ) : null}
-        {!filteredFetchBatchSequencerInfoData?.length && !fetchBatchSequencerInfoLoading ? (
-          <div className="h-200 w-full flex flex-row justify-center items-center">
-            <span>No Data</span>
+          <div className="mb-35 h-1 w-full bg-color-CDCDCD mt-20" />
+          {!filteredFetchBatchSequencerInfoData && fetchBatchSequencerInfoLoading ? (
+            <div className="h-200 w-full flex flex-row justify-center items-center">
+              <Loading size={32} />
+            </div>
+          ) : null}
+          {!filteredFetchBatchSequencerInfoData?.length && !fetchBatchSequencerInfoLoading ? (
+            <div className="h-200 w-full flex flex-row justify-center items-center">
+              <span>No Data</span>
+            </div>
+          ) : null}
+          <div className="flex flex-row items-center gap-20 flex-wrap">
+            {filteredFetchBatchSequencerInfoData?.map((i, index) => (
+              <SequencerItemContainer
+                ele={i}
+                title="SEQ"
+                totalLockUp={BigNumber(i?.sequencerLock || 0)
+                  .div(1e18)
+                  .toString()}
+                uptime=""
+                since={dayjs(i?.fromTimestamp * 1000).format('YYYY-MM-DD')}
+                earned=""
+                onClick={() => {
+                  jumpSequencer(i?.user);
+                }}
+                key={index}
+              />
+            ))}
           </div>
-        ) : null}
-        <div className="flex flex-row items-center gap-20 flex-wrap">
-          {filteredFetchBatchSequencerInfoData?.map((i, index) => (
-            <SequencerItemContainer
-              ele={i}
-              title="SEQ"
-              totalLockUp={BigNumber(i?.sequencerLock || 0)
-                .div(1e18)
-                .toString()}
-              uptime=""
-              since={dayjs(i?.fromTimestamp * 1000).format('YYYY-MM-DD')}
-              earned=""
-              onClick={() => {
-                jumpSequencer(i?.user);
-              }}
-              key={index}
-            />
-          ))}
         </div>
-      </div>
-    </Container>
+      </Container>
 
-    <StyledModal visible={visible} onClose={setFalse}>
-      <div className="white-list-container flex flex-col gap-30 pl-32 pr-32 pb-30">
-        <div className="flex flex-col gap-35 items-center">
-          <div className="flex flex-row items-center gap-22 justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="78" height="78" viewBox="0 0 78 78" fill="none">
-              <g clipPath="url(#clip0_673_981)">
-                <rect width="78" height="78" rx="39" fill="#1B4A82" />
-                <path
-                  d="M27.5413 69.3136C25.8051 72.9729 24.0571 76.8427 22.3448 80.9346C22.3641 81.4078 22.793 82.5754 24.3545 83.4599C25.6625 80.4202 28.35 74.2589 30.1574 70.5178C49.3856 74.7032 61.0746 64.1577 64.1069 60.9426C64.199 60.8427 64.2641 60.7217 64.2964 60.5906C64.3286 60.4595 64.3269 60.3226 64.2914 60.1924C64.2559 60.0621 64.1878 59.9427 64.0933 59.845C63.9987 59.7473 63.8808 59.6745 63.7503 59.6332C53.9757 56.4064 41.3708 58.8616 32.7377 65.2801C35.4846 59.8553 38.5764 54.1968 41.9535 48.5967C61.9784 51.2974 72.5854 39.6061 75.249 36.0988C75.3269 35.9924 75.3769 35.8686 75.3943 35.7386C75.4118 35.6086 75.3964 35.4764 75.3493 35.3537C75.3023 35.2311 75.225 35.1217 75.1245 35.0355C75.024 34.9492 74.9035 34.8888 74.7735 34.8595C65.4983 32.6499 54.3443 35.5259 46.3771 41.6404C48.684 38.1447 51.0979 34.7309 53.607 31.4924C60.2663 28.5969 66.0291 24.0227 70.312 18.2331C74.5948 12.4435 77.2457 5.64402 77.996 -1.47683C78.0097 -1.60825 77.9894 -1.74093 77.9369 -1.86256C77.8845 -1.98418 77.8016 -2.09079 77.6959 -2.17246C77.5903 -2.25413 77.4655 -2.30822 77.3329 -2.32968C77.2003 -2.35115 77.0643 -2.33928 76.9377 -2.29522C72.2168 -0.670136 54.2372 6.99931 50.6699 30.3818C49.338 32.1237 47.3046 34.9063 44.8074 38.6708C48.2559 24.6414 42.6908 14.774 40.6336 11.781C40.5622 11.6674 40.4625 11.5736 40.3438 11.5086C40.2252 11.4435 40.0917 11.4094 39.9558 11.4094C39.82 11.4094 39.6865 11.4435 39.5678 11.5086C39.4492 11.5736 39.3493 11.6674 39.2779 11.781C36.0471 17.1336 34.359 23.2499 34.3946 29.474C34.4302 35.6981 36.1882 41.7954 39.4801 47.1119C36.7451 51.6481 33.7485 56.9559 30.6806 63.0003C31.7865 46.5507 22.8205 37.4666 19.8953 34.9413C19.795 34.8558 19.6746 34.7962 19.545 34.768C19.4154 34.7398 19.2807 34.7439 19.1531 34.7799C19.0255 34.8159 18.9091 34.8827 18.8144 34.9742C18.7197 35.0656 18.6497 35.1789 18.6109 35.3038C17.2672 39.5126 13.6047 55.2841 27.5413 69.3136Z"
-                  fill="#20589B"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_673_981">
-                  <rect width="78" height="78" rx="39" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
+      <StyledModal visible={visible} onClose={setFalse}>
+        <div className="white-list-container flex flex-col gap-30 pl-32 pr-32 pb-30">
+          <div className="flex flex-col gap-35 items-center">
+            <div className="flex flex-row items-center gap-22 justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="78" height="78" viewBox="0 0 78 78" fill="none">
+                <g clipPath="url(#clip0_673_981)">
+                  <rect width="78" height="78" rx="39" fill="#1B4A82" />
+                  <path
+                    d="M27.5413 69.3136C25.8051 72.9729 24.0571 76.8427 22.3448 80.9346C22.3641 81.4078 22.793 82.5754 24.3545 83.4599C25.6625 80.4202 28.35 74.2589 30.1574 70.5178C49.3856 74.7032 61.0746 64.1577 64.1069 60.9426C64.199 60.8427 64.2641 60.7217 64.2964 60.5906C64.3286 60.4595 64.3269 60.3226 64.2914 60.1924C64.2559 60.0621 64.1878 59.9427 64.0933 59.845C63.9987 59.7473 63.8808 59.6745 63.7503 59.6332C53.9757 56.4064 41.3708 58.8616 32.7377 65.2801C35.4846 59.8553 38.5764 54.1968 41.9535 48.5967C61.9784 51.2974 72.5854 39.6061 75.249 36.0988C75.3269 35.9924 75.3769 35.8686 75.3943 35.7386C75.4118 35.6086 75.3964 35.4764 75.3493 35.3537C75.3023 35.2311 75.225 35.1217 75.1245 35.0355C75.024 34.9492 74.9035 34.8888 74.7735 34.8595C65.4983 32.6499 54.3443 35.5259 46.3771 41.6404C48.684 38.1447 51.0979 34.7309 53.607 31.4924C60.2663 28.5969 66.0291 24.0227 70.312 18.2331C74.5948 12.4435 77.2457 5.64402 77.996 -1.47683C78.0097 -1.60825 77.9894 -1.74093 77.9369 -1.86256C77.8845 -1.98418 77.8016 -2.09079 77.6959 -2.17246C77.5903 -2.25413 77.4655 -2.30822 77.3329 -2.32968C77.2003 -2.35115 77.0643 -2.33928 76.9377 -2.29522C72.2168 -0.670136 54.2372 6.99931 50.6699 30.3818C49.338 32.1237 47.3046 34.9063 44.8074 38.6708C48.2559 24.6414 42.6908 14.774 40.6336 11.781C40.5622 11.6674 40.4625 11.5736 40.3438 11.5086C40.2252 11.4435 40.0917 11.4094 39.9558 11.4094C39.82 11.4094 39.6865 11.4435 39.5678 11.5086C39.4492 11.5736 39.3493 11.6674 39.2779 11.781C36.0471 17.1336 34.359 23.2499 34.3946 29.474C34.4302 35.6981 36.1882 41.7954 39.4801 47.1119C36.7451 51.6481 33.7485 56.9559 30.6806 63.0003C31.7865 46.5507 22.8205 37.4666 19.8953 34.9413C19.795 34.8558 19.6746 34.7962 19.545 34.768C19.4154 34.7398 19.2807 34.7439 19.1531 34.7799C19.0255 34.8159 18.9091 34.8827 18.8144 34.9742C18.7197 35.0656 18.6497 35.1789 18.6109 35.3038C17.2672 39.5126 13.6047 55.2841 27.5413 69.3136Z"
+                    fill="#20589B"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_673_981">
+                    <rect width="78" height="78" rx="39" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
 
+              {isSequencer ? (
+                <img className="s-34" src={getImageUrl('@/assets/images/_global/icon-success.svg')} />
+              ) : (
+                <img className="s-34" src={getImageUrl('@/assets/images/_global/icon-error.svg')} />
+              )}
+
+              <img className="s-78" src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
+            </div>
+
+            <div className="flex flex-col gap-22 maxw-448 m-auto items-center">
+              <div className="fz-28 fw-500 raleway align-center">
+                {isSequencer ? 'You already have a Sequencer.' : 'You haven‘t applied for Sequencer yet'}
+              </div>
+              <div className="fz-18 fw-500 raleway  align-center">
+                {isSequencer
+                  ? 'Only one Sequencer can be created per account.'
+                  : 'Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.'}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row items-center gap-10 w-full">
+            <Button className="h-48 flex-1 fz-18 fw-500 poppins" type="metis-solid" onClick={setFalse}>
+              Got it
+            </Button>
             {isSequencer ? (
-              <img className="s-34" src={getImageUrl('@/assets/images/_global/icon-success.svg')} />
+              <Button
+                className="h-48 flex-1 fz-18 fw-500 poppins"
+                type="metis"
+                onClick={() => jumpSequencer(address as string)}
+              >
+                Check my Sequencer
+              </Button>
             ) : (
-              <img className="s-34" src={getImageUrl('@/assets/images/_global/icon-error.svg')} />
+              <Button
+                className="h-48 flex-1 fz-18 fw-500 poppins"
+                type="metis"
+                onClick={() => {
+                  jumpLink('https://forms.gle/uxYAieUuudBDWrzF6', '_blank');
+                }}
+              >
+                Join the Waiting List
+              </Button>
             )}
-
-            <img className="s-78" src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
-          </div>
-
-          <div className="flex flex-col gap-22 maxw-448 m-auto items-center">
-            <div className="fz-28 fw-500 raleway align-center">
-              {isSequencer ? 'You already have a Sequencer.' : 'You haven‘t applied for Sequencer yet'}
-            </div>
-            <div className="fz-18 fw-500 raleway  align-center">
-              {isSequencer
-                ? 'Only one Sequencer can be created per account.'
-                : 'Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.'}
-            </div>
           </div>
         </div>
-        <div className="flex flex-row items-center gap-10 w-full">
-          <Button className="h-48 flex-1 fz-18 fw-500 poppins" type="metis-solid" onClick={setFalse}>
-            Got it
-          </Button>
-          {isSequencer ? (
-            <Button
-              className="h-48 flex-1 fz-18 fw-500 poppins"
-              type="metis"
-              onClick={() => jumpSequencer(address as string)}
-            >
-              Check my Sequencer
-            </Button>
-          ) : (
-            <Button
-              className="h-48 flex-1 fz-18 fw-500 poppins"
-              type="metis"
-              onClick={() => {
-                jumpLink('https://forms.gle/uxYAieUuudBDWrzF6', '_blank');
-              }}
-            >
-              Join the Waiting List
-            </Button>
-          )}
-        </div>
-      </div>
-    </StyledModal>
-  </>
-);
+      </StyledModal>
+    </>
+  );
 };
 
 export default SequencerHeader;

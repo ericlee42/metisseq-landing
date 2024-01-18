@@ -62,7 +62,7 @@ const custom: Rule[] = [
   [/^bg-color-([\.\s\S]+)$/, ([_, param]) => ({ background: `#${param}!important` })],
   [/^bg-image-([\.\s\S]+)$/, ([_, param]) => ({ 'background-image': `${param}!important` })],
   [/^z-([\.\s\S]+)$/, ([_, param]) => ({ 'z-index': `${param}` })],
-  [/^position-([\.\s\S]+)$/, ([_, param]) => ({ position: `${param}` })],
+  [/^position-([\.\s\S]+)$/, ([_, param]) => ({ position: `${param}!important` })],
   [/^top-([\.\d]+)$/, ([_, param]) => ({ top: `${param}px` })],
   [/^topc-([\.\s\S]+)$/, ([_, param]) => ({ top: `${param}` })],
   [/^left-([\.\d]+)$/, ([_, param]) => ({ left: `${param}px` })],
@@ -72,7 +72,11 @@ const custom: Rule[] = [
   [/^right-([\.\d]+)$/, ([_, param]) => ({ right: `${param}px` })],
   [/^translateXr-([\.\s\S]+)$/, ([_, param]) => ({ transform: `translateX(${param}%)` })],
   [/^translateX-([\.\s\S]+)$/, ([_, param]) => ({ transform: `translateX(${param}px)` })],
+  [/^translateYr-([\.\s\S]+)$/, ([_, param]) => ({ transform: `translateY(${param}%)` })],
+  [/^translateY-([\.\s\S]+)$/, ([_, param]) => ({ transform: `translateY(${param}px)` })],
   ['translateCenter', { transform: 'translate(-50%, -50%)' }],
+  ['translateYTop', { transform: 'translate(-50%, -100%)' }],
+  ['translateYBottom', { transform: 'translate(-50%, 100%)' }],
   [/^whiteSpace-([\.\s\S]+)$/, ([_, param]) => ({ 'white-space': `${param}` })],
 ];
 
@@ -128,12 +132,13 @@ const font: Rule[] = [
 ];
 
 const size: Rule[] = [
-  ['w-full', { width: '100%' }],
+  ['w-full', { width: '100%!important' }],
   ['h-full', { height: '100%' }],
   [/^w-([\.\d]+)$/, ([_, num]) => ({ width: `${num}px` })],
   [/^wp-([\.\d]+)$/, ([_, num]) => ({ width: `${num}%` })],
   [/^minw-([\.\d]+)$/, ([_, num]) => ({ 'min-width': `${num}px` })],
   [/^maxw-([\.\d]+)$/, ([_, num]) => ({ 'max-width': `${num}px` })],
+  [/^maxwp-([\.\d]+)$/, ([_, num]) => ({ 'max-width': `${num}%` })],
   [/^h-([\.\d]+)$/, ([_, num]) => ({ height: `${num}px` })],
   [/^s-([\.\d]+)$/, ([_, num]) => ({ width: `${num}px`, height: `${num}px` })],
 ];

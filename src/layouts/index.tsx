@@ -13,6 +13,7 @@ import useMetisPrice from '@/hooks/useMetisPrice';
 import { useEffect } from 'react';
 import { updateLocalChainId, defaultChainId } from '@/configs/common';
 import { useNetwork } from 'wagmi';
+import useDevice from '@/hooks/useDevice';
 
 function BasicLayout() {
   const { address, chainId } = useAuth(true);
@@ -74,10 +75,14 @@ function BasicLayout() {
     };
   }, [sequencerId, chainId, address]);
 
+  const { ifMobile } = useDevice()
+
   return (
     <React.Fragment>
       <Header />
-      <SubHeader />
+      {
+        ifMobile ? null : <SubHeader />
+      }
       <Scrollbar id="vite-content" trackGap={[10, 10, 10, 10]}>
         <main>
           <Outlet />

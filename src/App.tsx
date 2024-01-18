@@ -5,10 +5,17 @@ import { config, WagmiProvider } from '@/configs/wallet';
 // import { GlobalScrollbar } from 'mac-scrollbar';
 // import 'mac-scrollbar/dist/mac-scrollbar.css';
 import '@/assets/styles/index.scss';
+import useDevice from './hooks/useDevice';
 
 function App() {
+  const { ifMobile } = useDevice();
   return (
-    <div className="_root">
+    <div
+      className="_root"
+      style={{
+      minWidth: ifMobile ? '100vw' : '1280px',
+    }}
+    >
       <RecoilRoot>
         <WagmiProvider config={config}>
           <Router />

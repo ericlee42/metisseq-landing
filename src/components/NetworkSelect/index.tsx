@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { mainnet, useNetwork } from 'wagmi';
 import { goerli, holesky, sepolia } from 'viem/chains';
 import { isProd } from '@/configs/common';
+import useDevice from '@/hooks/useDevice';
 
 
 const Container = styled.div`
@@ -69,6 +70,31 @@ const NetworkSelect = () => {
     }
   }, [curOption, unsupported, chain?.id]);
 
+  const { ifMobile } = useDevice()
+
+  if (ifMobile) {
+    return (<Container className="h-50">
+      <Select
+        className="h-50 bg-color-00D2FF radius-40  pl-18 pr-60 z-0"
+        style={{ transform: ifMobile ? '' : 'translate(25%, 0)' }}
+        triggerClassName="w-full pl-0"
+        type="primary"
+        options={options}
+        arrowPlacement="left"
+        placement="right"
+        value={curOption}
+        renderSelector={
+          <div className="fz-15 fw-500 color-000">{curOptionName}</div>
+        }
+        allowClear={false}
+        placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
+        onChange={(ele) => {
+          handleChange?.(ele);
+        }}
+      />
+    </Container>)
+  }
+
   return (
     <Container className="h-full">
       <Select
@@ -89,14 +115,6 @@ const NetworkSelect = () => {
           handleChange?.(ele);
         }}
       />
-      {/* <Button type="short" onClick={setupNetwork}>
-        <div className="p-14-53 flex flex-row items-center gap-10">
-          <img
-            src={getImageUrl("@/assets/images/_global/ic_wrong_network.svg")}
-          />
-          <div className="f-14">Wrong Network</div>
-        </div>
-      </Button> */}
     </Container>
   );
 };

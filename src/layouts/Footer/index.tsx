@@ -5,6 +5,7 @@ import IconMedium from '@/components/Icons/IconMedium';
 import IconTelegram from '@/components/Icons/IconTelegram';
 import IconTwitter from '@/components/Icons/IconTwitter';
 import IconYoutube from '@/components/Icons/IconYoutube';
+import useDevice from '@/hooks/useDevice';
 
 import { getImageUrl, jumpLink } from '@/utils/tools';
 import { styled } from 'styled-components';
@@ -147,8 +148,9 @@ const Container = styled.div`
 `;
 
 const Footer = () => {
+  const { ifMobile } = useDevice()
   return (
-    <Container className="bg-color-000 flex flex-row justify-between">
+    <Container className={`bg-color-000 flex ${ifMobile ? 'pt-48 pb-141 pl-22 pr-22 flex-col gap-40' : 'flex-row justify-between'}`}>
       <div className="l flex flex-col gap-45">
         <img className="pointer" onClick={() => { jumpLink('https://www.metis.io/', '_blank'); }} src={getImageUrl('@/assets/images/_global/metis_logo_light.svg')} />
 
@@ -182,7 +184,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="r">
+      <div className="r flex-wrap">
         {medias.map((i, index) => (
           <div
             key={index}
@@ -191,7 +193,7 @@ const Footer = () => {
               jumpLink(i.link, '_blank');
             }}
           >
-            <img className="s-50" src={i.img} />
+            <img className={`${ifMobile ? 's-40' : 's-50'}`} src={i.img} />
           </div>
         ))}
       </div>

@@ -9,6 +9,7 @@
   // backdrop-filter: blur(12px);
 
   >.inside {
+    max-width: calc(100% - 22px);
     margin: 0 auto;
     width: max-content;
     max-height: 80vh;

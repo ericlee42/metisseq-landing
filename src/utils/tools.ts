@@ -309,3 +309,39 @@ export function isJSONString(str: string) {
 export const getExtensive = (res: any, option: { suffix?: any; prefix?: any }) => {
   return !BigNumber(res).isFinite() ? 'Extensive' : (option?.prefix || '') + res + (option?.suffix || '');
 };
+
+export function formatNumber(value: string | number, roundingMode = 'round') {
+  // 尝试将输入转换为数字
+  let num = Number(value);
+
+  // 检查转换后的值是否为有效数字
+  if (typeof value !== 'number' && typeof value !== 'string' || isNaN(num)) {
+    return '-';
+  }
+
+  // 根据提供的取整模式执行对应的取整操作
+  let roundedNum;
+  if (roundingMode === 'floor') {
+    roundedNum = Math.floor(num * 100) / 100;
+  } else if (roundingMode === 'ceil') {
+    roundedNum = Math.ceil(num * 100) / 100;
+  } else {
+    // 默认使用四舍五入
+    roundedNum = Math.round(num * 100) / 100;
+  }
+
+  // 转换为字符串
+  let numStr = roundedNum.toString();
+
+  // 分割整数和小数部分
+  let parts = numStr.split('.');
+
+  // 如果不存在小数部分或者小数部分为0，则返回格式化的整数
+  if (!parts[1] || parts[1] === '00' || parseFloat(`0.${parts[1]}`) === 0) {
+    return parseInt(roundedNum?.toString(), 10).toLocaleString();
+  } else {
+    // 存在小数部分，保留两位小数
+    parts[0] = parseInt(parts[0]).toLocaleString();
+    return parts.join('.');
+  }
+}
