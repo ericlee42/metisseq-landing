@@ -22,6 +22,7 @@ import { Uploader } from 'uploader'; // Installed by "react-uploader".
 import { UploadButton } from 'react-uploader';
 import Loading from '@/components/_global/Loading';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
+import useDevice from '@/hooks/useDevice';
 
 const uploader = Uploader({
   apiKey: 'free', // Get production API keys from Bytescale
@@ -30,6 +31,15 @@ const uploader = Uploader({
 const Container = styled.section`
   background: url(${getImageUrl('@/assets/images/_global/sub_section_bg.png')}) no-repeat;
   background-size: cover;
+
+  &.mobile{
+    .progress-bar{
+      width: 100%;
+    }
+    .whiteSpace-nowrap{
+      white-space: break-spaces;
+    }
+  }
 
   .half-w {
     width: 50%;
@@ -315,6 +325,8 @@ export function Component() {
     setPubKey(v);
   };
 
+  const { ifMobile } = useDevice();
+
   const step = React.useMemo(() => {
     switch (activeIndex) {
       case '1':
@@ -322,7 +334,7 @@ export function Component() {
           <div className="flex flex-col gap-32">
             <div className="flex flex-col gap-20">
               <div
-                className="radius-30 flex flex-col gap-10 p-50"
+                className={`radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
                 style={{
                   background:
                     'var(--gradient-glass, linear-gradient(91deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%))',
@@ -331,8 +343,8 @@ export function Component() {
                   overflow: 'hidden',
                 }}
               >
-                <span className="fz-36 fw-700 color-fff raleway">Docker</span>
-                <span className="fz-26 fw-500 color-fff raleway">Set up Sequencer via Docker</span>
+                <span className={`${ifMobile ? 'fz-27' : 'fz-36'} fw-700 color-fff raleway`}>Docker</span>
+                <span className={`${ifMobile ? 'fz-14' : 'fz-26'} fw-500 color-fff raleway`}>Set up Sequencer via Docker</span>
               </div>
               {/*
               <div
@@ -352,8 +364,8 @@ export function Component() {
               </div> */}
 
               <div className="flex flex-row items-center justify-center">
-                <Button type="metis" onClick={() => handleIndex('2')} className="w-full radius-30 h-80">
-                  <div className="fz-26 fw-700 raleway color-fff">CONTINUE</div>
+                <Button type="metis" onClick={() => handleIndex('2')} className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}>
+                  <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>CONTINUE</div>
                 </Button>
               </div>
             </div>
@@ -382,7 +394,7 @@ export function Component() {
       case '2':
         return (
           <div className="flex flex-col gap-32">
-            <div className="p-50 flex flex-col items-center gap-24 cards-container">
+            <div className={`${ifMobile ? 'p-40 pl-20 pr-20' : 'p-50'} flex flex-col items-center gap-24 cards-container`} >
               {/* avatar */}
               <div className="flex-1 flex flex-col items-center gap-4 pointer">
                 <div className="s-120">
@@ -396,59 +408,59 @@ export function Component() {
                     onUpdate={handleUpdateUpload}
                   >
                     {({ onClick }) =>
-                      (avatar ? (
-                        <img onClick={onClick} src={avatar} className="s-120 radiusp-50" />
-                      ) : (
-                        <svg
-                          onClick={onClick}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="120"
-                          height="120"
-                          viewBox="0 0 120 120"
-                          fill="none"
-                        >
-                          <g clipPath="url(#clip0_361_2511)">
-                            <rect width="120" height="120" rx="60" fill="#1B4A82" />
-                            <path
-                              d="M42.3713 106.636C39.7004 112.266 37.0111 118.22 34.3767 124.515C34.4064 125.243 35.0664 127.039 37.4686 128.4C39.481 123.723 43.6155 114.245 46.3962 108.489C75.978 114.928 93.9612 98.7042 98.6262 93.7579C98.7678 93.6042 98.8681 93.418 98.9176 93.2163C98.9672 93.0147 98.9646 92.8041 98.91 92.6037C98.8554 92.4033 98.7506 92.2196 98.6052 92.0693C98.4598 91.919 98.2783 91.807 98.0775 91.7434C83.0396 86.7791 63.6475 90.5563 50.3659 100.431C54.5919 92.0852 59.3484 83.3797 64.544 74.7642C95.3515 78.9191 111.67 60.9326 115.768 55.5366C115.888 55.3729 115.965 55.1825 115.991 54.9825C116.018 54.7825 115.995 54.5791 115.922 54.3904C115.85 54.2017 115.731 54.0334 115.576 53.9008C115.422 53.7681 115.236 53.6751 115.036 53.6301C100.767 50.2306 83.6068 54.6553 71.3496 64.0622C74.8987 58.6843 78.6123 53.4322 82.4724 48.4499C92.7175 43.9953 101.583 36.9581 108.172 28.051C114.761 19.1439 118.84 8.68314 119.994 -2.27202C120.015 -2.4742 119.984 -2.67832 119.903 -2.86544C119.822 -3.05255 119.695 -3.21657 119.532 -3.34221C119.37 -3.46786 119.178 -3.55107 118.974 -3.58409C118.77 -3.61711 118.561 -3.59886 118.366 -3.53106C111.103 -1.03094 83.4421 10.7682 77.9538 46.7412C75.9048 49.4212 72.7764 53.702 68.9346 59.4936C74.24 37.9098 65.6782 22.7292 62.5133 18.1247C62.4035 17.9499 62.2501 17.8056 62.0676 17.7056C61.8851 17.6055 61.6796 17.553 61.4707 17.553C61.2617 17.553 61.0562 17.6055 60.8737 17.7056C60.6912 17.8056 60.5376 17.9499 60.4277 18.1247C55.4572 26.3595 52.8601 35.7691 52.9149 45.3447C52.9697 54.9202 55.6743 64.3006 60.7388 72.4799C56.5312 79.4586 51.921 87.6245 47.201 96.9235C48.9024 71.6165 35.1086 57.641 30.6082 53.7559C30.454 53.6243 30.2688 53.5326 30.0694 53.4893C29.87 53.4459 29.6627 53.4521 29.4664 53.5075C29.2701 53.5629 29.0911 53.6657 28.9454 53.8064C28.7998 53.9472 28.692 54.1215 28.6323 54.3135C26.5651 60.7886 20.9304 85.0525 42.3713 106.636Z"
-                              fill="#20589B"
-                            />
-                            <path d="M60 78L60 60" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                            <path
-                              d="M54 64.8L59.2929 59.5072C59.6834 59.1166 60.3166 59.1166 60.7071 59.5072L66 64.8"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M70.9284 70.8C73.2751 70.8009 75.5385 69.9405 77.2796 68.3856C79.0207 66.8307 80.1155 64.6923 80.3516 62.385C80.5876 60.0776 79.9482 57.7659 78.5572 55.8981C77.2964 54.2051 75.4996 52.9861 73.4619 52.4278C73.0776 52.3225 72.7731 52.0231 72.6701 51.6382C71.9608 48.9893 70.4175 46.6248 68.2551 44.8919C65.9204 43.021 63.006 42 60.0003 42C56.9945 42 54.0801 43.021 51.7455 44.8919C49.5831 46.6248 48.0398 48.9893 47.3305 51.6381C47.2274 52.023 46.9228 52.3225 46.5385 52.4277C44.5007 52.9858 42.7036 54.2046 41.4425 55.8976C40.0513 57.7653 39.4116 60.0772 39.6476 62.3847C39.8836 64.6921 40.9784 66.8308 42.7196 68.3857C44.4608 69.9406 46.7244 70.801 49.0713 70.8H49.7998"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_361_2511">
-                              <rect width="120" height="120" rx="60" fill="white" />
-                            </clipPath>
-                          </defs>
-                        </svg>
-                      ))}
+                    (avatar ? (
+                      <img onClick={onClick} src={avatar} className="s-120 radiusp-50" />
+                    ) : (
+                      <svg
+                        onClick={onClick}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="120"
+                        height="120"
+                        viewBox="0 0 120 120"
+                        fill="none"
+                      >
+                        <g clipPath="url(#clip0_361_2511)">
+                          <rect width="120" height="120" rx="60" fill="#1B4A82" />
+                          <path
+                            d="M42.3713 106.636C39.7004 112.266 37.0111 118.22 34.3767 124.515C34.4064 125.243 35.0664 127.039 37.4686 128.4C39.481 123.723 43.6155 114.245 46.3962 108.489C75.978 114.928 93.9612 98.7042 98.6262 93.7579C98.7678 93.6042 98.8681 93.418 98.9176 93.2163C98.9672 93.0147 98.9646 92.8041 98.91 92.6037C98.8554 92.4033 98.7506 92.2196 98.6052 92.0693C98.4598 91.919 98.2783 91.807 98.0775 91.7434C83.0396 86.7791 63.6475 90.5563 50.3659 100.431C54.5919 92.0852 59.3484 83.3797 64.544 74.7642C95.3515 78.9191 111.67 60.9326 115.768 55.5366C115.888 55.3729 115.965 55.1825 115.991 54.9825C116.018 54.7825 115.995 54.5791 115.922 54.3904C115.85 54.2017 115.731 54.0334 115.576 53.9008C115.422 53.7681 115.236 53.6751 115.036 53.6301C100.767 50.2306 83.6068 54.6553 71.3496 64.0622C74.8987 58.6843 78.6123 53.4322 82.4724 48.4499C92.7175 43.9953 101.583 36.9581 108.172 28.051C114.761 19.1439 118.84 8.68314 119.994 -2.27202C120.015 -2.4742 119.984 -2.67832 119.903 -2.86544C119.822 -3.05255 119.695 -3.21657 119.532 -3.34221C119.37 -3.46786 119.178 -3.55107 118.974 -3.58409C118.77 -3.61711 118.561 -3.59886 118.366 -3.53106C111.103 -1.03094 83.4421 10.7682 77.9538 46.7412C75.9048 49.4212 72.7764 53.702 68.9346 59.4936C74.24 37.9098 65.6782 22.7292 62.5133 18.1247C62.4035 17.9499 62.2501 17.8056 62.0676 17.7056C61.8851 17.6055 61.6796 17.553 61.4707 17.553C61.2617 17.553 61.0562 17.6055 60.8737 17.7056C60.6912 17.8056 60.5376 17.9499 60.4277 18.1247C55.4572 26.3595 52.8601 35.7691 52.9149 45.3447C52.9697 54.9202 55.6743 64.3006 60.7388 72.4799C56.5312 79.4586 51.921 87.6245 47.201 96.9235C48.9024 71.6165 35.1086 57.641 30.6082 53.7559C30.454 53.6243 30.2688 53.5326 30.0694 53.4893C29.87 53.4459 29.6627 53.4521 29.4664 53.5075C29.2701 53.5629 29.0911 53.6657 28.9454 53.8064C28.7998 53.9472 28.692 54.1215 28.6323 54.3135C26.5651 60.7886 20.9304 85.0525 42.3713 106.636Z"
+                            fill="#20589B"
+                          />
+                          <path d="M60 78L60 60" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                          <path
+                            d="M54 64.8L59.2929 59.5072C59.6834 59.1166 60.3166 59.1166 60.7071 59.5072L66 64.8"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M70.9284 70.8C73.2751 70.8009 75.5385 69.9405 77.2796 68.3856C79.0207 66.8307 80.1155 64.6923 80.3516 62.385C80.5876 60.0776 79.9482 57.7659 78.5572 55.8981C77.2964 54.2051 75.4996 52.9861 73.4619 52.4278C73.0776 52.3225 72.7731 52.0231 72.6701 51.6382C71.9608 48.9893 70.4175 46.6248 68.2551 44.8919C65.9204 43.021 63.006 42 60.0003 42C56.9945 42 54.0801 43.021 51.7455 44.8919C49.5831 46.6248 48.0398 48.9893 47.3305 51.6381C47.2274 52.023 46.9228 52.3225 46.5385 52.4277C44.5007 52.9858 42.7036 54.2046 41.4425 55.8976C40.0513 57.7653 39.4116 60.0772 39.6476 62.3847C39.8836 64.6921 40.9784 66.8308 42.7196 68.3857C44.4608 69.9406 46.7244 70.801 49.0713 70.8H49.7998"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_361_2511">
+                            <rect width="120" height="120" rx="60" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    ))}
                   </UploadButton>
                 </div>
                 <span className="fz-14 fw-400 color-fff inter">Upload your logo</span>
               </div>
 
-              <div className="flex flex-col gap-25 minw-620">
-                <div className="flex flex-row gap-20">
+              <div className={`flex flex-col gap-25 ${ifMobile ? 'minwp-100 w-full' : 'minw-620'}`}>
+                <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
                   {/* name */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Name</div>
                     <Input value={name} onChange={setName} solidLight className="flex-3  fz-22 fw-400 color-000" />
                   </div>
 
                   {/* website */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Website</div>
                     <Input
                       value={website}
@@ -459,9 +471,9 @@ export function Component() {
                   </div>
                 </div>
 
-                <div className="flex flex-row gap-20">
+                <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
                   {/* address */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Sequencer's Address</div>
                     <Input
                       value={account}
@@ -473,7 +485,7 @@ export function Component() {
                   </div>
 
                   {/* publicKey */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Public Key</div>
                     <Input
                       value={pubKey}
@@ -486,7 +498,7 @@ export function Component() {
                 </div>
 
                 {/* desc */}
-                <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                   <div className="fz-14 fw-400 color-fff inter">Description</div>
                   <Input value={desc} onChange={setDesc} solidLight className="flex-3  fz-22 fw-400 color-000" />
                 </div>
@@ -497,10 +509,10 @@ export function Component() {
               <Button
                 type="solid"
                 onClick={() => handleIndex('1')}
-                className="w-full radius-30 h-80"
+                className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
                 style={{ border: '2px solid #FFF' }}
               >
-                <div className="fz-26 fw-700 raleway color-fff">BACK</div>
+                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>BACK</div>
               </Button>
 
               <Button
@@ -508,7 +520,7 @@ export function Component() {
                 disabled={!validStep2 || uploadloading}
                 type="metis"
                 onClick={handleUpload}
-                className="w-full radius-30 h-80"
+                className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
               >
                 {uploadloading ? (
                   <div className="flex flex-row items-center justify-center">
@@ -516,7 +528,7 @@ export function Component() {
                     <Loading color="#fff" size={22} />
                   </div>
                 ) : (
-                  <div className="fz-26 fw-700 raleway color-fff">CONTINUE</div>
+                  <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>CONTINUE</div>
                 )}
               </Button>
             </div>
@@ -526,11 +538,11 @@ export function Component() {
       case '3':
         return (
           <div className="flex flex-col gap-32">
-            <div className="pt-66 pb-16 pl-38 pr-38 flex flex-col items-center gap-73 cards-container">
-              <div className="flex flex-col gap-25 minw-620">
-                <div className="flex flex-row gap-20">
+            <div className={`${ifMobile ? 'pb-66' : 'pb-16'} pt-66  pl-38 pr-38 flex flex-col items-center gap-73 cards-container`}>
+              <div className={`flex flex-col gap-25 ${ifMobile ? 'minwp-100 w-full' : 'minw-620'}`}>
+                <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
                   {/* name */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Lockup</div>
                     <Input
                       max={BigNumber(balance?.readable).toString()}
@@ -543,7 +555,7 @@ export function Component() {
                   </div>
 
                   {/* website */}
-                  <div className="flex-1 flex flex-col gap-6" style={{ minWidth: 'calc(50% - 56px)' }}>
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
                     <div className="fz-14 fw-400 color-fff inter">Expected APR</div>
                     <Input
                       disabled
@@ -582,10 +594,10 @@ export function Component() {
               <Button
                 type="solid"
                 onClick={() => handleIndex('2')}
-                className="w-full radius-30 h-80"
+                className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
                 style={{ border: '2px solid #FFF' }}
               >
-                <div className="fz-26 fw-700 raleway color-fff">BACK</div>
+                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>BACK</div>
               </Button>
 
               <Button
@@ -593,9 +605,9 @@ export function Component() {
                 disabled={!stakeAmount || BigNumber(stakeAmount).lt(20000)}
                 type="metis"
                 onClick={handleLockup}
-                className="w-full radius-30 h-80"
+                className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
               >
-                <div className="fz-26 fw-700 raleway color-fff">{needApprove ? 'APPROVE' : 'CONTINUE'}</div>
+                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>{needApprove ? 'APPROVE' : 'CONTINUE'}</div>
               </Button>
             </div>
           </div>
@@ -604,11 +616,11 @@ export function Component() {
       case '4':
         return (
           <div className="flex flex-col gap-32">
-            <div className="pt-70 pb-34 pl-124 pr-124 flex flex-col items-center gap-26 cards-container">
-              <img className="s-180" src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
+            <div className={`${ifMobile ? 'p-38 pl-20 pr-20' : ' pt-70 pb-34 pl-124 pr-124'} flex flex-col items-center gap-26 cards-container`}>
+              <img className={`${ifMobile ? 's-120' : 's-180'}`} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
               <div className="color-fff flex flex-col gap-6 justify-center">
-                <span className="fz-46 fw-700 raleway align-center">Congraturations!</span>
-                <span className="fz-26 fw-700 raleway align-center">Your Sequencer has been set up successfully.</span>
+                <span className={`${ifMobile ? 'fz-31' : 'fz-46'} fw-700 raleway align-center`}>Congraturations!</span>
+                <span className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway align-center`}>Your Sequencer has been set up successfully.</span>
               </div>
             </div>
 
@@ -618,9 +630,9 @@ export function Component() {
                 onClick={() => {
                   navigate(`/sequencers/${address}`);
                 }}
-                className="w-full radius-30 h-80"
+                className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
               >
-                <div className="fz-26 fw-700 raleway color-fff">CHECK MY SEQUENCER</div>
+                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>CHECK MY SEQUENCER</div>
               </Button>
             </div>
           </div>
@@ -649,13 +661,15 @@ export function Component() {
   ]);
 
   return (
-    <Container className="pages-landing flex flex-col gap-48 items-center pt-156 pb-206">
-      <div className="maxw-1440 m-auto">
+    <Container className={`pages-landing flex flex-col gap-48 items-center ${ifMobile ? 'mobile pt-45 pb-156' : 'pt-156 pb-206'}`}>
+      <div className={`${ifMobile ? 'wvw-100 maxwp-100 pl-22 pr-22' : 'maxw-1440'} m-auto`}>
         <div className="flex flex-col gap-2">
-          <span className="fz-26 fw-700 color-fff raleway">Set Up</span>
-          <span className="fz-56 fw-700 color-fff raleway">Set Up a Sequencer</span>
+          {ifMobile ? null : <span className="fz-26 fw-700 color-fff raleway">Set Up</span>}
+          <span className={`${ifMobile ? 'fz-22' : 'fz-56'} fw-700 color-fff raleway`}>Set Up a Sequencer</span>
         </div>
-        <Progress needIndex={false} activeIndex={activeIndex} col={col} />
+        <div className="w-full " style={ifMobile ? { overflow: 'auto' } : {}}>
+          <Progress needIndex={false} activeIndex={activeIndex} col={col} />
+        </div>
         <div className="mt-42">{step}</div>
       </div>
     </Container>

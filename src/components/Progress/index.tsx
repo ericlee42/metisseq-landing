@@ -268,7 +268,7 @@ const Progress = ({
                   </div>
                 </div>
 
-                <div className="h-20 w-full position-relative">
+                <div className="h-20 w-full position-relative desc">
                   <span
                     className={`position-absolute fz-18 fw-400 inter color-fff whiteSpace-nowrap ${index === 0
                       ? 'self-start translateXr--50 align-left'
