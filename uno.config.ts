@@ -135,10 +135,11 @@ const size: Rule[] = [
   ['w-full', { width: '100%!important' }],
   ['h-full', { height: '100%' }],
   [/^w-([\.\d]+)$/, ([_, num]) => ({ width: `${num}px` })],
+  [/^wvw-([\.\d]+)$/, ([_, num]) => ({ width: `${num}vw` })],
   [/^wp-([\.\d]+)$/, ([_, num]) => ({ width: `${num}%` })],
   [/^minw-([\.\d]+)$/, ([_, num]) => ({ 'min-width': `${num}px` })],
   [/^maxw-([\.\d]+)$/, ([_, num]) => ({ 'max-width': `${num}px` })],
-  [/^maxwp-([\.\d]+)$/, ([_, num]) => ({ 'max-width': `${num}%` })],
+  [/^maxwp-([\.\d]+)$/, ([_, num]) => ({ 'max-width': `${num}%!important` })],
   [/^h-([\.\d]+)$/, ([_, num]) => ({ height: `${num}px` })],
   [/^s-([\.\d]+)$/, ([_, num]) => ({ width: `${num}px`, height: `${num}px` })],
 ];

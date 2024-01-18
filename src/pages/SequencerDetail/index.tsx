@@ -29,6 +29,7 @@ import { getUser } from '@/services';
 import useBlock from '@/hooks/useBlock';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import NumberText from '@/components/NumberText';
+import useDevice from '@/hooks/useDevice';
 
 const testMode = true;
 
@@ -310,7 +311,7 @@ export function Component() {
     return allSequencerInfo?.[id?.toLowerCase()];
   }, [allSequencerInfo, id]);
 
-  const whitelistedAddress = React.useMemo(() => currentSequencerInfo?.address || '-', [currentSequencerInfo?.address])
+  const whitelistedAddress = React.useMemo(() => currentSequencerInfo?.address || '-', [currentSequencerInfo?.address]);
 
   const sequencerInfo = sequencerInfoList?.[0];
 
@@ -338,7 +339,7 @@ export function Component() {
     [fetchUserTxData?.origin?.lockedParams],
   );
 
-  const ifSelf = React.useMemo(() => (address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase()), [address, whitelistedAddress]);
+  const ifSelf = React.useMemo(() => true || (address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase()), [address, whitelistedAddress]);
 
   const handleInitCheck = async () => {
     let activeSequencerId = curUserActiveSequencerId;
@@ -549,24 +550,31 @@ export function Component() {
 
   const unclaimedUsdValue = React.useMemo(() => BigNumber(metisPrice || '0').multipliedBy(unclaimed).toString(), [metisPrice, unclaimed]);
 
+
+  const { ifMobile } = useDevice();
   return (
-    <Container className="pages-landing flex flex-col ">
-      <div className="banner h-410" />
-      <div className="position-relative z-1 content flex flex-col items-center ">
-        <div className="pt-55 pb-20 gap-70 flex flex-col w-full">
-          <div className="flex flex-row gap-32 items-center">
+    <Container className={'pages-landing flex flex-col'}>
+      {ifMobile ? null : <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} />}
+      <div className={`position-relative z-1 content flex flex-col items-center ${ifMobile ? 'maxwp-100 wvw-100' : ''}`}>
+        <div className={`pt-55 pb-20 flex flex-col w-full ${ifMobile ? 'relative pl-22 pr-22 gap-22 pb-60' : 'gap-70'}`}>
+          {
+            ifMobile ? <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} style={{ filter: 'brightness(2.7)', zIndex: '-200' }} /> : null
+          }
+          <div className={'flex flex-row gap-32 items-center flex-wrap'}>
             {
               currentSequencerInfo?.avatar ? (
-                <div className="flex flex-row items-center justify-center mb-24" >
-                  <img className="s-150 radiusp-50" src={currentSequencerInfo?.avatar} />
+                <div className={'flex flex-row items-center justify-center mb-24'} >
+                  <img className={`${ifMobile ? 's-80' : 's-150'} radiusp-50`} src={currentSequencerInfo?.avatar} />
                 </div>
-              ) : (<div className="avatar mb-24 s-150" />)
+              ) : (<div className={`avatar ${ifMobile ? 's-80' : 's-150 mb-24'}`} />)
             }
 
-            <div className="flex flex-col gap-12 color-fff">
+            <div className={`flex flex-col gap-12 color-fff ${ifMobile ? 'flex-1' : ''}`}>
               <div className="flex flex-col gap-4">
                 <div className="fz-36 fw-500 ">{currentSequencerInfo?.name || '-'}</div>
-                <div className="fz-16 fw-400 inter maxw-470" >{currentSequencerInfo?.desc || '-'}</div>
+                {
+                  ifMobile ? null : (<div className="fz-16 fw-400 inter maxw-470" >{currentSequencerInfo?.desc || '-'}</div>)
+                }
               </div>
               <div>
                 <span
@@ -578,9 +586,13 @@ export function Component() {
                 >{currentSequencerInfo?.url}</span>
               </div>
             </div>
-          </div>
 
-          <div className="status-overview flex flex-row justify-center gap-10 color-fff">
+          </div>
+          {
+            ifMobile ? (<div className="fz-16 fw-400 inter maxwp-100 mb-22" >{currentSequencerInfo?.desc || '-'}</div>) : null
+          }
+
+          <div className={`${ifMobile ? ' flex-col ' : ' flex-row justify-center '} status-overview flex gap-10 color-fff`}>
             <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
               <div className="fz-26 fw-500 color-fff">Owner</div>
               <CopyAddress addr={whitelistedAddress} className={'flex-1 fz-16 fw-400 inter color-fff'} />
@@ -604,7 +616,7 @@ export function Component() {
           </div>
         </div>
 
-        <div className="pt-60 pb-146 flex flex-col gap-20 w-1060">
+        <div className={`${ifMobile ? 'w-full pl-22 pr-22 pt-33 pb-76' : 'w-1060 pt-60 pb-146'} flex flex-col gap-20`}>
           <div className="w-full basic-card gap-21 flex flex-col pb-38">
             <div className="flex flex-row items-center justify-between">
               <div className="fz-28 fw-500 ">Mining Overview</div>
@@ -648,7 +660,7 @@ export function Component() {
 
             <div className="h-1 bg-color-DFDFDF" />
 
-            <div className="flex flex-row items-center gap-20">
+            <div className={`${ifMobile ? ' flex-col ' : ' flex-row items-center '} flex gap-20`}>
               {/* Locked UP */}
               <div className="flex-1 flex flex-col gap-12">
                 <div className="flex flex-row items-center gap-6">
@@ -657,7 +669,7 @@ export function Component() {
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                   </Tooltip>
                 </div>
-                <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
+                <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 flex-wrap">
                   <span><NumberText value={lockedup || '0'} /></span>
                   <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                   {ifSelf ? (
@@ -722,8 +734,8 @@ export function Component() {
 
           {/* unclaimed sequencerInfo?.rewardReadable */}
           {ifSelf ? (
-            <div className="flex flex-row items-center gap-20">
-              <div className="flex-1 wp-50 basic-card gap-21 flex flex-col pb-38">
+            <div className={`flex ${ifMobile ? 'flex-col items-center w-full' : 'flex-row items-center'} gap-20`}>
+              <div className={`${ifMobile ? 'w-full' : 'flex-1'} wp-50 basic-card gap-21 flex flex-col pb-38`}>
                 <div className="flex flex-row items-center justify-between">
                   <div className="fz-28 fw-500 ">Claim Your Rewards</div>
                 </div>
@@ -742,32 +754,46 @@ export function Component() {
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                       <span>{unclaimed}</span>
                       <img src={getImageUrl('@/assets/images/token/metis.svg')} />
-                      <Button
-                        onClick={() => {
-                          setClaimVisible(true);
-                        }}
-                        disabled={BigNumber(unclaimed).lte(0)}
-                        className="pl-15 pr-15"
-                        type="metis"
-                      >
-                        Claim
-                      </Button>
+                      {
+                        ifMobile ? null : <Button
+                          onClick={() => {
+                            setClaimVisible(true);
+                          }}
+                          disabled={BigNumber(unclaimed).lte(0)}
+                          className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
+                          type="metis"
+                        >
+                          Claim
+                        </Button>
+                      }
                     </div>
                     <span className="color-848484 fz-14 fw-400 inter">
                       {unclaimedUsdValue} USD
                     </span>
+                    {
+                      ifMobile ? (<Button
+                        onClick={() => {
+                          setClaimVisible(true);
+                        }}
+                        disabled={BigNumber(unclaimed).lte(0)}
+                        className={ifMobile ? 'w-120 h-36 self-end' : 'pl-15 pr-15'}
+                        type="metis"
+                      >
+                        Claim
+                      </Button>) : null
+                    }
                   </div>
                 </div>
               </div>
 
-              <div className="flex-1 wp-50 basic-card gap-21 flex flex-col pb-38">
+              <div className={`${ifMobile ? 'w-full' : 'flex-1'} wp-50 basic-card gap-21 flex flex-col pb-38`}>
                 <div className="flex flex-row items-center justify-between">
                   <div className="fz-28 fw-500 ">Add</div>
                 </div>
 
                 <div className="h-1 bg-color-DFDFDF" />
 
-                <div className="flex flex-row items-center gap-20">
+                <div className={`${ifMobile ? 'flex-col' : 'flex-row items-center'} flex gap-20`}>
                   {/* amount */}
                   <div className="flex-2 flex flex-col gap-12">
                     <div className="flex flex-row items-center gap-6">
@@ -799,8 +825,8 @@ export function Component() {
                     <div className="flex flex-row items-center gap-6">
                       <div className="color-848484 fz-20 fw-500" />
                     </div>
-                    <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
-                      <Button type="metis" className="h-26" disabled={!relockAmount} loading={approveLoading} onClick={handleRelock}>
+                    <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 self-end">
+                      <Button type="metis" className={ifMobile ? 'h-36 w-120 self-end' : 'h-26'} disabled={!relockAmount} loading={approveLoading} onClick={handleRelock}>
                         {needApprove ? <span>Approve</span> : <span>Confirm</span>}
                       </Button>
                     </div>
@@ -817,15 +843,17 @@ export function Component() {
               <div className="h-1 bg-color-DFDFDF" />
             </div>
 
-            <div className="block-container flex flex-row ptb-28 w-full position-relative">
-              <table className="w-full">
+            <div className="block-container flex flex-row ptb-28 w-full position-relative" style={ifMobile ? { overflow: 'auto' } : {}}>
+              <table className={`${ifMobile ? 'w-460' : 'w-full'}`}>
                 <thead>
                   <tr>
                     <th>Latest Block Produced</th>
                     <th>Status</th>
                     <th>Rewards</th>
                     <th>Date</th>
-                    <th>Time</th>
+                    {
+                      ifMobile ? null : (<th>Time</th>)
+                    }
                   </tr>
                 </thead>
                 <tbody>
@@ -845,7 +873,10 @@ export function Component() {
                         <span className="fw-700 inter">{i.rewards} METIS</span>
                       </td>
                       <td>{dayjs.unix(i.blockTimestamp).format('DD/MM/YYYY')}</td>
-                      <td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>
+                      {
+                        ifMobile ? null : (<td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>)
+                      }
+
                     </tr>
                   ))}
                 </tbody>
@@ -872,8 +903,8 @@ export function Component() {
                 <div className="fz-28 fw-500 ">Transaction History</div>
                 <div className="h-1 bg-color-DFDFDF" />
               </div>
-              <div className="block-container flex flex-row ptb-28 w-full position-relative">
-                <table className="w-full">
+              <div className="block-container flex flex-row ptb-28 w-full position-relative" style={ifMobile ? { overflow: 'auto' } : {}}>
+                <table className={`${ifMobile ? 'w-560' : 'w-full'}`}>
                   <thead>
                     <tr>
                       <th>Transaction</th>
