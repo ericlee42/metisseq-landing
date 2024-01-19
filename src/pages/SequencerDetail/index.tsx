@@ -339,7 +339,7 @@ export function Component() {
     [fetchUserTxData?.origin?.lockedParams],
   );
 
-  const ifSelf = React.useMemo(() => true || (address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase()), [address, whitelistedAddress]);
+  const ifSelf = React.useMemo(() => (address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase()), [address, whitelistedAddress]);
 
   const handleInitCheck = async () => {
     let activeSequencerId = curUserActiveSequencerId;
