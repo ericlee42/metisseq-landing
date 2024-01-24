@@ -153,8 +153,8 @@ export const explorerName = {
   [sepolia.id.toString()]: 'Sepolia',
 };
 
-export const defaultChainId = isProd ? sepolia.id.toString() : goerli.id.toString();
-export const defaultChain = isProd ? sepolia : goerli;
+export const defaultChainId = isProd ? sepolia.id.toString() : sepolia.id.toString();
+export const defaultChain = isProd ? sepolia : sepolia;
 
 export let localChainId = defaultChainId;
 
