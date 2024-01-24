@@ -6,7 +6,7 @@ import useWatchAsset from '@/hooks/useWatchAsset';
 import { getImageUrl, jumpLink } from '@/utils/tools';
 import { styled } from 'styled-components';
 import Hamburger from 'hamburger-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 
 const Container = styled.div`
@@ -71,8 +71,31 @@ const headerNav = [
     link: 'https://www.metis.io/bridge',
   },
   {
-    label: 'Knolewdge',
+    label: 'Knowledge',
     link: 'https://www.metis.io/knowledge',
+  },
+];
+
+const sequencerHeaderNav = [
+  {
+    label: 'Overview',
+    link: '/#sequencer',
+    target: '_self',
+  },
+  {
+    label: 'All Validators',
+    link: '/sequencers#sequencer',
+    target: '_self',
+  },
+  {
+    label: 'Metis Explorer',
+    link: 'https://explorer.metis.io/',
+    target: '_blank',
+  },
+  {
+    label: 'Support',
+    link: 'mailto:sequencer@metis.io',
+    target: '_blank',
   },
 ];
 
@@ -80,12 +103,15 @@ const Header = () => {
   const { watchMetis } = useWatchAsset();
   const { ifMobile } = useDevice();
 
-  const handleJumpLink = (link: string) => {
-    if (!link) return;
-    jumpLink(link);
-  };
-
   const [isOpen, setOpen] = useState(false);
+  const handleJumpLink = (link: string, target: any = '_blank') => {
+    if (!link) return;
+    if (link === (window.location.pathname + window.location.hash)) {
+      setOpen(false);
+      return;
+    }
+    jumpLink(link, target);
+  };
 
   return (
     <Container className="flex flex-row items-center justify-between w-full">
@@ -106,24 +132,53 @@ const Header = () => {
             width={'100%'}
             isOpen={isOpen}
             onClose={() => setOpen(false)}
-            customBurgerIcon={<Hamburger color="#00D2FF" toggled={isOpen} toggle={setOpen} />}
+            customBurgerIcon={
+              <div className="flex flex-row items-center justify-between">
+                <Hamburger color="#00D2FF" toggled={isOpen} toggle={setOpen} />
+              </div>
+            }
           >
             <div className="w-full">
-              <Hamburger color="#00D2FF" toggled={isOpen} toggle={setOpen} />
-              <div className="flex flex-col items-start gap-20 p-12">
-                {headerNav.map((i) => (
-                  <div
-                    className="raleway pointer fz-20 fw-500 color-000 hover-color-00D2FF"
-                    onClick={() => handleJumpLink(i?.link)}
-                    key={i.label}
-                  >
-                    {i.label}
-                  </div>
-                ))}
+              <div className="flex flex-row items-center justify-between">
+                <img
+                  className="pointer"
+                  onClick={() => {
+                    jumpLink('https://www.metis.io/', '_blank');
+                  }}
+                  src={getImageUrl('@/assets/images/_global/metis_logo_dark.svg')}
+                />
+                <Hamburger color="#00D2FF" toggled={isOpen} toggle={setOpen} />
               </div>
 
-              <div className='w-full pt-60'>
-              <WalletModal />
+              <div className="flex flex-col items-center gap-30 p-12 mt-40">
+                <div className="flex flex-col items-center gap-30">
+                  {sequencerHeaderNav.map((i) => (
+                    <div
+                      className="raleway pointer fz-20 fw-500 color-000 hover-color-00D2FF"
+                      onClick={() => handleJumpLink(i?.link, i?.target)}
+                      key={i.label}
+                    >
+                      {i.label}
+                    </div>
+                  ))}
+                </div>
+                <div className="w-full h-1 bg-color-0000003b" />
+                <div className="flex flex-col items-center gap-30">
+                  {headerNav.map((i) => (
+                    <div
+                      className="raleway pointer fz-20 fw-500 color-000 hover-color-00D2FF"
+                      onClick={() => handleJumpLink(i?.link)}
+                      key={i.label}
+                    >
+                      {i.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
+              <div className="w-full pt-60">
+                <WalletModal />
               </div>
             </div>
           </Menu>

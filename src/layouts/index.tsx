@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Scrollbar } from '@/components';
 import Header from './Header';
 import '@/assets/styles/index.scss';
@@ -25,12 +25,12 @@ function BasicLayout() {
 
   const seqAddress = React.useMemo(
     () =>
-      (allSequencerInfo
+      allSequencerInfo
         ? Object?.values?.(allSequencerInfo)?.find(
             (i: any) => address && i?.address && i?.address?.toLowerCase() === address?.toLowerCase(),
             // @ts-ignore
           )?.seq_addr
-        : undefined),
+        : undefined,
     [address, allSequencerInfo],
   );
 
@@ -56,7 +56,6 @@ function BasicLayout() {
     getMetisPrice();
   }, []);
 
-
   React.useEffect(() => {
     // if (!seqAddress) return;
     updateCancel();
@@ -75,14 +74,23 @@ function BasicLayout() {
     };
   }, [sequencerId, chainId, address]);
 
-  const { ifMobile } = useDevice()
+  const { hash, pathname } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const ele = document.querySelectorAll(hash)?.[0];
+      if (ele) {
+        ele.scrollIntoView();
+      }
+    }
+  }, [hash, pathname]);
+
+  const { ifMobile } = useDevice();
 
   return (
     <React.Fragment>
       <Header />
-      {
-        ifMobile ? null : <SubHeader />
-      }
+      {ifMobile ? null : <SubHeader />}
       <Scrollbar id="vite-content" trackGap={[10, 10, 10, 10]}>
         <main>
           <Outlet />

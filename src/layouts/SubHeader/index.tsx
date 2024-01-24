@@ -24,11 +24,11 @@ const Container = styled.div`
 const leftNav = [
   {
     label: 'Overview',
-    link: '/',
+    link: '/#sequencer',
   },
   {
     label: 'All Sequencers',
-    link: '/sequencers',
+    link: '/sequencers#sequencer',
   },
 ];
 const rightNav = [

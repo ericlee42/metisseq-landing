@@ -616,7 +616,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
         </div>) : null}
 
         <div className="main-section maxw-1140 m-auto flex flex-col pt-90 pb-153 wp-100">
-          <div className="flex flex-row items-center justify-between">
+          <div id="sequencer" className="flex flex-row items-center justify-between">
             <div className={`${ifMobile ? 'fz-32' : 'fz-36'} fw-700 color-000`}>Sequencers</div>
           </div>
           <div className="mb-35 h-1 w-full bg-color-CDCDCD mt-20" />
@@ -630,7 +630,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
               <span>No Data</span>
             </div>
           ) : null}
-          <div className="flex flex-row items-center gap-20 flex-wrap">
+          <div className={`flex flex-row items-center ${ifMobile ? 'justify-center' : ''} gap-20 flex-wrap`}>
             {filteredFetchBatchSequencerInfoData?.map((i, index) => (
               <SequencerItemContainer
                 ele={i}
