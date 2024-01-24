@@ -565,7 +565,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
                     <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
                   </span>
                   <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Current number of Sequencers</span>
+                    <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
                   </div>
                 </div>
                 <div className="opacity-card flex flex-col items-center flex-1">
@@ -573,7 +573,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
                     <NumberText value={totalReward} />
                   </span>
                   <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Total rewards distributed</span>
+                    <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
                   </div>
                 </div>
               </div>
@@ -602,7 +602,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
               <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
             </span>
             <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Current number of Sequencers</span>
+              <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
             </div>
           </div>
           <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
@@ -610,7 +610,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
               <NumberText value={totalReward} />
             </span>
             <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Total rewards distributed</span>
+              <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
             </div>
           </div>
         </div>) : null}

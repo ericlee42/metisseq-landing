@@ -46,7 +46,15 @@ const switchTxType = (type: string) => {
   }
 };
 
-const getSignedStatus = ({ start, end, current }: { start: string | number; end: string | number; current: string | number }) => {
+const getSignedStatus = ({
+  start,
+  end,
+  current,
+}: {
+  start: string | number;
+  end: string | number;
+  current: string | number;
+}) => {
   if (BigNumber(current).gte(end)) return 'Success';
   if (BigNumber(current).lt(end) && BigNumber(current).gte(start)) return 'In Progress';
   return 'Pending';
@@ -299,12 +307,17 @@ const Container = styled.section`
 const txPageSize = 10;
 const blocksPageSize = 10;
 export function Component() {
+  React.useEffect(() => {
+    const eles: any = document.querySelectorAll('.ms-container');
+    if (eles?.length && eles?.[0]?.scrollTop) {
+      eles[0].scrollTop = 0;
+    }
+  }, []);
   const { id } = useParams();
   const { address, chainId, realChainId } = useAuth(true);
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
   const { allSequencerInfo, run, cancel, data: sequencerInfoList, getSequencerId } = useSequencerInfo();
-
 
   const currentSequencerInfo = React.useMemo(() => {
     if (!allSequencerInfo || !id) return null;
@@ -331,15 +344,18 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-    (fetchUserTxData?.origin?.lockedParams?.length
-      ? Array.from(
-        new Set(fetchUserTxData?.origin?.lockedParams?.map((i: { sequencerId: any }) => i.sequencerId)),
-      )?.[0]
-      : undefined),
+      (fetchUserTxData?.origin?.lockedParams?.length
+        ? Array.from(
+            new Set(fetchUserTxData?.origin?.lockedParams?.map((i: { sequencerId: any }) => i.sequencerId)),
+          )?.[0]
+        : undefined),
     [fetchUserTxData?.origin?.lockedParams],
   );
 
-  const ifSelf = React.useMemo(() => (address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase()), [address, whitelistedAddress]);
+  const ifSelf = React.useMemo(
+    () => address && whitelistedAddress && whitelistedAddress?.toLowerCase() === address?.toLowerCase(),
+    [address, whitelistedAddress],
+  );
 
   const handleInitCheck = async () => {
     let activeSequencerId = curUserActiveSequencerId;
@@ -510,9 +526,13 @@ export function Component() {
     ) {
       return '0';
     }
-    return BigNumber(totalRewards).div(days).div(lockedup).multipliedBy(365).multipliedBy(100).toFixed(2, BigNumber.ROUND_CEIL);
+    return BigNumber(totalRewards)
+      .div(days)
+      .div(lockedup)
+      .multipliedBy(365)
+      .multipliedBy(100)
+      .toFixed(2, BigNumber.ROUND_CEIL);
   }, [joinedDuration, lockedup, totalRewards]);
-
 
   const { block } = useBlock();
   const currentBlockNumber = block?.number;
@@ -527,54 +547,73 @@ export function Component() {
 
   // 已经出块数量
   const currentSigned = React.useMemo(() => {
-    const hasProduced = blocksCol?.filter(i => {
-      if (BigNumber(i?.endBlock).lte(currentBlockNumber)) return true;
-    })?.reduce((prev: any, next: any) => {
-      const curBlockRang = BigNumber(next?.endBlock).minus(next?.startBlock).plus(1);
-      return BigNumber(prev).plus(curBlockRang).toString();
-    }, 0);
+    const hasProduced = blocksCol
+      ?.filter((i) => {
+        if (BigNumber(i?.endBlock).lte(currentBlockNumber)) return true;
+      })
+      ?.reduce((prev: any, next: any) => {
+        const curBlockRang = BigNumber(next?.endBlock).minus(next?.startBlock).plus(1);
+        return BigNumber(prev).plus(curBlockRang).toString();
+      }, 0);
 
-    const inprogress = blocksCol?.filter(i => {
-      if (BigNumber(i.startBlock).lt(currentBlockNumber) && BigNumber(i.endBlock).gt(currentBlockNumber)) return true;
-    })?.reduce((prev: any, next: any) => {
-      const curBlockRang = BigNumber(currentBlockNumber).minus(next?.startBlock).plus(1);
-      return BigNumber(prev).plus(curBlockRang).toString();
-    }, 0);
+    const inprogress = blocksCol
+      ?.filter((i) => {
+        if (BigNumber(i.startBlock).lt(currentBlockNumber) && BigNumber(i.endBlock).gt(currentBlockNumber)) return true;
+      })
+      ?.reduce((prev: any, next: any) => {
+        const curBlockRang = BigNumber(currentBlockNumber).minus(next?.startBlock).plus(1);
+        return BigNumber(prev).plus(curBlockRang).toString();
+      }, 0);
 
     return BigNumber(inprogress).plus(hasProduced).toString();
   }, [blocksCol, currentBlockNumber]);
 
-  const signedPercent = React.useMemo(() => BigNumber(currentSigned).div(totalBlocks).multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN), [currentSigned, totalBlocks]);
+  const signedPercent = React.useMemo(
+    () => BigNumber(currentSigned).div(totalBlocks).multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN),
+    [currentSigned, totalBlocks],
+  );
 
   const { metisPrice } = useMetisPrice();
 
-  const unclaimedUsdValue = React.useMemo(() => BigNumber(metisPrice || '0').multipliedBy(unclaimed).toString(), [metisPrice, unclaimed]);
-
+  const unclaimedUsdValue = React.useMemo(
+    () =>
+      BigNumber(metisPrice || '0')
+        .multipliedBy(unclaimed)
+        .toString(),
+    [metisPrice, unclaimed],
+  );
 
   const { ifMobile } = useDevice();
   return (
     <Container className={'pages-landing flex flex-col'}>
       {ifMobile ? null : <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} />}
-      <div className={`position-relative z-1 content flex flex-col items-center ${ifMobile ? 'maxwp-100 wvw-100' : ''}`}>
-        <div className={`pt-55 pb-20 flex flex-col w-full ${ifMobile ? 'relative pl-22 pr-22 gap-22 pb-60' : 'gap-70'}`}>
-          {
-            ifMobile ? <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} style={{ filter: 'brightness(2.7)', zIndex: '-200' }} /> : null
-          }
+      <div
+        className={`position-relative z-1 content flex flex-col items-center ${ifMobile ? 'maxwp-100 wvw-100' : ''}`}
+      >
+        <div
+          className={`pt-55 pb-20 flex flex-col w-full ${ifMobile ? 'relative pl-22 pr-22 gap-22 pb-60' : 'gap-70'}`}
+        >
+          {ifMobile ? (
+            <div
+              className={`banner ${ifMobile ? 'h-full' : 'h-410'}`}
+              style={{ filter: 'brightness(2.7)', zIndex: '-200' }}
+            />
+          ) : null}
           <div className={'flex flex-row gap-32 items-center flex-wrap'}>
-            {
-              currentSequencerInfo?.avatar ? (
-                <div className={'flex flex-row items-center justify-center mb-24'} >
-                  <img className={`${ifMobile ? 's-80' : 's-150'} radiusp-50`} src={currentSequencerInfo?.avatar} />
-                </div>
-              ) : (<div className={`avatar ${ifMobile ? 's-80' : 's-150 mb-24'}`} />)
-            }
+            {currentSequencerInfo?.avatar ? (
+              <div className={'flex flex-row items-center justify-center mb-24'}>
+                <img className={`${ifMobile ? 's-80' : 's-150'} radiusp-50`} src={currentSequencerInfo?.avatar} />
+              </div>
+            ) : (
+              <div className={`avatar ${ifMobile ? 's-80' : 's-150 mb-24'}`} />
+            )}
 
             <div className={`flex flex-col gap-12 color-fff ${ifMobile ? 'flex-1' : ''}`}>
               <div className="flex flex-col gap-4">
                 <div className="fz-36 fw-500 ">{currentSequencerInfo?.name || '-'}</div>
-                {
-                  ifMobile ? null : (<div className="fz-16 fw-400 inter maxw-470" >{currentSequencerInfo?.desc || '-'}</div>)
-                }
+                {ifMobile ? null : (
+                  <div className="fz-16 fw-400 inter maxw-470">{currentSequencerInfo?.desc || '-'}</div>
+                )}
               </div>
               <div>
                 <span
@@ -583,16 +622,19 @@ export function Component() {
                     if (!currentSequencerInfo?.url) return;
                     jumpLink(currentSequencerInfo?.url, '_blank');
                   }}
-                >{currentSequencerInfo?.url}</span>
+                >
+                  {currentSequencerInfo?.url}
+                </span>
               </div>
             </div>
-
           </div>
-          {
-            ifMobile ? (<div className="fz-16 fw-400 inter maxwp-100 mb-22" >{currentSequencerInfo?.desc || '-'}</div>) : null
-          }
+          {ifMobile ? (
+            <div className="fz-16 fw-400 inter maxwp-100 mb-22">{currentSequencerInfo?.desc || '-'}</div>
+          ) : null}
 
-          <div className={`${ifMobile ? ' flex-col ' : ' flex-row justify-center '} status-overview flex gap-10 color-fff`}>
+          <div
+            className={`${ifMobile ? ' flex-col ' : ' flex-row justify-center '} status-overview flex gap-10 color-fff`}
+          >
             <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
               <div className="fz-26 fw-500 color-fff">Owner</div>
               <CopyAddress addr={whitelistedAddress} className={'flex-1 fz-16 fw-400 inter color-fff'} />
@@ -670,7 +712,9 @@ export function Component() {
                   </Tooltip>
                 </div>
                 <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 flex-wrap">
-                  <span><NumberText value={lockedup || '0'} /></span>
+                  <span>
+                    <NumberText value={lockedup || '0'} />
+                  </span>
                   <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                   {ifSelf ? (
                     ifInUnlockProgress ? (
@@ -726,7 +770,10 @@ export function Component() {
                 </div>
                 <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                   {/* {lockedup} METIS +  */}
-                  <span><NumberText value={totalRewards || '0'} /></span> <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                  <span>
+                    <NumberText value={totalRewards || '0'} />
+                  </span>{' '}
+                  <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                 </div>
               </div>
             </div>
@@ -754,8 +801,8 @@ export function Component() {
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                       <span>{unclaimed}</span>
                       <img src={getImageUrl('@/assets/images/token/metis.svg')} />
-                      {
-                        ifMobile ? null : <Button
+                      {ifMobile ? null : (
+                        <Button
                           onClick={() => {
                             setClaimVisible(true);
                           }}
@@ -765,13 +812,11 @@ export function Component() {
                         >
                           Claim
                         </Button>
-                      }
+                      )}
                     </div>
-                    <span className="color-848484 fz-14 fw-400 inter">
-                      {unclaimedUsdValue} USD
-                    </span>
-                    {
-                      ifMobile ? (<Button
+                    <span className="color-848484 fz-14 fw-400 inter">{unclaimedUsdValue} USD</span>
+                    {ifMobile ? (
+                      <Button
                         onClick={() => {
                           setClaimVisible(true);
                         }}
@@ -780,8 +825,8 @@ export function Component() {
                         type="metis"
                       >
                         Claim
-                      </Button>) : null
-                    }
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -816,7 +861,11 @@ export function Component() {
                       <div className="color-848484 fz-20 fw-500">Expected Rewards</div>
                     </div>
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
-                      <span>{BigNumber(relockAmount || '0').multipliedBy(0.2).toString()}</span>
+                      <span>
+                        {BigNumber(relockAmount || '0')
+                          .multipliedBy(0.2)
+                          .toString()}
+                      </span>
                       <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                     </div>
                   </div>
@@ -826,7 +875,13 @@ export function Component() {
                       <div className="color-848484 fz-20 fw-500" />
                     </div>
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 self-end">
-                      <Button type="metis" className={ifMobile ? 'h-36 w-120 self-end' : 'h-26'} disabled={!relockAmount} loading={approveLoading} onClick={handleRelock}>
+                      <Button
+                        type="metis"
+                        className={ifMobile ? 'h-36 w-120 self-end' : 'h-26'}
+                        disabled={!relockAmount}
+                        loading={approveLoading}
+                        onClick={handleRelock}
+                      >
                         {needApprove ? <span>Approve</span> : <span>Confirm</span>}
                       </Button>
                     </div>
@@ -843,7 +898,10 @@ export function Component() {
               <div className="h-1 bg-color-DFDFDF" />
             </div>
 
-            <div className="block-container flex flex-row ptb-28 w-full position-relative" style={ifMobile ? { overflow: 'auto' } : {}}>
+            <div
+              className="block-container flex flex-row ptb-28 w-full position-relative"
+              style={ifMobile ? { overflow: 'auto' } : {}}
+            >
               <table className={`${ifMobile ? 'w-460' : 'w-full'}`}>
                 <thead>
                   <tr>
@@ -851,9 +909,7 @@ export function Component() {
                     <th>Status</th>
                     <th>Rewards</th>
                     <th>Date</th>
-                    {
-                      ifMobile ? null : (<th>Time</th>)
-                    }
+                    {ifMobile ? null : <th>Time</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -863,8 +919,26 @@ export function Component() {
                         {i?.startBlock} - {i?.endBlock}
                       </td>
                       <td>
-                        <div style={{ width: 'fit-content' }} className={`pl-10 pr-10 radius-5 ${(getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) === 'Success') ? 'bg-color-00DACC33' : 'bg-color-E9B26133'}`}>
-                          <span className={(getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) === 'Success') ? 'success-color' : 'pending-color'}>
+                        <div
+                          style={{ width: 'fit-content' }}
+                          className={`pl-10 pr-10 radius-5 ${
+                            getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
+                            'Success'
+                              ? 'bg-color-00DACC33'
+                              : 'bg-color-E9B26133'
+                          }`}
+                        >
+                          <span
+                            className={
+                              getSignedStatus({
+                                start: i?.startBlock,
+                                end: i?.endBlock,
+                                current: currentBlockNumber,
+                              }) === 'Success'
+                                ? 'success-color'
+                                : 'pending-color'
+                            }
+                          >
                             {getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber })}
                           </span>
                         </div>
@@ -873,10 +947,7 @@ export function Component() {
                         <span className="fw-700 inter">{i.rewards} METIS</span>
                       </td>
                       <td>{dayjs.unix(i.blockTimestamp).format('DD/MM/YYYY')}</td>
-                      {
-                        ifMobile ? null : (<td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>)
-                      }
-
+                      {ifMobile ? null : <td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>}
                     </tr>
                   ))}
                 </tbody>
@@ -903,7 +974,10 @@ export function Component() {
                 <div className="fz-28 fw-500 ">Transaction History</div>
                 <div className="h-1 bg-color-DFDFDF" />
               </div>
-              <div className="block-container flex flex-row ptb-28 w-full position-relative" style={ifMobile ? { overflow: 'auto' } : {}}>
+              <div
+                className="block-container flex flex-row ptb-28 w-full position-relative"
+                style={ifMobile ? { overflow: 'auto' } : {}}
+              >
                 <table className={`${ifMobile ? 'w-560' : 'w-full'}`}>
                   <thead>
                     <tr>
@@ -927,7 +1001,9 @@ export function Component() {
                           {filterHideText(i?.id, 8)}
                         </td>
                         <td>{filterHideText(i?.user, 6, 4)}</td>
-                        <td><span className="capitalized">{switchTxType(i?.type)}</span></td>
+                        <td>
+                          <span className="capitalized">{switchTxType(i?.type)}</span>
+                        </td>
                         <td>
                           {i?.deltaAmountReadable || i?.amountReadable} {i?.symbol}
                         </td>
