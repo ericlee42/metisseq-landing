@@ -76,16 +76,16 @@ function BasicLayout() {
 
   const { hash, pathname } = useLocation();
 
+  const { ifMobile } = useDevice()
+  
   useEffect(() => {
-    if (hash) {
+    if (hash && ifMobile) {
       const ele = document.querySelectorAll(hash)?.[0];
       if (ele) {
         ele.scrollIntoView();
       }
     }
-  }, [hash, pathname]);
-
-  const { ifMobile } = useDevice();
+  }, [hash, pathname, ifMobile]);
 
   return (
     <React.Fragment>
