@@ -23,7 +23,11 @@ const SequencerStatusContainer = styled.div`
 
 const SequencerItemContainer = ({ ele, onClick, avatar, title, totalLockUp, uptime, since, earned }: any) => {
   const { chainId, realChainId } = useAuth(true);
-  const { run, loading, data, cancel } = useRequest(fetchBatchBlockTx, { manual: true, pollingInterval: 20000, refreshDeps: [chainId] });
+  const { run, loading, data, cancel } = useRequest(fetchBatchBlockTx, {
+    manual: true,
+    pollingInterval: 20000,
+    refreshDeps: [chainId],
+  });
   const { block } = useBlock();
 
   useEffect(() => {
@@ -43,14 +47,13 @@ const SequencerItemContainer = ({ ele, onClick, avatar, title, totalLockUp, upti
     return dayjs.duration(_duration, 's').humanize(true);
   }, [data?.timestamp]);
 
-
   // 出块情况
   // block - 当前区块高度和时间
   // data?.producingBlocks - 最近5轮被轮到出块的高度配置
   // 若当前高度 在开区间配置内 则判断出块时间距今时间>60s 则有返回warning
   const producingStatus = useMemo(() => {
     if (!block?.timestamp) return { label: 'Unknown', color: 'B3B3B3' };
-    const targetConfig = data?.producingBlocks.find(i => {
+    const targetConfig = data?.producingBlocks.find((i) => {
       return BigNumber(i.endBlock).gt(block?.number) && BigNumber(i.startBlock).lt(block?.number);
     });
 
@@ -107,8 +110,13 @@ const SequencerItemContainer = ({ ele, onClick, avatar, title, totalLockUp, upti
       </div>
 
       <div className="flex flex-col gap-5">
-
-        {ele?.infos?.avatar ? <div className="flex flex-row items-center justify-center"><img className="s-90 radiusp-50" crossOrigin="anonymous" src={ele?.infos?.avatar} /></div> : <div className={'avatar s-90 radiusp-50'} />}
+        {ele?.infos?.avatar ? (
+          <div className="flex flex-row items-center justify-center">
+            <img className="s-90 radiusp-50" crossOrigin="anonymous" src={ele?.infos?.avatar} />
+          </div>
+        ) : (
+          <div className={'avatar s-90 radiusp-50'} />
+        )}
 
         <div className="align-center fz-20 fw-700 poppins">{ele?.infos?.name || '-'}</div>
         {/* {ele?.infos?.desc ? <div className="align-center fz-20 fw-700 poppins">{ele?.infos?.desc || '-'}</div> : null} */}
@@ -126,15 +134,11 @@ const SequencerItemContainer = ({ ele, onClick, avatar, title, totalLockUp, upti
           </div>
           <div className="flex flex-row justify-between items-center w-full">
             <div className="fz-14 color-000 fw-400">Uptime</div>
-            <div className="fz-14 fw-700 color-000">
-              {fromNow || '-'}
-            </div>
+            <div className="fz-14 fw-700 color-000">{fromNow || '-'}</div>
           </div>
           <div className="flex flex-row justify-between items-center w-full">
             <div className="fz-14 color-000 fw-400">Sequencing Since</div>
-            <div className="fz-14 fw-700 color-000">
-              {since || '-'}
-            </div>
+            <div className="fz-14 fw-700 color-000">{since || '-'}</div>
           </div>
         </div>
         <div className="h-1 w-full mt-10 mb-10 bg-color-CDCDCD" />

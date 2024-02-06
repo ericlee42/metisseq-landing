@@ -1,68 +1,61 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  Link,
-  RouterProvider,
-  redirect,
-  useNavigate,
-} from "react-router-dom";
-import BasicLayout from "@/layouts";
-import { useEffect } from "react";
+import { createBrowserRouter, Navigate, Link, RouterProvider, redirect, useNavigate } from 'react-router-dom';
+import BasicLayout from '@/layouts';
+import { useEffect } from 'react';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <BasicLayout />,
     children: [
       {
         index: true,
-        lazy: () => import("@/pages/Home"),
+        lazy: () => import('@/pages/Home'),
       },
     ],
   },
   {
-    path: "/home",
+    path: '/home',
     element: <BasicLayout />,
     children: [
       {
         index: true,
-        lazy: () => import("@/pages/Home"),
+        lazy: () => import('@/pages/Home'),
       },
     ],
   },
   {
-    path: "/sequencers",
+    path: '/sequencers',
     element: <BasicLayout />,
     children: [
       {
         index: true,
-        lazy: () => import("@/pages/Sequencer"),
+        lazy: () => import('@/pages/Sequencer'),
       },
     ],
   },
   {
-    path: "/becomeSequencer",
+    path: '/becomeSequencer',
     element: <BasicLayout />,
     children: [
       {
         index: true,
-        lazy: () => import("@/pages/BecomeSequencer"),
+        lazy: () => import('@/pages/BecomeSequencer'),
       },
     ],
   },
   {
-    path: "/sequencers/:id",
+    path: '/sequencers/:id',
     element: <BasicLayout />,
     children: [
       {
         index: true,
-        lazy: () => import("@/pages/SequencerDetail"),
+        lazy: () => import('@/pages/SequencerDetail'),
       },
     ],
   },
 
   {
-    path: "*",
+    path: '*',
     element: <NoMatch />,
   },
 ]);
@@ -73,7 +66,7 @@ function NoMatch() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/home");
+    navigate('/home');
   }, []);
 
   return (

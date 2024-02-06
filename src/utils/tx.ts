@@ -110,13 +110,13 @@ export const txAwait = async (hash: string | `0x${string}`, chainId: number) => 
 
 export const sendTx = async ({ walletClient, to, account, value, data, chain }: SendTxInterface) => {
   try {
-    if(!walletClient) throw new Error('Invalid Account')
+    if (!walletClient) throw new Error('Invalid Account');
     let p: any = {
       to,
       value,
       data,
       chain,
-      account: walletClient.account?.address
+      account: walletClient.account?.address,
       // chain: chainId[0],
     };
     if (account) {

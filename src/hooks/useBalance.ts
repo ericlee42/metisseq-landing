@@ -1,5 +1,5 @@
-import { recoilBalance } from "@/models";
-import { useRecoilState } from "recoil";
+import { recoilBalance } from '@/models';
+import { useRecoilState } from 'recoil';
 
 const useBalance = () => {
   const [balance] = useRecoilState(recoilBalance);

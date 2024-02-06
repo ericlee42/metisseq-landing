@@ -51,36 +51,29 @@ const WalletModal = () => {
     }
   };
 
-  const { ifMobile } = useDevice()
+  const { ifMobile } = useDevice();
 
   return (
     <Container className={`h-50 flex flex-row items-center z-1 ${ifMobile ? 'w-full' : ''}`}>
       <div className={`flex h-full ${ifMobile ? 'w-full flex-col gap-12' : 'flex-row items-center '}`}>
-        {
-          (address && !ifMobile) ? <NetworkSelect /> : null
-        }
-        <div className={`${ifMobile ? 'w-full' : ''} flex flex-row items-center bg-color-000 radius-40 pl-6 ${address ? 'pr-25' : 'pr-6'} h-full z-1`}>
+        {address && !ifMobile ? <NetworkSelect /> : null}
+        <div
+          className={`${ifMobile ? 'w-full' : ''} flex flex-row items-center bg-color-000 radius-40 pl-6 ${
+            address ? 'pr-25' : 'pr-6'
+          } h-full z-1`}
+        >
           <Button onClick={showAccount} className={ifMobile ? 'h-50 w-full' : ''}>
             <div className="flex flex-row items-center gap-9">
-              {
-                address ? <img className="radiusp-50 s-38" src={generateAvatar(address || '', 200)} /> : null
-              }
+              {address ? <img className="radiusp-50 s-38" src={generateAvatar(address || '', 200)} /> : null}
 
               <div className="fz-18 fw-500 color-fff">
-                {isConnected
-                  ? filterHideText(address as string, 8, 2)
-                  : isConnecting
-                    ? 'Loading...'
-                    : 'Connect Wallet'}
+                {isConnected ? filterHideText(address as string, 8, 2) : isConnecting ? 'Loading...' : 'Connect Wallet'}
               </div>
             </div>
           </Button>
         </div>
 
-        {
-          (address && ifMobile) ? <NetworkSelect /> : null
-        }
-
+        {address && ifMobile ? <NetworkSelect /> : null}
       </div>
       {/* <Button
         type="solid"
@@ -103,12 +96,7 @@ const WalletModal = () => {
         </div>
       </Button> */}
 
-      <MyAccount
-        visible={visible}
-        claimable={claimable}
-        onClose={handleClose}
-        onOk={handleClose}
-      />
+      <MyAccount visible={visible} claimable={claimable} onClose={handleClose} onOk={handleClose} />
     </Container>
   );
 };

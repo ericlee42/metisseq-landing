@@ -41,8 +41,8 @@ const useAuth = (needStatus?: boolean | undefined) => {
 
   if (needStatus) {
     return {
-      chain: chain?.unsupported ? defaultChain : (chain || defaultChain),
-      chainId: chain?.unsupported ? defaultChainId : (chain?.id || defaultChainId),
+      chain: chain?.unsupported ? defaultChain : chain || defaultChain,
+      chainId: chain?.unsupported ? defaultChainId : chain?.id || defaultChainId,
       realChainId: chain?.id,
       connector,
       address,

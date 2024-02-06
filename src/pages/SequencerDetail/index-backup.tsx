@@ -1,22 +1,22 @@
-import * as React from "react";
-import "./index.scss";
-import { styled } from "styled-components";
-import { filterHideText, getImageUrl } from "@/utils/tools";
-import { Button, Pagination, Tooltip } from "@/components";
-import { useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import CopyAddress from "@/components/CopyAddress";
-import IncreaseModal from "./components/IncreaseModal";
-import UnlockModal from "./components/UnlockModal";
-import DetailModal from "./components/DetailModal";
-import WithdrawModal from "./components/WithdrawModal";
-import ClaimModal from "./components/ClaimModal";
-import useSequencerInfo from "@/hooks/useSequencerInfo";
-import { ethers } from "ethers";
-import useUpdate from "@/hooks/useUpdate";
-import Loading from "@/components/_global/Loading";
-import { useCountDown, useMount } from "ahooks";
-import { isDev } from "@/configs/common";
+import * as React from 'react';
+import './index.scss';
+import { styled } from 'styled-components';
+import { filterHideText, getImageUrl } from '@/utils/tools';
+import { Button, Pagination, Tooltip } from '@/components';
+import { useNavigate, useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import CopyAddress from '@/components/CopyAddress';
+import IncreaseModal from './components/IncreaseModal';
+import UnlockModal from './components/UnlockModal';
+import DetailModal from './components/DetailModal';
+import WithdrawModal from './components/WithdrawModal';
+import ClaimModal from './components/ClaimModal';
+import useSequencerInfo from '@/hooks/useSequencerInfo';
+import { ethers } from 'ethers';
+import useUpdate from '@/hooks/useUpdate';
+import Loading from '@/components/_global/Loading';
+import { useCountDown, useMount } from 'ahooks';
+import { isDev } from '@/configs/common';
 
 const testMode = true;
 
@@ -132,8 +132,7 @@ const Container = styled.section`
     left: 0;
     right: 0;
     width: 100%;
-    background: url(${getImageUrl("@/assets/images/_global/img_3@2x.png")})
-      no-repeat;
+    background: url(${getImageUrl('@/assets/images/_global/img_3@2x.png')}) no-repeat;
     background-size: cover;
     aspect-ratio: 1439 / 443;
     z-index: -1;
@@ -320,44 +319,44 @@ export function Component() {
   const blocksCol = React.useMemo(() => {
     return [
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: true,
-        rewards: "0.2",
-        symbol: "METIS",
+        rewards: '0.2',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: false,
-        rewards: "-",
+        rewards: '-',
         timestamp: 1691313480,
       },
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: true,
-        rewards: "0.2",
-        symbol: "METIS",
+        rewards: '0.2',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: true,
-        rewards: "0.2",
-        symbol: "METIS",
+        rewards: '0.2',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: true,
-        rewards: "0.2",
-        symbol: "METIS",
+        rewards: '0.2',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        lastSignedBlock: "#45,643",
+        lastSignedBlock: '#45,643',
         status: true,
-        rewards: "0.2",
-        symbol: "METIS",
+        rewards: '0.2',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
     ];
@@ -371,44 +370,44 @@ export function Component() {
   const txCol = React.useMemo(() => {
     return [
       {
-        tx: "0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5",
-        address: "531dxxx223ffss",
-        type: "Unlock",
-        amount: "21,212",
-        symbol: "METIS",
+        tx: '0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5',
+        address: '531dxxx223ffss',
+        type: 'Unlock',
+        amount: '21,212',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        tx: "0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5",
-        address: "531dxxx223ffss",
-        type: "Claim",
-        amount: "21,212",
-        symbol: "METIS",
+        tx: '0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5',
+        address: '531dxxx223ffss',
+        type: 'Claim',
+        amount: '21,212',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
 
       {
-        tx: "0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5",
-        address: "531dxxx223ffss",
-        type: "Increase",
-        amount: "21,212",
-        symbol: "METIS",
+        tx: '0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5',
+        address: '531dxxx223ffss',
+        type: 'Increase',
+        amount: '21,212',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        tx: "0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5",
-        address: "531dxxx223ffss",
-        type: "Unlock",
-        amount: "21,212",
-        symbol: "METIS",
+        tx: '0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5',
+        address: '531dxxx223ffss',
+        type: 'Unlock',
+        amount: '21,212',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
       {
-        tx: "0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5",
-        address: "531dxxx223ffss",
-        type: "Unlock",
-        amount: "21,212",
-        symbol: "METIS",
+        tx: '0x1a08c0736f2a8f064ce84dc0dc9559e80641ee34101cf02c34ad138874c7f0c5',
+        address: '531dxxx223ffss',
+        type: 'Unlock',
+        amount: '21,212',
+        symbol: 'METIS',
         timestamp: 1691313480,
       },
     ];
@@ -431,11 +430,8 @@ export function Component() {
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
 
   const unlockTo = React.useMemo(
-    () =>
-      dayjs
-        .unix(sequencerInfo?.unlockClaimTime || 0)
-        .format("YYYY-MM-DD HH:mm:ss"),
-    [sequencerInfo?.unlockClaimTime]
+    () => dayjs.unix(sequencerInfo?.unlockClaimTime || 0).format('YYYY-MM-DD HH:mm:ss'),
+    [sequencerInfo?.unlockClaimTime],
   );
 
   const [countdown, formattedRes] = useCountDown({
@@ -447,7 +443,7 @@ export function Component() {
   useMount(() => {
     if (!id) return;
     cancel();
-    console.log("id", id);
+    console.log('id', id);
     run({ sequencerId: id });
     return () => {
       cancel();
@@ -455,9 +451,8 @@ export function Component() {
   });
 
   const lockedup = React.useMemo(
-    () =>
-      ethers.utils.formatEther(sequencerInfo?.sequencerLock || "0").toString(),
-    [sequencerInfo?.sequencerLock]
+    () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
+    [sequencerInfo?.sequencerLock],
   );
 
   const ifSelf = React.useMemo(() => {
@@ -473,12 +468,8 @@ export function Component() {
         <div
           className="status-label f-14-bold flex items-center justify-center gap-8 mb-16"
           style={{
-            background: sequencerInfo?.ifActive
-              ? "rgba(229, 251, 249, 1)"
-              : "rgba(210, 212, 227, 1)",
-            color: sequencerInfo?.ifActive
-              ? "rgba(0, 210, 193, 1)"
-              : "rgba(49, 49, 70, 1)",
+            background: sequencerInfo?.ifActive ? 'rgba(229, 251, 249, 1)' : 'rgba(210, 212, 227, 1)',
+            color: sequencerInfo?.ifActive ? 'rgba(0, 210, 193, 1)' : 'rgba(49, 49, 70, 1)',
           }}
         >
           {!sequencerInfo ? (
@@ -486,10 +477,10 @@ export function Component() {
           ) : (
             <>
               <img
-                style={{ width: "20px", height: "20px" }}
-                src={getImageUrl("@/assets/images/_global/ic_Etherscan.svg")}
+                style={{ width: '20px', height: '20px' }}
+                src={getImageUrl('@/assets/images/_global/ic_Etherscan.svg')}
               />
-              <span>{sequencerInfo?.ifActive ? "Health" : "Exiting"}</span>
+              <span>{sequencerInfo?.ifActive ? 'Health' : 'Exiting'}</span>
             </>
           )}
         </div>
@@ -498,12 +489,12 @@ export function Component() {
 
         <div className="status-overview flex flex-row justify-center">
           <div className="overview-item flex flex-col items-center justify-center gap-10">
-            <CopyAddress className={"f-18-bold"} />
+            <CopyAddress className={'f-18-bold'} />
 
             <div className="f-14">Owner</div>
           </div>
           <div className="overview-item flex flex-col items-center justify-center gap-10">
-            <CopyAddress className={"f-18-bold"} />
+            <CopyAddress className={'f-18-bold'} />
             <div className="f-14">Signer</div>
           </div>
           <div className="overview-item flex flex-col items-center justify-center gap-10">
@@ -525,7 +516,7 @@ export function Component() {
                     setIncreaseVisible(true);
                   }}
                 >
-                  <div style={{ padding: "10px 16px" }}>Increase</div>
+                  <div style={{ padding: '10px 16px' }}>Increase</div>
                 </Button>
                 <Button
                   type="solid"
@@ -533,7 +524,7 @@ export function Component() {
                     setDetailsVisible(true);
                   }}
                 >
-                  <div style={{ padding: "10px 16px" }}>Details</div>
+                  <div style={{ padding: '10px 16px' }}>Details</div>
                 </Button>
                 <Button
                   type="solid"
@@ -541,7 +532,7 @@ export function Component() {
                     setUnlockVisible(true);
                   }}
                 >
-                  <div style={{ padding: "10px 16px" }}>Unlock</div>
+                  <div style={{ padding: '10px 16px' }}>Unlock</div>
                 </Button>
                 <Button
                   type="solid"
@@ -549,7 +540,7 @@ export function Component() {
                     setClaimVisible(true);
                   }}
                 >
-                  <div style={{ padding: "10px 16px" }}>Claim</div>
+                  <div style={{ padding: '10px 16px' }}>Claim</div>
                 </Button>
                 <Button
                   type="solid"
@@ -557,7 +548,7 @@ export function Component() {
                     setWithdrawVisible(true);
                   }}
                 >
-                  <div style={{ padding: "10px 16px" }}>Withdraw</div>
+                  <div style={{ padding: '10px 16px' }}>Withdraw</div>
                 </Button>
               </div>
             ) : null}
@@ -569,7 +560,7 @@ export function Component() {
               <div className="flex flex-row items-center gap-6">
                 <div className="f-14-bold">Locked UP</div>
                 <Tooltip title={<span>Tooltip</span>}>
-                  <img src={getImageUrl("@/assets/images/_global/ic_q.svg")} />
+                  <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                 </Tooltip>
               </div>
               <div className="f-18-bold">{lockedup} Metis</div>
@@ -580,7 +571,7 @@ export function Component() {
               <div className="flex flex-row items-center gap-6">
                 <div className="f-14-bold">Current APR</div>
                 <Tooltip title={<span>Tooltip</span>}>
-                  <img src={getImageUrl("@/assets/images/_global/ic_q.svg")} />
+                  <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                 </Tooltip>
               </div>
               <div className="f-18-bold">18.13%</div>
@@ -591,7 +582,7 @@ export function Component() {
               <div className="flex flex-row items-center gap-6">
                 <div className="f-14-bold">TOTAL REWARDS</div>
                 <Tooltip title={<span>Tooltip</span>}>
-                  <img src={getImageUrl("@/assets/images/_global/ic_q.svg")} />
+                  <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                 </Tooltip>
               </div>
               <div className="f-18-bold">
@@ -606,14 +597,9 @@ export function Component() {
             <div className="b flex flex-col gap-32">
               <div className="f-20-bold">Claim Your Rewards</div>
               <div className="unclaimed-rewards-container flex flex-row w-full justify-between items-center">
-                <div className="f-16-bold">
-                  Unclaimed Rewards {sequencerInfo?.rewardReadable} METIS
-                </div>
+                <div className="f-16-bold">Unclaimed Rewards {sequencerInfo?.rewardReadable} METIS</div>
                 <Button type="metis">
-                  <div
-                    style={{ padding: "14px 42px", color: "#000" }}
-                    className="f-14-bold"
-                  >
+                  <div style={{ padding: '14px 42px', color: '#000' }} className="f-14-bold">
                     Claim
                   </div>
                 </Button>
@@ -640,31 +626,20 @@ export function Component() {
                   <tr key={index}>
                     <td className="align-center">{i.lastSignedBlock}</td>
                     <td className="align-center">
-                      <span
-                        className={
-                          i.status
-                            ? "success-color"
-                            : "danger-color" + " align-center"
-                        }
-                      >
-                        {i.status ? "Success" : "Failed"}
+                      <span className={i.status ? 'success-color' : 'danger-color' + ' align-center'}>
+                        {i.status ? 'Success' : 'Failed'}
                       </span>
                     </td>
                     <td className="align-center">
                       {i.rewards} {i.symbol}
                     </td>
-                    <td className="align-center">
-                      {dayjs.unix(i.timestamp).format("DD/MM/YYYY HH:mm:ss")}
-                    </td>
+                    <td className="align-center">{dayjs.unix(i.timestamp).format('DD/MM/YYYY HH:mm:ss')}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <div
-            className="pagination flex flex-row items-center justify-center mt-24"
-            style={{ height: "32px" }}
-          >
+          <div className="pagination flex flex-row items-center justify-center mt-24" style={{ height: '32px' }}>
             <Pagination
               current={blocksCurrentPage}
               total={blocksTotal}
@@ -691,28 +666,19 @@ export function Component() {
               <tbody>
                 {txCol.map((i, index) => (
                   <tr key={index}>
-                    <td className="align-center underlined pointer">
-                      {filterHideText(i.tx, 8)}
-                    </td>
-                    <td className="align-center">
-                      {filterHideText(i.address, 6, 4)}
-                    </td>
+                    <td className="align-center underlined pointer">{filterHideText(i.tx, 8)}</td>
+                    <td className="align-center">{filterHideText(i.address, 6, 4)}</td>
                     <td className="align-center">{i.type}</td>
                     <td className="align-center">
                       {i.amount} {i.symbol}
                     </td>
-                    <td className="align-center">
-                      {dayjs.unix(i.timestamp).format("DD/MM/YYYY HH:mm:ss")}
-                    </td>
+                    <td className="align-center">{dayjs.unix(i.timestamp).format('DD/MM/YYYY HH:mm:ss')}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <div
-            className="pagination flex flex-row items-center justify-center mt-24"
-            style={{ height: "32px" }}
-          >
+          <div className="pagination flex flex-row items-center justify-center mt-24" style={{ height: '32px' }}>
             <Pagination
               current={txCurrentPage}
               total={txTotal}
@@ -764,4 +730,4 @@ export function Component() {
   );
 }
 
-Component.displayName = "SequencerDetail";
+Component.displayName = 'SequencerDetail';

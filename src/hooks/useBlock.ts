@@ -11,9 +11,9 @@ interface Block {
 }
 
 const useBlock = () => {
-  const { chainId } = useAuth(true)
+  const { chainId } = useAuth(true);
   const [latestBlock, setLatestBlock] = useRecoilState(recoilLatestBlock);
-  const props = useRequest(fetchLatestBlockTimestamp, { manual: true, pollingInterval: 10000, refreshDeps: [chainId]});
+  const props = useRequest(fetchLatestBlockTimestamp, { manual: true, pollingInterval: 10000, refreshDeps: [chainId] });
 
   const handleBlock = (data: Block) => {
     setLatestBlock(data);

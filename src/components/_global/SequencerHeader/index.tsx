@@ -493,25 +493,31 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
       ) : null}
       <Container className={ifMobile ? 'pl-22 pr-22' : ''}>
         <div className={`top-banner ${ifMobile ? 'radius-22 w-full p-26 pt-41 pb-41' : ''}`}>
-          {ifMobile ? (<div className="flex flex-col gap-118">
-            <span className="fz-17 fw-500 color-fff lh-130">Secure the Metis network and earn staking rewards. An exclusive opportunity for qualified operators.</span>
-            <div className="flex flex-col items-center gap-12">
-              {
-                address ? (<Button loading={checkLoading} onClick={checkWhiteList} type="dark" className="w-full radius-50 h-53">
-                  <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Become a Sequencer</div>
-                </Button>) : <WalletModal />
-              }
-              <Button
-                onClick={() => {
-                  jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
-                }}
-                type="light"
-                className="radius-50 w-full"
-              >
-                <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Read Docs</div>
-              </Button>
+          {ifMobile ? (
+            <div className="flex flex-col gap-118">
+              <span className="fz-17 fw-500 color-fff lh-130">
+                Secure the Metis network and earn staking rewards. An exclusive opportunity for qualified operators.
+              </span>
+              <div className="flex flex-col items-center gap-12">
+                {address ? (
+                  <Button loading={checkLoading} onClick={checkWhiteList} type="dark" className="w-full radius-50 h-53">
+                    <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Become a Sequencer</div>
+                  </Button>
+                ) : (
+                  <WalletModal />
+                )}
+                <Button
+                  onClick={() => {
+                    jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
+                  }}
+                  type="light"
+                  className="radius-50 w-full"
+                >
+                  <div className="pt-15 pb-15 pl-30 pr-30 fz-18 fw-500 raleway">Read Docs</div>
+                </Button>
+              </div>
             </div>
-          </div>) : (
+          ) : (
             <div className="top-content flex flex-col gap-58 pt-100">
               <div className="gap-48 flex flex-col">
                 <div className="gap-16 flex flex-col">
@@ -542,78 +548,92 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
             </div>
           )}
 
-          {
-            ifMobile ? (null) : (
-              <div className="flex flex-row items-center gap-8 info-card-container w-1150">
-                <div className="opacity-card flex flex-col items-center flex-1">
-                  <span className="fz-18 fw-700 inter">
-                    <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
-                  </span>
+          {ifMobile ? null : (
+            <div className="flex flex-row items-center gap-8 info-card-container w-1150">
+              <div className="opacity-card flex flex-col items-center flex-1">
+                <span className="fz-18 fw-700 inter">
+                  <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
+                </span>
 
-                  <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Total Metis Participating</span>
-                  </div>
-                </div>
-                <div className="opacity-card flex flex-col items-center flex-1">
-                  <span className="fz-18 fw-700 inter">{BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
-                  <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Expected Mining Rewards Rate</span>
-                  </div>
-                </div>
-                <div className="opacity-card flex flex-col items-center flex-1">
-                  <span className="fz-18 fw-700 inter">
-                    <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
-                  </span>
-                  <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
-                  </div>
-                </div>
-                <div className="opacity-card flex flex-col items-center flex-1">
-                  <span className="fz-18 fw-700 inter">
-                    <NumberText value={totalReward} />
-                  </span>
-                  <div className="flex items-center gap-8">
-                    <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
-                  </div>
+                <div className="flex items-center gap-8">
+                  <span className="fz-14 fw-400 inter">Total Metis Participating</span>
                 </div>
               </div>
-            )
-          }
+              <div className="opacity-card flex flex-col items-center flex-1">
+                <span className="fz-18 fw-700 inter">
+                  {BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%
+                </span>
+                <div className="flex items-center gap-8">
+                  <span className="fz-14 fw-400 inter">Expected Mining Rewards Rate</span>
+                </div>
+              </div>
+              <div className="opacity-card flex flex-col items-center flex-1">
+                <span className="fz-18 fw-700 inter">
+                  <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
+                </span>
+                <div className="flex items-center gap-8">
+                  <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
+                </div>
+              </div>
+              <div className="opacity-card flex flex-col items-center flex-1">
+                <span className="fz-18 fw-700 inter">
+                  <NumberText value={totalReward} />
+                </span>
+                <div className="flex items-center gap-8">
+                  <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {ifMobile ? (<div className="mt-17 flex flex-col items-center gap-8 info-card-container w-full position-relative">
-          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
-            <span className="fz-18 fw-700 inter">
-              <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
-            </span>
+        {ifMobile ? (
+          <div className="mt-17 flex flex-col items-center gap-8 info-card-container w-full position-relative">
+            <div
+              className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center"
+              style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
+            >
+              <span className="fz-18 fw-700 inter">
+                <NumberText value={sequencerTotalInfo?.currentSequencerSetTotalLockReadable} />
+              </span>
 
-            <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+              <div className="flex items-center gap-8">
+                <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+              </div>
+            </div>
+            <div
+              className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center"
+              style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
+            >
+              <span className="fz-18 fw-700 inter">{BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
+              <div className="flex items-center gap-8">
+                <span className="fz-14 fw-400 inter">Expected Mining Rewards Rate</span>
+              </div>
+            </div>
+            <div
+              className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center"
+              style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
+            >
+              <span className="fz-18 fw-700 inter">
+                <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
+              </span>
+              <div className="flex items-center gap-8">
+                <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
+              </div>
+            </div>
+            <div
+              className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center"
+              style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
+            >
+              <span className="fz-18 fw-700 inter">
+                <NumberText value={totalReward} />
+              </span>
+              <div className="flex items-center gap-8">
+                <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
+              </div>
             </div>
           </div>
-          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
-            <span className="fz-18 fw-700 inter">{BigNumber(defaultExpectedApr).multipliedBy(100).toString()}%</span>
-            <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Expected Mining Rewards Rate</span>
-            </div>
-          </div>
-          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
-            <span className="fz-18 fw-700 inter">
-              <NumberText value={filteredFetchBatchSequencerInfoData?.length || '-'} />
-            </span>
-            <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Current Number of Sequencers</span>
-            </div>
-          </div>
-          <div className="w-full p-24 radius-20 h-89 opacity-card justify-center flex flex-col items-center" style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}>
-            <span className="fz-18 fw-700 inter">
-              <NumberText value={totalReward} />
-            </span>
-            <div className="flex items-center gap-8">
-              <span className="fz-14 fw-400 inter">Total Rewards Distributed</span>
-            </div>
-          </div>
-        </div>) : null}
+        ) : null}
 
         <div className="main-section maxw-1140 m-auto flex flex-col pt-90 pb-153 wp-100">
           <div id="sequencer" className="flex flex-row items-center justify-between">

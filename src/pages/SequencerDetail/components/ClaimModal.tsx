@@ -62,15 +62,7 @@ const Container = styled(Modal)`
   }
 `;
 
-const ClaimModal = ({
-  visible,
-  onOk,
-  onClose,
-}: {
-  visible: boolean;
-  onOk?: any;
-  onClose?: any;
-}) => {
+const ClaimModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
   const { sequencerInfo } = useSequencerInfo();
 
   const [claimAmount, setClaimAmount] = useState('');
@@ -100,7 +92,7 @@ const ClaimModal = ({
         withdrawToL2: false,
       });
       setFalse();
-      onClose?.()
+      onClose?.();
       // message.success('Success');
     } catch (e) {
       setFalse();
@@ -109,20 +101,11 @@ const ClaimModal = ({
   };
 
   return (
-    <Container
-      visible={visible}
-      onCancel={onClose}
-      onClose={onClose}
-      onOk={onOk}
-      title="Claim Rewards"
-      middleHeader
-    >
+    <Container visible={visible} onCancel={onClose} onClose={onClose} onOk={onOk} title="Claim Rewards" middleHeader>
       <div className="c flex flex-col gap-24">
         <div className="flex flex-col p-24 gap-12 items-center  radius-8">
           <span className="f-14">Unclaimed</span>
-          <span className="f-20-bold">
-            {sequencerInfo?.rewardReadable} METIS
-          </span>
+          <span className="f-20-bold">{sequencerInfo?.rewardReadable} METIS</span>
         </div>
 
         <div className="flex flex-col gap-16">
@@ -141,18 +124,14 @@ const ClaimModal = ({
             className="flex-1"
             suffix={
               <div className="flex flex-row items-center gap-8">
-                <img
-                  className="size-12"
-                  src={getImageUrl('@/assets/images/_global/ic_edit.svg')}
-                />
+                <img className="size-12" src={getImageUrl('@/assets/images/_global/ic_edit.svg')} />
               </div>
             }
           />
         </div>
 
         <div className="f-12 align-center">
-          This operation will claim all your unclaimed rewards to Metis
-          Andromeda Network.
+          This operation will claim all your unclaimed rewards to Metis Andromeda Network.
         </div>
         <Button
           disabled={BigNumber(sequencerInfo?.reward).lte(0)}
@@ -162,7 +141,6 @@ const ClaimModal = ({
           className="w-full flex items-center justify-center"
         >
           <div className="flex items-center justify-center">{claimLoading ? <Loading color="#fff" /> : 'Claim'}</div>
-
         </Button>
       </div>
     </Container>

@@ -40,11 +40,11 @@ const Container = styled.div`
     align-self: flex-end;
   }
   #react-burger-menu-btn {
-    z-index: -1!important;
+    z-index: -1 !important;
   }
   .opened {
     #react-burger-menu-btn {
-      z-index: 1!important;
+      z-index: 1 !important;
     }
   }
 `;
@@ -106,7 +106,7 @@ const Header = () => {
   const [isOpen, setOpen] = useState(false);
   const handleJumpLink = (link: string, target: any = '_blank') => {
     if (!link) return;
-    if (link === (window.location.pathname + window.location.hash)) {
+    if (link === window.location.pathname + window.location.hash) {
       setOpen(false);
       return;
     }
@@ -175,7 +175,6 @@ const Header = () => {
                   ))}
                 </div>
               </div>
-
 
               <div className="w-full pt-60">
                 <WalletModal />

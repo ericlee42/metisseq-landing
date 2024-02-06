@@ -50,7 +50,6 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
   //   }
   // }, ref);
 
-
   const handleCloseWithMask = (e) => {
     e.stopPropagation();
     if (visible && e.target === ref.current) {
@@ -58,12 +57,7 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
     }
   };
 
-
-  const classes = classNames(
-    className,
-    'component-modal flex flex-col items-stretch justify-center',
-    {},
-  );
+  const classes = classNames(className, 'component-modal flex flex-col items-stretch justify-center', {});
 
   const handleCancel = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
@@ -81,11 +75,7 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
 
   const renderHeader = React.useMemo(() => {
     return (
-      <div
-        className={`header flex flex-row items-center justify-between ${
-          middleHeader ? 'middle-header' : ''
-        }`}
-      >
+      <div className={`header flex flex-row items-center justify-between ${middleHeader ? 'middle-header' : ''}`}>
         <h2 className="title">{title}</h2>
         {closable && (
           <img
@@ -108,12 +98,7 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
           </Button>
         )}
         {ok && (
-          <Button
-            type="solid"
-            loading={loading}
-            disabled={disabled}
-            onClick={handleOk}
-          >
+          <Button type="solid" loading={loading} disabled={disabled} onClick={handleOk}>
             {ok}
           </Button>
         )}

@@ -53,7 +53,7 @@ function ProfilePosition() {
               <OptionPosition key={index} ele={ele} />
             ))
           )
-        ) : // <table>
+        ) // <table>
         //   <thead>
         //     <tr>
         //       <th>Symbol</th>
@@ -77,7 +77,7 @@ function ProfilePosition() {
         //     )}
         //   </tbody>
         // </table>
-        null}
+        : null}
 
         {tabValue === 0 ? (
           perpetualCombinedPosition?.length ? (

@@ -20,12 +20,12 @@ const Bar = styled.div<{ activePercent?: string; activeIndex?: string }>`
     display: inline-block;
     border-radius: 26px;
     width: ${({ activePercent, activeIndex }) =>
-  (BigNumber(activePercent || 0).gt(0)
-    ? `calc(${activePercent || 0}% + ${BigNumber(activeIndex || 0)
-      .minus(1)
-      .multipliedBy(84)
-      .toString()}px)`
-    : '0')};
+      (BigNumber(activePercent || 0).gt(0)
+        ? `calc(${activePercent || 0}% + ${BigNumber(activeIndex || 0)
+            .minus(1)
+            .multipliedBy(84)
+            .toString()}px)`
+        : '0')};
     height: 100%;
     background: rgba(0, 210, 193, 1);
   }
@@ -169,14 +169,14 @@ const Progress = ({
           style={
             verticle
               ? {
-                left: 0,
-                top: '50%',
-                height: '100%',
-                width: '2px',
-              }
+                  left: 0,
+                  top: '50%',
+                  height: '100%',
+                  width: '2px',
+                }
               : {
-                top: needIndex ? 'calc(50% + 10px)' : 'calc(50% - 10px)',
-              }
+                  top: needIndex ? 'calc(50% + 10px)' : 'calc(50% - 10px)',
+                }
           }
           className={'bar z-1'}
           activeIndex={activeIndex}
@@ -187,47 +187,45 @@ const Progress = ({
             {col.map((i, index) => (
               <div
                 key={i.index}
-                className={`flex ${verticle
-                  ? `flex-row ${index === 0
-                    ? 'flex-1 items-start'
-                    : index === col.length - 1
-                      ? 'flex-1 items-end'
-                      : 'flex-2 items-center'
-                  }`
-                  : `flex-col items-center ${index === 0 || index === col.length - 1 ? 'flex-1' : 'flex-2'}`
-                  }`}
+                className={`flex ${
+                  verticle
+                    ? `flex-row ${
+                        index === 0
+                          ? 'flex-1 items-start'
+                          : index === col.length - 1
+                          ? 'flex-1 items-end'
+                          : 'flex-2 items-center'
+                      }`
+                    : `flex-col items-center ${index === 0 || index === col.length - 1 ? 'flex-1' : 'flex-2'}`
+                }`}
               >
                 <div className="h-78 w-56 minw-56 flex flex-col justify-center">
                   <div className="position-relative progress-line w-full">
                     {index === +activeIndex - 1 ? (
                       <IconRoundGray
-                        className={`position-absolute topr-50  translateYTop left-0 ${index === 0 ? 'top-0' : index === col.length - 1 ? 'topr-100' : 'topr-50'
-                          }`}
+                        className={`position-absolute topr-50  translateYTop left-0 ${
+                          index === 0 ? 'top-0' : index === col.length - 1 ? 'topr-100' : 'topr-50'
+                        }`}
                       />
                     ) : (
                       <IconRoundBlue
-                        className={`position-absolute topr-50  translateYTop left-0 ${index === 0 ? 'top-0' : index === col.length - 1 ? 'topr-100 translateYBottom' : 'topr-50'
-                          }`}
+                        className={`position-absolute topr-50  translateYTop left-0 ${
+                          index === 0 ? 'top-0' : index === col.length - 1 ? 'topr-100 translateYBottom' : 'topr-50'
+                        }`}
                       />
                     )}
                   </div>
                 </div>
 
-                <div className={`flex flex-row items-center gap-12 ${index === col.length - 1 ? 'translateYr-50' : 'translateYr--50'}`}>
-                  {needIndex ? (
-                    <div
-                      className={'fz-35 fw-400 inter color-fff align-center'}
-                    >
-                      {i.index}
-                    </div>
-                  ) : null}
+                <div
+                  className={`flex flex-row items-center gap-12 ${
+                    index === col.length - 1 ? 'translateYr-50' : 'translateYr--50'
+                  }`}
+                >
+                  {needIndex ? <div className={'fz-35 fw-400 inter color-fff align-center'}>{i.index}</div> : null}
 
-                  <div className={'h-20 w-full fz-20 fw-400 inter color-fff'}>
-                    {i.content}
-                  </div>
+                  <div className={'h-20 w-full fz-20 fw-400 inter color-fff'}>{i.content}</div>
                 </div>
-
-
               </div>
             ))}
           </>
@@ -236,17 +234,19 @@ const Progress = ({
             {col.map((i, index) => (
               <div
                 key={i.index}
-                className={`flex ${verticle ? 'flex-row' : 'flex-col'} items-center ${index === 0 || index === col.length - 1 ? 'flex-1' : 'flex-2'
-                  }`}
+                className={`flex ${verticle ? 'flex-row' : 'flex-col'} items-center ${
+                  index === 0 || index === col.length - 1 ? 'flex-1' : 'flex-2'
+                }`}
               >
                 {needIndex ? (
                   <div
-                    className={`fz-40 fw-400 inter color-fff align-center ${index === 0
-                      ? 'self-start translateXr--50 whiteSpace-nowrap'
-                      : index === col.length - 1
+                    className={`fz-40 fw-400 inter color-fff align-center ${
+                      index === 0
+                        ? 'self-start translateXr--50 whiteSpace-nowrap'
+                        : index === col.length - 1
                         ? 'self-end translateXr-50 whiteSpace-nowrap'
                         : ''
-                      }`}
+                    }`}
                   >
                     {i.index}
                   </div>
@@ -256,13 +256,15 @@ const Progress = ({
                   <div className="position-relative progress-line w-full">
                     {index === +activeIndex - 1 ? (
                       <IconRoundGray
-                        className={`position-absolute topr-50 translateCenter ${index === 0 ? 'left-0' : index === col.length - 1 ? 'leftr-100' : 'leftr-50'
-                          }`}
+                        className={`position-absolute topr-50 translateCenter ${
+                          index === 0 ? 'left-0' : index === col.length - 1 ? 'leftr-100' : 'leftr-50'
+                        }`}
                       />
                     ) : (
                       <IconRoundBlue
-                        className={`position-absolute topr-50 translateCenter ${index === 0 ? 'left-0' : index === col.length - 1 ? 'leftr-100' : 'leftr-50'
-                          }`}
+                        className={`position-absolute topr-50 translateCenter ${
+                          index === 0 ? 'left-0' : index === col.length - 1 ? 'leftr-100' : 'leftr-50'
+                        }`}
                       />
                     )}
                   </div>
@@ -270,12 +272,13 @@ const Progress = ({
 
                 <div className="h-20 w-full position-relative desc">
                   <span
-                    className={`position-absolute fz-18 fw-400 inter color-fff whiteSpace-nowrap ${index === 0
-                      ? 'self-start translateXr--50 align-left'
-                      : index === col.length - 1
+                    className={`position-absolute fz-18 fw-400 inter color-fff whiteSpace-nowrap ${
+                      index === 0
+                        ? 'self-start translateXr--50 align-left'
+                        : index === col.length - 1
                         ? 'self-end align-center leftr-100 translateXr--50'
                         : 'align-center leftr-50 translateXr--50'
-                      }`}
+                    }`}
                   >
                     {i.content}
                   </span>

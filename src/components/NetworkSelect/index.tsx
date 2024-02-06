@@ -7,7 +7,6 @@ import { goerli, holesky, sepolia } from 'viem/chains';
 import { isProd } from '@/configs/common';
 import useDevice from '@/hooks/useDevice';
 
-
 const Container = styled.div`
   .f-14 {
     font-size: 14px;
@@ -19,24 +18,24 @@ const Container = styled.div`
   }
 `;
 
-const options = isProd ? [
-  { ...sepolia, label: sepolia.name, value: sepolia.id, name: sepolia.name },
-  { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
-] : [
-  { ...sepolia, label: sepolia.name, value: sepolia.id, name: sepolia.name },
-  { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
-];
+const options = isProd
+  ? [
+      { ...sepolia, label: sepolia.name, value: sepolia.id, name: sepolia.name },
+      { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
+    ]
+  : [
+      { ...sepolia, label: sepolia.name, value: sepolia.id, name: sepolia.name },
+      { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
+    ];
 
 const NetworkSelect = () => {
-  const { unsupported, isLoading, pendingChainId, setupNetwork } =
-    useChainWatcher();
+  const { unsupported, isLoading, pendingChainId, setupNetwork } = useChainWatcher();
 
   const { chain } = useNetwork();
 
-
   const [curOption, setCurOption] = useState();
 
-  const curOptionName = useMemo(() => options.find(i => i.value === curOption)?.name, [curOption]);
+  const curOptionName = useMemo(() => options.find((i) => i.value === curOption)?.name, [curOption]);
 
   const handleOption = (ele: any) => {
     setCurOption(ele?.value);
@@ -45,17 +44,15 @@ const NetworkSelect = () => {
     if (!ele?.value) return;
     try {
       await setupNetwork(ele?.value);
-    } catch (e) { }
+    } catch (e) {}
   };
 
-
   useEffect(() => {
-    const t = options.find(i => i.id === chain?.id);
+    const t = options.find((i) => i.id === chain?.id);
     if (t) {
       handleOption(t);
     }
   }, [chain?.id]);
-
 
   useEffect(() => {
     if (unsupported) {
@@ -69,29 +66,29 @@ const NetworkSelect = () => {
     }
   }, [curOption, unsupported, chain?.id]);
 
-  const { ifMobile } = useDevice()
+  const { ifMobile } = useDevice();
 
   if (ifMobile) {
-    return (<Container className="h-50">
-      <Select
-        className="h-50 bg-color-00D2FF radius-40  pl-18 pr-60 z-0"
-        style={{ transform: ifMobile ? '' : 'translate(25%, 0)' }}
-        triggerClassName="w-full pl-0"
-        type="primary"
-        options={options}
-        arrowPlacement="left"
-        placement="right"
-        value={curOption}
-        renderSelector={
-          <div className="fz-15 fw-500 color-000">{curOptionName}</div>
-        }
-        allowClear={false}
-        placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
-        onChange={(ele) => {
-          handleChange?.(ele);
-        }}
-      />
-    </Container>)
+    return (
+      <Container className="h-50">
+        <Select
+          className="h-50 bg-color-00D2FF radius-40  pl-18 pr-60 z-0"
+          style={{ transform: ifMobile ? '' : 'translate(25%, 0)' }}
+          triggerClassName="w-full pl-0"
+          type="primary"
+          options={options}
+          arrowPlacement="left"
+          placement="right"
+          value={curOption}
+          renderSelector={<div className="fz-15 fw-500 color-000">{curOptionName}</div>}
+          allowClear={false}
+          placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
+          onChange={(ele) => {
+            handleChange?.(ele);
+          }}
+        />
+      </Container>
+    );
   }
 
   return (
@@ -105,9 +102,7 @@ const NetworkSelect = () => {
         arrowPlacement="left"
         placement="right"
         value={curOption}
-        renderSelector={
-          <div className="fz-15 fw-500 color-000">{curOptionName}</div>
-        }
+        renderSelector={<div className="fz-15 fw-500 color-000">{curOptionName}</div>}
         allowClear={false}
         placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
         onChange={(ele) => {

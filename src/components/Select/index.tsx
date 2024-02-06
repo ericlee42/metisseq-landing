@@ -172,8 +172,8 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
     danger,
     disabled,
     follow,
-    ['flex-row']: arrowPlacement === 'right',
-    ['flex-row-reverse']: arrowPlacement === 'left'
+    'flex-row': arrowPlacement === 'right',
+    'flex-row-reverse': arrowPlacement === 'left',
     // selector
   });
 
@@ -194,13 +194,15 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
     <React.Fragment>
       <div
         style={style}
-        className={`gap-8 ${classes} ${visible ? 'open' : ''} ${allowClear && value ? 'select-allow-clear' : ''}`.trimEnd()}
+        className={`gap-8 ${classes} ${visible ? 'open' : ''} ${
+          allowClear && value ? 'select-allow-clear' : ''
+        }`.trimEnd()}
         ref={selectorRef}
         onClick={handleVisible}
       >
         {renderSelector ? cloneElement(renderSelector) : filterLabel}
         {isNullOrUndefined(value) && <span className="placeholder">{placeholder}</span>}
-        <div className={`flex flex-row items-center justify-end `}>
+        <div className={'flex flex-row items-center justify-end '}>
           {allowClear && value && (
             <img
               className="colse"

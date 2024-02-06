@@ -195,7 +195,10 @@ const MyAccount = ({
     [sequencerInfo?.sequencerLock],
   );
   const totalRewards = React.useMemo(
-    () => BigNumber(unclaimedAmount || '0').plus(claimedAmount || '0').toString(),
+    () =>
+      BigNumber(unclaimedAmount || '0')
+        .plus(claimedAmount || '0')
+        .toString(),
     [claimedAmount, unclaimedAmount],
   );
 
@@ -287,7 +290,6 @@ const MyAccount = ({
                       </svg>
                       <span className="fz-12 fw-400 color-8E8E8E poppins">Copy Address</span>
                     </div>
-
                   }
                 />
 
@@ -363,9 +365,8 @@ const MyAccount = ({
               </div>
             </div>
 
-            {
-              sequencerId ? (<>
-
+            {sequencerId ? (
+              <>
                 <div
                   className="flex flex-col gap-5 pb-14 pt-14 pl-10 pr-10"
                   style={false ? {} : { borderTop: '1px solid #CDCDCD' }}
@@ -405,9 +406,8 @@ const MyAccount = ({
                     <div className="fz-14 fw-500">Claim</div>
                   </Button>
                 </div>
-              </>) : null
-            }
-
+              </>
+            ) : null}
           </div>
 
           <Button type="metis" onClick={handleJumpStatus} className="w-full">

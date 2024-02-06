@@ -344,11 +344,11 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-    (fetchUserTxData?.origin?.lockedParams?.length
-      ? Array.from(
-        new Set(fetchUserTxData?.origin?.lockedParams?.map((i: { sequencerId: any }) => i.sequencerId)),
-      )?.[0]
-      : undefined),
+      (fetchUserTxData?.origin?.lockedParams?.length
+        ? Array.from(
+            new Set(fetchUserTxData?.origin?.lockedParams?.map((i: { sequencerId: any }) => i.sequencerId)),
+          )?.[0]
+        : undefined),
     [fetchUserTxData?.origin?.lockedParams],
   );
 
@@ -921,11 +921,12 @@ export function Component() {
                       <td>
                         <div
                           style={{ width: 'fit-content' }}
-                          className={`pl-10 pr-10 radius-5 ${getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
-                              'Success'
+                          className={`pl-10 pr-10 radius-5 ${
+                            getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
+                            'Success'
                               ? 'bg-color-00DACC33'
                               : 'bg-color-E9B26133'
-                            }`}
+                          }`}
                         >
                           <span
                             className={
@@ -943,11 +944,15 @@ export function Component() {
                         </div>
                       </td>
                       <td>
-                        <span className="fw-700 inter">{getSignedStatus({
-                          start: i?.startBlock,
-                          end: i?.endBlock,
-                          current: currentBlockNumber,
-                        }) === 'Pending' ? '-' : `${i.rewards} METIS`}</span>
+                        <span className="fw-700 inter">
+                          {getSignedStatus({
+                            start: i?.startBlock,
+                            end: i?.endBlock,
+                            current: currentBlockNumber,
+                          }) === 'Pending'
+                            ? '-'
+                            : `${i.rewards} METIS`}
+                        </span>
                       </td>
                       <td>{dayjs.unix(i.blockTimestamp).format('DD/MM/YYYY')}</td>
                       {ifMobile ? null : <td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>}

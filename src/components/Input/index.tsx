@@ -59,7 +59,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
     danger = false,
     disabled = false,
     solid = false,
-    solidLight=false,
+    solidLight = false,
     prefix,
     suffix,
     // clear = false,
@@ -85,7 +85,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
     danger,
     disabled,
     solid,
-    solidLight
+    solidLight,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

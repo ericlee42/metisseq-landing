@@ -149,7 +149,7 @@ const useSequencerInfo = () => {
   const props = useRequest(intervalUpdate, {
     manual: true,
     pollingInterval: 5000,
-    refreshDeps: [chainId]
+    refreshDeps: [chainId],
   });
 
   return { getAllUserRun, allSequencerInfo, getSequencerId, runOnce: intervalUpdate, sequencerInfo, ...props };

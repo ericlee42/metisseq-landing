@@ -29,7 +29,6 @@ const blocks = gql`
   }
 `;
 
-
 const fetchBatchBlockTx = async (address: string, chainId: string | number) => {
   if (!address) return null;
 
@@ -54,7 +53,7 @@ const fetchBatchBlockTx = async (address: string, chainId: string | number) => {
 
   const timestamp = blockData?.blocks?.[0]?.timestamp;
 
-  return {timestamp, producingBlocks: txData?.userEpochParams};
+  return { timestamp, producingBlocks: txData?.userEpochParams };
 };
 
 export default fetchBatchBlockTx;

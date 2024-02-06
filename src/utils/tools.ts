@@ -315,7 +315,7 @@ export function formatNumber(value: string | number, roundingMode = 'round') {
   let num = Number(value);
 
   // 检查转换后的值是否为有效数字
-  if (typeof value !== 'number' && typeof value !== 'string' || isNaN(num)) {
+  if ((typeof value !== 'number' && typeof value !== 'string') || isNaN(num)) {
     return '-';
   }
 

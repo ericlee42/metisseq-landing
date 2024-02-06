@@ -23,7 +23,6 @@ const fetchOverview = async (chainId?: number) => {
     headers: {},
   });
 
-
   const data: any = await perpetualClient.request(userTxs);
   return data;
 };

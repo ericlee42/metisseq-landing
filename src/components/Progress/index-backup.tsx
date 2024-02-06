@@ -1,8 +1,8 @@
-import BigNumber from "bignumber.js";
-import { useMemo } from "react";
-import { styled } from "styled-components";
+import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
+import { styled } from 'styled-components';
 
-const Bar = styled.div<{ activePercent?: string; activeIndex?: string; }>`
+const Bar = styled.div<{ activePercent?: string; activeIndex?: string }>`
   width: 100%;
   position: absolute;
   top: 10px;
@@ -14,16 +14,17 @@ const Bar = styled.div<{ activePercent?: string; activeIndex?: string; }>`
   z-index: -1;
   overflow: hidden;
   &::after {
-    content: "";
-    transition: all linear .2s;
+    content: '';
+    transition: all linear 0.2s;
     display: inline-block;
     border-radius: 26px;
     width: ${({ activePercent, activeIndex }) =>
-      BigNumber(activePercent || 0).gt(0)
-        ? `calc(${activePercent || 0}% + ${BigNumber(activeIndex || 0).minus(1)
+      (BigNumber(activePercent || 0).gt(0)
+        ? `calc(${activePercent || 0}% + ${BigNumber(activeIndex || 0)
+            .minus(1)
             .multipliedBy(84)
             .toString()}px)`
-        : "0"};
+        : '0')};
     height: 100%;
     background: rgba(0, 210, 193, 1);
   }
@@ -57,8 +58,8 @@ const Container = styled.div`
     .index {
       background: rgba(0, 210, 193, 1);
     }
-    span{
-        font-weight: bolder;
+    span {
+      font-weight: bolder;
     }
   }
 
@@ -102,9 +103,7 @@ const Container = styled.div`
 const Progress = ({ col, activeIndex }: { col: any; activeIndex: string }) => {
   const activePercent = useMemo(() => {
     const len = col?.length;
-    const activeLen = BigNumber(activeIndex).minus(1).gt(0)
-      ? BigNumber(activeIndex).minus(1).toString()
-      : "0";
+    const activeLen = BigNumber(activeIndex).minus(1).gt(0) ? BigNumber(activeIndex).minus(1).toString() : '0';
 
     const p = BigNumber(100).div(len).multipliedBy(activeLen).toString();
     return p;
@@ -113,16 +112,12 @@ const Progress = ({ col, activeIndex }: { col: any; activeIndex: string }) => {
   return (
     <Container>
       <div className="progress-bar flex flex-row items-center">
-        <Bar
-          className="bar"
-          activeIndex={activeIndex}
-          activePercent={activePercent}
-        />
+        <Bar className="bar" activeIndex={activeIndex} activePercent={activePercent} />
         {col.map((i, index) => (
           <div
             key={i.index}
             className={`c flex-1 flex flex-col items-center gap-16 c-${index} ${
-              BigNumber(activeIndex).gte(i?.index) ? "active-index" : ""
+              BigNumber(activeIndex).gte(i?.index) ? 'active-index' : ''
             }`}
           >
             <div className="index">{i.index}</div>

@@ -1,7 +1,7 @@
 // import { getProvider } from '@wagmi/core'
-import { message } from "@/components";
-import { VITE_APP_METIS_TOKEN, basicTokenListData } from "@/configs/common";
-import useAuth from "./useAuth";
+import { message } from '@/components';
+import { VITE_APP_METIS_TOKEN, basicTokenListData } from '@/configs/common';
+import useAuth from './useAuth';
 
 // export const watchAssets = (options) => {
 //   globalThis.ethereum.request({

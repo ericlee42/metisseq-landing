@@ -25,12 +25,12 @@ function BasicLayout() {
 
   const seqAddress = React.useMemo(
     () =>
-      allSequencerInfo
+      (allSequencerInfo
         ? Object?.values?.(allSequencerInfo)?.find(
             (i: any) => address && i?.address && i?.address?.toLowerCase() === address?.toLowerCase(),
             // @ts-ignore
           )?.seq_addr
-        : undefined,
+        : undefined),
     [address, allSequencerInfo],
   );
 
@@ -76,8 +76,8 @@ function BasicLayout() {
 
   const { hash, pathname } = useLocation();
 
-  const { ifMobile } = useDevice()
-  
+  const { ifMobile } = useDevice();
+
   useEffect(() => {
     if (hash && ifMobile) {
       const ele = document.querySelectorAll(hash)?.[0];

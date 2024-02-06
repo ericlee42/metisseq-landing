@@ -1,5 +1,5 @@
-import { Button, Input, Modal } from "@/components";
-import { styled } from "styled-components";
+import { Button, Input, Modal } from '@/components';
+import { styled } from 'styled-components';
 
 const Container = styled(Modal)`
   .avatar {
@@ -52,15 +52,7 @@ const Container = styled(Modal)`
   }
 `;
 
-const DetailModal = ({
-  visible,
-  onOk,
-  onClose,
-}: {
-  visible: boolean;
-  onOk?: any;
-  onClose?: any;
-}) => {
+const DetailModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
   return (
     <Container
       visible={visible}
@@ -71,19 +63,16 @@ const DetailModal = ({
       middleHeader
     >
       <div className="c flex flex-col gap-32 items-center">
-        <span className="f-12 align-center">
-          Please describe the basic information of your Sequencer
-        </span>
+        <span className="f-12 align-center">Please describe the basic information of your Sequencer</span>
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex-2 f-14">Logo</div>
           <div className="flex flex-row items-center flex-3 gap-80">
             <div className="avatar" />
-            <Button className="metis-solid" style={{height: "fit-content",}}>
+            <Button className="metis-solid" style={{ height: 'fit-content' }}>
               <div
                 style={{
-                  padding: "14px 27px",
-                  color: "rgba(0, 210, 193, 1)",
-                  
+                  padding: '14px 27px',
+                  color: 'rgba(0, 210, 193, 1)',
                 }}
               >
                 Upload
@@ -103,7 +92,9 @@ const DetailModal = ({
         </div>
 
         <Button className="" type="metis">
-          <div className="" style={{padding: '14px 102px'}}>Save</div>
+          <div className="" style={{ padding: '14px 102px' }}>
+            Save
+          </div>
         </Button>
       </div>
     </Container>

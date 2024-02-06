@@ -67,27 +67,15 @@ const Container = styled(Modal)`
   }
 `;
 
-const UnlockModal = ({
-  visible,
-  onOk,
-  onClose,
-}: {
-  visible: boolean;
-  onOk?: any;
-  onClose?: any;
-}) => {
+const UnlockModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
   const { sequencerInfo } = useSequencerInfo();
 
   const { balance } = useBalance();
 
-  const validUnlock = useMemo(
-    () => !!(+sequencerInfo?.unlockClaimTime),
-    [sequencerInfo?.unlockClaimTime],
-  );
+  const validUnlock = useMemo(() => !!+sequencerInfo?.unlockClaimTime, [sequencerInfo?.unlockClaimTime]);
 
   const lockedup = React.useMemo(
-    () =>
-      ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
+    () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
     [sequencerInfo?.sequencerLock],
   );
 
@@ -138,20 +126,14 @@ const UnlockModal = ({
       {showWarning ? (
         <div className="flex flex-col items-center gap-36 p-warning">
           <div className="flex flex-col items-center gap-24">
-            <img
-              className="size-64"
-              src={getImageUrl('@/assets/images/_global/ic_Unlock.svg')}
-            />
+            <img className="size-64" src={getImageUrl('@/assets/images/_global/ic_Unlock.svg')} />
 
             <div className="f-16-bold">Unlock</div>
             <div className="flex flex-col gap-12 items-center">
               <span className="f-12 align-center">
                 Please note, if you unlock your funds you will no longer be a Sequencer.
               </span>
-              <span
-                className="f-12"
-                style={{ color: 'rgba(255, 104, 104, 1)' }}
-              >
+              <span className="f-12" style={{ color: 'rgba(255, 104, 104, 1)' }}>
                 *You will get no rewards during the unlock period. Unlock period is 21 days.
               </span>
             </div>
@@ -163,11 +145,7 @@ const UnlockModal = ({
                 {unlockLoading ? <Loading color="#fff" /> : 'Confirm'}
               </div>
             </Button>
-            <Button
-              type="metis-solid"
-              className="p-14 flex-1"
-              onClick={onClose}
-            >
+            <Button type="metis-solid" className="p-14 flex-1" onClick={onClose}>
               <div className="f-14-bold">Cancel</div>
             </Button>
           </div>

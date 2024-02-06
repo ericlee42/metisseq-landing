@@ -146,12 +146,11 @@ const IncreaseModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: an
             onClick={handleRelock}
             style={{ padding: '14px 50px' }}
             type="metis"
-            className='flex items-center justify-center'
+            className="flex items-center justify-center"
           >
-            <div className='flex items-center justify-center'>
-              {approveLoading ? <Loading color="#fff"/> : needApprove ? <span>Approve</span> : <span>Add</span>}
+            <div className="flex items-center justify-center">
+              {approveLoading ? <Loading color="#fff" /> : needApprove ? <span>Approve</span> : <span>Add</span>}
             </div>
-            
           </Button>
         </div>
         <div className="flex flex-col gap-16">

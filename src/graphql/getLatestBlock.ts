@@ -12,14 +12,14 @@ const blocks = gql`
   }
 `;
 
-const fetchLatestBlockTimestamp = async (chainId: string|number) => {
+const fetchLatestBlockTimestamp = async (chainId: string | number) => {
   const perpetualClient = new GraphQLClient(graphUrl.block[chainId.toString()], {
     headers: {},
   });
   // 查询block服务查询时间
   const blockData: any = await perpetualClient.request(blocks);
 
-//   const timestamp = blockData?.blocks?.[0]?.timestamp;
+  //   const timestamp = blockData?.blocks?.[0]?.timestamp;
 
   return blockData?.blocks?.[0];
 };

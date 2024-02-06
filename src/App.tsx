@@ -13,8 +13,8 @@ function App() {
     <div
       className="_root"
       style={{
-      minWidth: ifMobile ? '100vw' : '1280px',
-    }}
+        minWidth: ifMobile ? '100vw' : '1280px',
+      }}
     >
       <RecoilRoot>
         <WagmiProvider config={config}>

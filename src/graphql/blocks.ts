@@ -4,12 +4,12 @@ import { gql, GraphQLClient } from 'graphql-request';
 const userTxs = gql`
   query MyQuery($address: String) {
     userEpochParams(first: 1000, orderDirection: desc, orderBy: epochId, where: { signer: $address }) {
-    signer
-    id
-    epochId
-    endBlock
-    startBlock
-    blockTimestamp
+      signer
+      id
+      epochId
+      endBlock
+      startBlock
+      blockTimestamp
     }
   }
 `;

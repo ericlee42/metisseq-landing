@@ -28,8 +28,7 @@ const ConnectWalletModal = ({
           onClick={() =>
             connect({
               connector: injectedConnector,
-            })
-          }
+            })}
         >
           <img src={getImageUrl('@/assets/images/_global/metamask.svg')} />
           <span>Metamask</span>
@@ -39,8 +38,7 @@ const ConnectWalletModal = ({
           onClick={() =>
             connect({
               connector: particleConnector,
-            })
-          }
+            })}
         >
           {/* <img src={getImageUrl('@/assets/images/_global/particle.png')} /> */}
           <img

@@ -55,28 +55,16 @@ const Container = styled(Modal)`
   }
 `;
 
-const WithdrawModal = ({
-  visible,
-  onOk,
-  onClose,
-}: {
-  visible: boolean;
-  onOk?: any;
-  onClose?: any;
-}) => {
+const WithdrawModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
   const { sequencerInfo } = useSequencerInfo();
 
   const lockedup = React.useMemo(
-    () =>
-      ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
+    () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
     [sequencerInfo?.sequencerLock],
   );
 
   const unlockTo = useMemo(
-    () =>
-      dayjs
-        .unix(sequencerInfo?.unlockClaimTime || 0)
-        .format('YYYY-MM-DD HH:mm:ss'),
+    () => dayjs.unix(sequencerInfo?.unlockClaimTime || 0).format('YYYY-MM-DD HH:mm:ss'),
     [sequencerInfo?.unlockClaimTime],
   );
 
@@ -114,13 +102,13 @@ const WithdrawModal = ({
       middleHeader
     >
       <div className="c flex flex-col gap-24">
-        <div
-          className="flex flex-col p-24 gap-12 items-center bg-dark radius-8"
-          style={{ padding: '40px' }}
-        >
+        <div className="flex flex-col p-24 gap-12 items-center bg-dark radius-8" style={{ padding: '40px' }}>
           <span className="f-14-bold">{lockedup} metis</span>
           {+sequencerInfo?.unlockClaimTime ? (
-            <span className="align-center">Locked METIS will be available after: <br/>{unlockTo}</span>
+            <span className="align-center">
+              Locked METIS will be available after: <br />
+              {unlockTo}
+            </span>
           ) : null}
         </div>
         <div className="flex flex-row items-center gap-20">

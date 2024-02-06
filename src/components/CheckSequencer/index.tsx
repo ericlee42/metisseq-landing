@@ -1,6 +1,6 @@
-import { styled } from "styled-components";
-import { Button, Modal } from "..";
-import { getImageUrl } from "@/utils/tools";
+import { styled } from 'styled-components';
+import { Button, Modal } from '..';
+import { getImageUrl } from '@/utils/tools';
 
 const Container = styled(Modal)`
   .inside {
@@ -79,7 +79,7 @@ const CheckSequencer = ({
   visible,
   onClose,
   onOk,
-  invalid
+  invalid,
 }: {
   visible: boolean;
   onClose?: any;
@@ -91,32 +91,27 @@ const CheckSequencer = ({
       <div className="flex flex-col gap-80 items-center">
         <div className="flex flex-col gap-24 items-center">
           <img
-            style={{ width: "64px", height: "64px" }}
+            style={{ width: '64px', height: '64px' }}
             src={
               invalid
-                ? getImageUrl(
-                    "@/assets/images/_global/ic_limits_of_authority.svg"
-                  )
-                : getImageUrl("@/assets/images/_global/ic_create.svg")
+                ? getImageUrl('@/assets/images/_global/ic_limits_of_authority.svg')
+                : getImageUrl('@/assets/images/_global/ic_create.svg')
             }
           />
           <div className="f-16-bold">Notice</div>
-          <div
-            className="f-12"
-            style={{ maxWidth: "313px", textAlign: "center" }}
-          >
+          <div className="f-12" style={{ maxWidth: '313px', textAlign: 'center' }}>
             {invalid
-              ? `You haven‘t applied for Sequencer yet.Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.`
-              : `You already have a Sequencer.Only one Sequencer can be created per account.`}
+              ? 'You haven‘t applied for Sequencer yet.Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.'
+              : 'You already have a Sequencer.Only one Sequencer can be created per account.'}
           </div>
         </div>
 
         <div className="flex flex-row items-center gap-20 w-full">
           <Button type="metis" className="flex-1" onClick={onClose}>
-            <div style={{ padding: "14px 0" }}>Got it</div>
+            <div style={{ padding: '14px 0' }}>Got it</div>
           </Button>
-          <Button type="metis-solid" className="flex-1"  onClick={onClose}>
-            <div style={{ padding: "14px 0" }}>Check my sequencer</div>
+          <Button type="metis-solid" className="flex-1" onClick={onClose}>
+            <div style={{ padding: '14px 0' }}>Check my sequencer</div>
           </Button>
         </div>
       </div>

@@ -1,3 +1,3 @@
-const useBasicHandler = ()=>{}
+const useBasicHandler = () => {};
 
-export default useBasicHandler
+export default useBasicHandler;
