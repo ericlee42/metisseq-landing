@@ -1,7 +1,7 @@
 import { publicProvider } from '@wagmi/core/providers/public';
 import { InjectedConnector } from '@wagmi/core';
 import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
-import { createPublicClient, defineChain, http, webSocket } from 'viem';
+import { createPublicClient, defineChain, http } from 'viem';
 
 import { isProd } from './common';
 import { goerli, holesky, sepolia } from 'viem/chains';
@@ -28,7 +28,7 @@ const _holesky = defineChain({
   testnet: true,
 });
 
-export const chainId = isProd ? [sepolia, mainnet] : [sepolia, mainnet];
+export const chainId = isProd ? [_holesky, mainnet] : [_holesky, mainnet];
 
 export const injectedConnector = new InjectedConnector({
   chains: [...chainId],
@@ -42,7 +42,7 @@ export const injectedConnector = new InjectedConnector({
   // },
 });
 
-const { chains, publicClient, webSocketPublicClient } = configureChains([...chainId], [publicProvider()]);
+const { chains, publicClient } = configureChains([...chainId], [publicProvider()]);
 
 const config = createConfig({
   autoConnect: true,
@@ -82,7 +82,7 @@ export const txPublicClients = {
   [sepolia.id.toString()]: sepoliaTxPublicClient,
   [goerli.id.toString()]: goerliTxPublicClient,
   [mainnet.id.toString()]: mainnetTxPublicClient,
-  // [holesky.id.toString()]: holeskyTxPublicClient,
+  [holesky.id.toString()]: holeskyTxPublicClient,
 };
 
 export { config, WagmiConfig as WagmiProvider, publicClient };

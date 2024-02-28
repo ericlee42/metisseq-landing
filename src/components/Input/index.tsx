@@ -50,6 +50,7 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   onBlur?: (...args: any[]) => any;
   onClear?: (...args: any[]) => any;
   onPressEnter?: React.KeyboardEventHandler<HTMLInputElement>;
+  inputClassName?: string;
 }
 
 const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: React.Ref<HTMLInputElement>) => {
@@ -71,6 +72,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
     onBlur,
     onClear,
     onPressEnter,
+    inputClassName,
     ...rest
   } = props;
 
@@ -95,68 +97,6 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
       return;
     }
 
-    // if (value.toString() === '0.0' || value.toString() === '0.00') {
-    //   onChange?.(value, e.target.name);
-    //   return;
-    // }
-
-    // const ifInvalid = value.endsWith('.');
-
-    // if (ifInvalid) {
-    //   onChange?.(value, e.target.name);
-    //   return value;
-    // }
-    // console.log('ifInvalid', ifInvalid);
-
-    // let v: any = value;
-
-    // if (decimal !== undefined) {
-    //   console.log('v', v);
-
-    //   const regex = new RegExp(`([0-9]+(\\.[0-9]{0,${decimal}})?)(.*)`);
-
-    //   const match = v.match(regex);
-    //   if (match) {
-    //     v = match[1];
-    //   }
-    //   // onChange?.(v, e.target.name);
-    //   // return v;
-    // }
-
-    // console.log('v1', v);
-
-    // const ifMin = !BigNumber(min || '').isNaN();
-    // const ifMax = !BigNumber(max || '').isNaN();
-
-    // if (ifMin && value) {
-    //   v = BigNumber.max(v, min?.toString() || '').toString();
-    // }
-
-    // console.log('v2', v, max, min);
-
-    // if (ifMax && value) {
-    //   v = BigNumber.min(v.toString(), max?.toString() || '').toString();
-    // }
-
-    // console.log('v3', v, max, min, BigNumber('0.0').toString());
-    // .replace(/[^\d.]/g, "") //将非数字和点以外的字符替换成空
-    // .replace(/^\./g, "") //验证第一个字符是数字而不是点
-    // .replace(/\.{2,}/g, ".") //出现多个点时只保留第一个
-    // .replace(".", "$#$") // 1、将数字的点替换成复杂字符$#$
-    // .replace(/\./g, "") // 2、将字符串的点直接清掉
-    // .replace("$#$", ".") // 3、将复杂字符再转换回点
-    // .replace(/^(\-)*(\d+)\.(\d\d).*$/, "$1$2.$3"); //只能输入两个小数
-
-    // if (v) {
-    //   onChange?.(v, e.target.name);
-    //   return;
-    // }
-
-    // if (decimal !== undefined && v) {
-    //   onChange?.(BigNumber(v).toFixed(decimal, BigNumber.ROUND_DOWN), e.target.name);
-    //   return;
-    // }
-    // onChange?.(value, e.target.name);
     if (decimal && !max) {
       if (value && verifyValidNumber(value, decimal)) return;
       // const result = new BigNumber(value).decimalPlaces(decimal).toString();
@@ -214,6 +154,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyUp={handleEnter}
+        className={inputClassName}
         {...rest}
       />
       <label htmlFor={uuid} />

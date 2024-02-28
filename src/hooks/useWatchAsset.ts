@@ -1,6 +1,6 @@
 // import { getProvider } from '@wagmi/core'
 import { message } from '@/components';
-import { VITE_APP_METIS_TOKEN, basicTokenListData } from '@/configs/common';
+import { contracts } from '@/configs/common';
 import useAuth from './useAuth';
 
 // export const watchAssets = (options) => {
@@ -14,7 +14,7 @@ import useAuth from './useAuth';
 // };
 
 const useWatchAsset = () => {
-  const { connector } = useAuth(true);
+  const { connector, chainId } = useAuth(true);
   //
 
   const watchAsset = async ({
@@ -30,25 +30,28 @@ const useWatchAsset = () => {
   }) => {
     if (connector) {
       try {
-        await connector?.watchAsset({
+        await connector?.watchAsset?.({
           address,
           decimals,
           image,
           symbol,
         });
-      } catch (e) {
+      } catch (e: any) {
         message.error(e?.message);
       }
     }
   };
 
-  const watchMetis = async () =>
-    watchAsset({
-      address: VITE_APP_METIS_TOKEN,
+  const watchMetis = async () => {
+    if (!chainId) return;
+
+    return watchAsset({
+      address: contracts?.deposit?.[chainId?.toString()]?.address,
       decimals: 18,
       image: '',
       symbol: 'Metis',
     });
+  };
 
   return {
     watchMetis,

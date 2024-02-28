@@ -1,7 +1,6 @@
-import { defaultChain, defaultChainId, localChainId, updateLocalChainId } from '@/configs/common';
+import { defaultChain, defaultChainId } from '@/configs/common';
 import { injectedConnector } from '@/configs/wallet';
 import { useMount } from 'ahooks';
-import { useEffect, useMemo } from 'react';
 import { useAccount, useConnect, useDisconnect, useNetwork } from 'wagmi';
 
 const autoLogin = true;

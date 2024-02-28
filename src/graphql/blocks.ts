@@ -1,14 +1,16 @@
-import { getLocalChainId, graphUrl } from '@/configs/common';
+import { graphUrl } from '@/configs/common';
 import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query MyQuery($address: String) {
-    userEpochParams(first: 1000, orderDirection: desc, orderBy: epochId, where: { signer: $address }) {
-      signer
+    epoches(first: 25, orderDirection: desc, orderBy: id, where: { signer: $address }) {
       id
-      epochId
-      endBlock
       startBlock
+      endBlock
+      signer
+      transaction
+      recommited
+      block
       blockTimestamp
     }
   }

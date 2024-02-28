@@ -3,79 +3,22 @@ import BigNumber from 'bignumber.js';
 import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
-  query MyQuery($address: String) {
-    lockedParams(first: 1000, orderBy: blockTimestamp, orderDirection: desc, where: { signer: $address }) {
-      activationBatch
-      amount
-      id
-      nonce
-      sequencerId
-      signer
-      signerPubkey
-      total
-      user
-      blockTimestamp
-    }
-
-    claimRewardsParams(first: 1000, orderBy: blockTimestamp, orderDirection: desc, where: { user: $address }) {
-      amount
-      id
-      sequencerId
-      totalAmount
-      user
-      blockTimestamp
-    }
-
-    relockedParams(first: 1000, orderBy: blockTimestamp, orderDirection: desc, where: { user: $address }) {
-      user
-      total
-      sequencerId
-      id
-      amount
-      blockTimestamp
-    }
-
-    unlockedParams(first: 1000, orderBy: blockTimestamp, orderDirection: desc, where: { user: $address }) {
-      user
-      total
-      sequencerId
-      id
-      amount
-      blockTimestamp
-    }
-    unlockInitParams(first: 1000, orderBy: blockTimestamp, orderDirection: desc, where: { user: $address }) {
+  query TxHistory($address: String) {
+    histories(where: { sequencer_: { address: $address } }) {
+      action
       amount
       block
-      blockTimestamp
-      deactivationBatch
-      deactivationTime
+      txHash
+      timestamp
+      txOrigin
+      sequencer {
+        address
+        id
+        status
+        pubkey
+      }
       id
-      nonce
-      sequencerId
-      unlockClaimTime
-      user
     }
-
-    withrawDelayTimeChangeParams(
-      first: 1000
-      orderBy: blockTimestamp
-      orderDirection: desc
-      where: { user: $address }
-    ) {
-      user
-      oldWithrawDelayTime
-      newWithrawDelayTime
-      id
-      blockTimestamp
-    }
-
-    # lockUpdateParams(orderDirection: desc, where: { user: $address }) {
-    #   id
-    #   newAmount
-    #   nonce
-    #   sequencerId
-    #   user
-    # }
   }
 `;
 
@@ -95,67 +38,29 @@ const fetchUserTx = async (address: string, chainId: number, current?: any, page
     pageSize: +_pageSize,
   });
 
-  // lock事件 amount为基础锁仓量
-  // 后续relock事件 total减去前一个则为delta
-  // 后续升级至graph
-  const sortedRelockData = data?.relockedParams?.sort((a, b) => +a?.blockTimestamp - +b?.blockTimestamp);
+  const tempData = JSON.parse(JSON.stringify(data?.histories));
+  const lockAmount = tempData?.find((i) => i.action === 'Lock');
 
-  const relockData = sortedRelockData?.map((i, index) => {
-    if (index === 0 || i?.sequencerId !== data?.relockedParams?.[index - 1]?.sequencerId) {
-      const lockAmount = data?.lockedParams?.find((j) => j?.sequencerId === i?.sequencerId);
-      return {
-        ...i,
-        deltaAmount: BigNumber(i?.total)
-          .minus(lockAmount?.amount || 0)
-          .toString(),
-        deltaAmountReadable: BigNumber(i?.total)
-          .minus(lockAmount?.amount || 0)
-          .div(1e18)
-          .toString(),
-      };
-    } else {
-      return {
-        ...i,
-        deltaAmount: BigNumber(i?.total)
-          .minus(data?.relockedParams?.[index - 1]?.total || 0)
-          .toString(),
-        deltaAmountReadable: BigNumber(i?.total)
-          .minus(data?.relockedParams?.[index - 1]?.total || 0)
-          .div(1e18)
-          .toString(),
-      };
+  let prevRelockAmount = '0';
+  const formattedData = data?.histories?.map((i) => {
+    let deltaAmountReadable;
+    let deltaAmount;
+    const amountReadable = BigNumber(i?.amount).div(1e18).toString();
+    if (i.action === 'Relock') {
+      deltaAmount = BigNumber(i?.amount).minus('0').minus('0').toString();
+      deltaAmountReadable = BigNumber(deltaAmount).div(1e18).toString();
+      prevRelockAmount = BigNumber(prevRelockAmount).plus(deltaAmount).toString();
     }
+    return {
+      ...i,
+      amountReadable,
+      deltaAmountReadable,
+      symbol: 'METIS',
+    };
   });
-  // console.log('relockData', data?.lockedParams, relockData);
 
-  const replacedData = JSON.parse(JSON.stringify(data));
-
-  replacedData.relockedParams = relockData;
-
-  const combinedData = Object.keys(replacedData)?.reduce((prev: any, next: any) => {
-    const curArr = replacedData?.[next]?.map((nii: any) => {
-      let amountReadable = BigNumber(nii?.amount || 0)
-        .div(1e18)
-        .toString();
-      if (next === 'relockedParams') {
-        const lockConfig = replacedData?.['lockedParams']?.find((i) => i?.sequencerId === nii?.sequencerId);
-
-        amountReadable = BigNumber(nii?.total).minus(lockConfig?.amount).div(1e18).toString();
-      }
-
-      const c = {
-        ...nii,
-        type: next.replaceAll('Params', ''),
-        amountReadable,
-        symbol: 'METIS',
-      };
-      return c;
-    });
-    // console.log('curArr',data?.[next],curArr)
-    return [...prev, ...curArr];
-  }, []);
-
-  return { combinedData, origin: data };
+  return formattedData;
+  // return { ...formattedData, sequencer: data?.histories?.[data?.histories?.length - 1]?.sequencer || {}};
 };
 
 export default fetchUserTx;

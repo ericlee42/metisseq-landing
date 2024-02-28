@@ -19,15 +19,15 @@
         </linearGradient>
         <path d="M23.2730346,0.000367476071 L29.090889,0.000367476071 L29.090889,17.4548194 C29.090889,23.8816084 23.8811312,29.0910227 17.4548127,29.0910227 L0,29.0910227 L0,23.273509 C0,10.4200045 10.4195891,0.000367476071 23.2730346,0.000367476071 L23.2730346,0.000367476071 Z M23.2730346,5.8186896 C13.6331526,5.8186896 5.8182954,13.6332152 5.8182954,23.273068 L17.4547392,23.273068 C20.6679352,23.273068 23.2725936,20.6683976 23.2725936,17.4551869 L23.2730346,5.8186896 L23.2730346,5.8186896 Z" id="path-4"></path>
     </defs>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="已创建" transform="translate(-688.000000, -350.000000)" fill-rule="nonzero">
-            <g id="编组-6" transform="translate(479.000000, 270.000000)">
+    <g id="page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="created" transform="translate(-688.000000, -350.000000)" fill-rule="nonzero">
+            <g id="group-6" transform="translate(479.000000, 270.000000)">
                 <g id="ic_create" transform="translate(209.000000, 80.000000)">
-                    <g id="形状">
+                    <g id="shape">
                         <use fill="#000000" xlink:href="#path-2"></use>
                         <use fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
                     </g>
-                    <g id="形状">
+                    <g id="shape">
                         <use fill="#000000" xlink:href="#path-4"></use>
                         <use fill="url(#linearGradient-3)" xlink:href="#path-4"></use>
                     </g>

@@ -17,7 +17,7 @@ const useAllowance = () => {
       const txData = calTxData({
         abi: contracts.deposit?.[chain?.id?.toString()].abi,
         functionName: 'approve',
-        args: [contracts.lock?.[chain?.id?.toString()]?.address, MAX_ALLOWANCE],
+        args: [contracts.lockInfo?.[chain?.id?.toString()]?.address, MAX_ALLOWANCE],
       });
 
       if (!signer) {

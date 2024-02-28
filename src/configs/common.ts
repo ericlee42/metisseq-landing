@@ -1,8 +1,10 @@
 /* eslint-disable no-negated-condition */
-import { getImageUrl } from '@/utils/tools';
-import LOCK_ABI from '@/configs/abi/lock.json';
+import LOCK_V2_ABI from '@/configs/abi/lockV2.json';
+import LOCK_INFO_ABI from '@/configs/abi/lockInfo.json';
+import SEQUENCER_SET_ABI from '@/configs/abi/sequencerset.json';
 import { erc20ABI, mainnet } from 'wagmi';
 import { goerli, holesky, sepolia } from 'viem/chains';
+import { ethers } from 'ethers';
 
 export const defaultExpectedApr = 0.2; // 20%
 
@@ -19,19 +21,32 @@ export const {
   // holeskt
   VITE_APP_HOLESKY_METIS_TOKEN,
   VITE_APP_HOLESKY_LOCK_CONTRACT,
+  VITE_APP_HOLESKY_LOCK_INFO_CONTRACT,
   // sepolia
   VITE_APP_SEPOLIA_METIS_TOKEN,
   VITE_APP_SEPOLIA_LOCK_CONTRACT,
+  // github
+  VITE_APP_ASSET_BASE,
+  // l2
+  VITE_APP_L2_CHAIN_ID,
+  VITE_APP_L2_RPC,
+  VITE_APP_METIS_SEQ_SET_CONTRACT,
 } = import.meta.env;
 // export const lockContract = { address: VITE_APP_LOCK_CONTRACT, abi: LOCK_ABI };
 // export const depositToken = { address: VITE_APP_METIS_TOKEN, abi: erc20ABI };
 
 export const contracts = {
   lock: {
-    [mainnet.id.toString()]: { address: VITE_APP_LOCK_CONTRACT, abi: LOCK_ABI },
-    [goerli.id.toString()]: { address: VITE_APP_LOCK_CONTRACT, abi: LOCK_ABI },
-    [holesky.id.toString()]: { address: VITE_APP_HOLESKY_LOCK_CONTRACT, abi: LOCK_ABI },
-    [sepolia.id.toString()]: { address: VITE_APP_SEPOLIA_LOCK_CONTRACT, abi: LOCK_ABI },
+    [mainnet.id.toString()]: { address: VITE_APP_LOCK_CONTRACT, abi: LOCK_V2_ABI },
+    [goerli.id.toString()]: { address: VITE_APP_LOCK_CONTRACT, abi: LOCK_V2_ABI },
+    [holesky.id.toString()]: { address: VITE_APP_HOLESKY_LOCK_CONTRACT, abi: LOCK_V2_ABI },
+    [sepolia.id.toString()]: { address: VITE_APP_SEPOLIA_LOCK_CONTRACT, abi: LOCK_V2_ABI },
+  },
+  lockInfo: {
+    [mainnet.id.toString()]: { address: '', abi: LOCK_INFO_ABI },
+    [goerli.id.toString()]: { address: '', abi: LOCK_INFO_ABI },
+    [holesky.id.toString()]: { address: VITE_APP_HOLESKY_LOCK_INFO_CONTRACT, abi: LOCK_INFO_ABI },
+    [sepolia.id.toString()]: { address: '', abi: LOCK_INFO_ABI },
   },
   deposit: {
     [mainnet.id.toString()]: { address: VITE_APP_METIS_TOKEN, abi: erc20ABI },
@@ -39,9 +54,12 @@ export const contracts = {
     [holesky.id.toString()]: { address: VITE_APP_HOLESKY_METIS_TOKEN, abi: erc20ABI },
     [sepolia.id.toString()]: { address: VITE_APP_SEPOLIA_METIS_TOKEN, abi: erc20ABI },
   },
+  metisSequencerSet: {
+    [VITE_APP_L2_CHAIN_ID.toString()]: { address: VITE_APP_METIS_SEQ_SET_CONTRACT, abi: SEQUENCER_SET_ABI },
+  },
 };
 
-// 废弃
+// obsolete
 // export const basicChainId = isProd ? sepolia.id : goerli.id;
 
 export const defaultPubKeyList = [
@@ -81,20 +99,20 @@ export const defaultPubKeyList = [
   },
 ];
 
-export const serviceUrl = 'https://sequencer.metisdevops.link/v1';
+export const serviceUrl = `${VITE_APP_ASSET_BASE}${VITE_APP_L2_CHAIN_ID}`;
 
 export const graphUrl = {
   staking: {
     [mainnet.id.toString()]: '',
     [goerli.id.toString()]: 'http://staking.preview.metisdevops.link/l1/subgraphs/name/metis/staking',
-    [holesky.id.toString()]: 'https://sequencer.metisdevops.link/l1/subgraphs/name/holesky/staking',
-    [sepolia.id.toString()]: 'https://sequencer.metisdevops.link/l1/subgraphs/name/sepolia/staking',
+    [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-locking-dev',
+    [sepolia.id.toString()]: '/l1/subgraphs/name/sepolia/staking',
   },
   block: {
     [mainnet.id.toString()]: '',
     [goerli.id.toString()]: 'http://staking.preview.metisdevops.link/metis/subgraphs/name/metis/block',
-    [holesky.id.toString()]: 'https://sequencer.metisdevops.link/l2/subgraphs/name/holesky/block',
-    [sepolia.id.toString()]: 'https://sequencer.metisdevops.link/l2/subgraphs/name/sepolia/block',
+    [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-set-dev',
+    [sepolia.id.toString()]: '/l2/subgraphs/name/sepolia/block',
   },
 };
 
@@ -112,7 +130,7 @@ export const baseGraphUrl = {
 export const explorer = {
   [mainnet.id.toString()]: 'https://etherscan.io',
   [goerli.id.toString()]: 'https://goerli.etherscan.io',
-  [holesky.id.toString()]: 'https://holesky.beaconcha.in',
+  [holesky.id.toString()]: 'https://holesky.etherscan.io',
   [sepolia.id.toString()]: 'https://sepolia.etherscan.io',
 };
 
@@ -130,13 +148,17 @@ export const explorerName = {
   [sepolia.id.toString()]: 'Sepolia',
 };
 
-export const defaultChainId = isProd ? sepolia.id.toString() : sepolia.id.toString();
-export const defaultChain = isProd ? sepolia : sepolia;
+export const defaultChainId = isProd ? holesky.id.toString() : holesky.id.toString();
+export const defaultChain = isProd ? holesky : holesky;
 
-export let localChainId = defaultChainId;
-
-export const updateLocalChainId = (chainId: string) => {
-  localChainId = chainId;
+export const l2Gas = {
+  [mainnet.id.toString()]: '200000',
+  [goerli.id.toString()]: '200000',
+  [holesky.id.toString()]: '200000',
+  [sepolia.id.toString()]: '200000',
 };
 
-export const getLocalChainId = () => localChainId;
+export const defaultRewardRecipient = '0x0000000000000000000000000000000000000000';
+
+export const l2Provider = new ethers.providers.JsonRpcProvider(VITE_APP_L2_RPC);
+l2Provider.pollingInterval = 6000;

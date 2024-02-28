@@ -16,8 +16,6 @@ import {
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 
-const mockId = '3';
-
 const useUpdate = () => {
   const { chainId } = useAuth(true);
 
@@ -34,69 +32,36 @@ const useUpdate = () => {
     props: any = {
       address: undefined,
       seqAddress: undefined,
-      sequencerId: undefined,
     },
   ) => {
     const {
       address,
-      sequencerId,
       seqAddress,
     }: {
       seqAddress?: string;
       address?: string;
-      sequencerId?: string;
     } = props;
 
     if (!chainId) return;
 
     let p: any[] = [
       {
-        ...contracts.lock?.[chainId?.toString()],
+        ...contracts.lockInfo?.[chainId?.toString()],
         functionName: 'totalRewardsLiquidated',
         args: [],
       },
       {
         ...contracts.lock?.[chainId?.toString()],
-        functionName: 'BLOCK_REWARD',
+        functionName: 'BLOCK_REWARD', // BLOCK_REWARD
         args: [],
       },
       {
-        ...contracts.lock?.[chainId?.toString()],
+        ...contracts.lockInfo?.[chainId?.toString()],
         chainId: chainId,
-        functionName: 'currentSequencerSetSize',
-        args: [],
-      },
-      {
-        ...contracts.lock?.[chainId?.toString()],
-        chainId: chainId,
-        functionName: 'currentSequencerSetTotalLock',
+        functionName: 'totalLocked', // totalLocked
         args: [],
       },
     ];
-
-    if (sequencerId && chainId) {
-      p = [
-        ...p,
-        {
-          ...contracts.lock?.[chainId?.toString()],
-          chainId,
-          functionName: 'sequencerReward',
-          args: [sequencerId],
-        },
-        {
-          ...contracts.lock?.[chainId?.toString()],
-          chainId,
-          functionName: 'sequencerLock',
-          args: [sequencerId],
-        },
-        {
-          ...contracts.lock?.[chainId?.toString()],
-          chainId,
-          functionName: 'sequencers',
-          args: [sequencerId],
-        },
-      ];
-    }
 
     // seq_addr
     if (seqAddress) {
@@ -105,7 +70,7 @@ const useUpdate = () => {
         {
           ...contracts.lock?.[chainId?.toString()],
           chainId,
-          functionName: 'getSequencerId',
+          functionName: 'seqOwners', // seqOwners
           args: [seqAddress],
         },
       ];
@@ -125,11 +90,11 @@ const useUpdate = () => {
           ...contracts.deposit?.[chainId?.toString()],
           chainId,
           functionName: 'allowance',
-          args: [address, contracts.lock?.[chainId?.toString()].address],
+          args: [address, contracts.lockInfo?.[chainId?.toString()].address],
         },
         {
           ...contracts.lock?.[chainId?.toString()],
-          functionName: 'whiteListAddresses',
+          functionName: 'whitelist', // whitelist
           args: [address],
         },
       ];
@@ -155,14 +120,14 @@ const useUpdate = () => {
       setBlockReward(rewardReadable);
     }
 
-    if (result?.getSequencerId) {
-      setSequencerId(result?.getSequencerId);
+    if (result?.seqOwners) {
+      setSequencerId(result?.seqOwners);
     } else {
       setSequencerId('');
     }
 
-    if (result?.whiteListAddresses) {
-      setWhiteListed(result?.whiteListAddresses === 'true');
+    if (result?.whitelist) {
+      setWhiteListed(result?.whitelist === 'true');
     }
 
     if (result?.balanceOf) {
@@ -178,9 +143,9 @@ const useUpdate = () => {
 
     setSequencerTotalInfo({
       currentSequencerSetSize: result?.currentSequencerSetSize,
-      currentSequencerSetTotalLock: result?.currentSequencerSetTotalLock,
-      currentSequencerSetTotalLockReadable: result?.currentSequencerSetTotalLock
-        ? ethers.utils.formatEther(result?.currentSequencerSetTotalLock).toString()
+      totalLocked: result?.totalLocked,
+      currentSequencerSetTotalLockReadable: result?.totalLocked
+        ? ethers.utils.formatEther(result?.totalLocked).toString()
         : undefined,
     });
 

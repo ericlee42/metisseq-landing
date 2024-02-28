@@ -1,11 +1,13 @@
-import { Button, Input, Modal, message } from '@/components';
+import { Button, Modal } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import Loading from '@/components/_global/Loading';
+import { l2Gas } from '@/configs/common';
+import useAuth from '@/hooks/useAuth';
 import useBalance from '@/hooks/useBalance';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
-import { catchError, getImageUrl } from '@/utils/tools';
+import { getImageUrl } from '@/utils/tools';
 import { useBoolean } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
@@ -67,8 +69,9 @@ const Container = styled(Modal)`
   }
 `;
 
-const UnlockModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
-  const { sequencerInfo } = useSequencerInfo();
+const UnlockModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
+  const { chainId } = useAuth(true);
+  const { sequencerInfo, run } = useSequencerInfo();
 
   const { balance } = useBalance();
 
@@ -103,14 +106,18 @@ const UnlockModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any;
       setTrue();
       await unlock({
         sequencerId: sequencerId,
-        withdrawRewardToL2: false,
+        l2Gas: l2Gas?.[chainId?.toString() as string],
       });
       setFalse();
+      onClose?.();
       // message.success("Success")
     } catch (e) {
       setFalse();
       console.log(e);
       // message.error(catchError(e));
+    } finally {
+      run?.({ sequencerId: sequencerId, self: true });
+      refetchGraph?.();
     }
   };
 
@@ -140,7 +147,7 @@ const UnlockModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any;
           </div>
 
           <div className="flex flex-row items-center gap-20 w-full">
-            <Button disabled={validUnlock || unlockLoading} type="metis" className="p-14 flex-1" onClick={handleUnlock}>
+            <Button disabled={validUnlock || unlockLoading || BigNumber(lockedup).isZero()} type="metis" className="p-14 flex-1" onClick={handleUnlock}>
               <div className="f-14-bold color-fff flex items-center justify-center">
                 {unlockLoading ? <Loading color="#fff" /> : 'Confirm'}
               </div>

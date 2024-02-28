@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { Address } from 'viem';
 
 export const recoilSequencerId = atom<string>({
   key: 'sequencerId',
@@ -53,4 +54,24 @@ export const recoilAllSequencerInfo = atom<any>({
 export const recoilMetisPrice = atom<string | number | undefined>({
   key: 'metisPrice',
   default: undefined,
+});
+
+export const recoilRewardRecipientModalVisible = atom<boolean>({
+  key: 'rewardRecipientModalVisible',
+  default: false,
+});
+
+export const recoilL2Block = atom<number>({
+  key: 'l2Block',
+  default: 0,
+});
+
+export const recoilCurrentActiveSeqAddress = atom<undefined | Address>({
+  key: 'currentActiveSeqAddress',
+  default: undefined,
+});
+
+export const recoilCurrentActiveSeqAddressLoading = atom<boolean>({
+  key: 'currentActiveSeqAddressLoading',
+  default: true,
 });

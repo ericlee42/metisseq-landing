@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 import { Button, Modal } from '..';
 import { filterHideText, getImageUrl, jumpLink } from '@/utils/tools';
-import CheckSequencer from '../CheckSequencer';
 import React, { useEffect, useMemo, useState } from 'react';
 import CopyAddress from '../CopyAddress';
 import useAuth from '@/hooks/useAuth';
@@ -12,7 +11,6 @@ import useSequencerInfo from '@/hooks/useSequencerInfo';
 import BigNumber from 'bignumber.js';
 import useUpdate from '@/hooks/useUpdate';
 import { useRequest } from 'ahooks';
-import fetchOverview from '@/graphql/overview';
 import fetchUserTx from '@/graphql/tx';
 import ClaimModal from '@/pages/SequencerDetail/components/ClaimModal';
 import { useNavigate } from 'react-router-dom';
@@ -161,7 +159,7 @@ const MyAccount = ({
 
   useEffect(() => {
     if (sequencerId && address && chainId) {
-      run(address, chainId);
+      run(address, +chainId);
     }
   }, [address, chainId, sequencerId]);
 
@@ -185,10 +183,12 @@ const MyAccount = ({
   }, [sequencerInfo?.reward]);
 
   const claimedAmount = useMemo(() => {
-    return data?.origin?.claimRewardsParams?.reduce((prev, next) => {
-      return BigNumber(prev).plus(BigNumber(next?.amount).div(1e18)).toString();
-    }, 0);
-  }, [data?.origin?.claimRewardsParams]);
+    return data
+      ?.filter((i) => i.action === 'Claim')
+      ?.reduce((prev, next) => {
+        return BigNumber(prev).plus(BigNumber(next?.amount).div(1e18)).toString();
+      }, 0);
+  }, [data]);
 
   const lockedup = React.useMemo(
     () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),

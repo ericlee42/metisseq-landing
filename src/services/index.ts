@@ -8,8 +8,7 @@ const _axios = axios.create({
 
 _axios.interceptors.response.use(
   (response) => {
-    // console.log('response', response);
-    return response?.data?.data;
+    return response?.data;
   },
   (error) => {
     return Promise.reject(error);
@@ -36,77 +35,9 @@ _axios.interceptors.request.use((config) => {
 //     Media   string `json:"media"`
 //    }
 
-export const createUser = ({
-  name,
-  avatar,
-  desc,
-  address,
-  pubKey,
-  url,
-  media,
-  walletAddress,
-}: {
-  name: string;
-  avatar: string;
-  desc?: string;
-  address: string;
-  pubKey: string;
-  url: string;
-  media?: string;
-  walletAddress?: string;
-}) => {
-  if (!address) return;
-  return _axios.post('/createval', {
-    name,
-    avatar,
-    desc,
-    address: walletAddress,
-    pubKey,
-    url,
-    media,
-    walletAddress,
-    seq_addr: address,
-  });
-};
-
-export const updateUser = ({
-  id,
-  name,
-  avatar,
-  desc,
-  address,
-  pubKey,
-  url,
-  media,
-  walletAddress,
-}: {
-  id: string;
-  name: string;
-  avatar: string;
-  desc?: string;
-  address: string;
-  pubKey: string;
-  url: string;
-  media?: string;
-  walletAddress?: string;
-}) => {
-  if (!address || !id) return;
-  return _axios.patch(`/updateval/${id}`, {
-    name,
-    avatar,
-    desc,
-    address: walletAddress,
-    pubKey,
-    url,
-    media,
-    walletAddress,
-    seq_addr: address,
-  });
-};
-
 export const getAllUser = async () => {
   try {
-    const res: any = await _axios.get('/getvals');
+    const res: any = await _axios.get('/all.json');
 
     if (!res?.length) return null;
     const resolvedResult = res
@@ -117,9 +48,16 @@ export const getAllUser = async () => {
           next: {
             seq_addr: any;
             address: string;
+            avatar: string;
           },
         ) => {
-          return { ...prev, [next?.seq_addr?.toLowerCase()]: next };
+          return {
+            ...prev,
+            [next?.address?.toLowerCase()]: {
+              ...next,
+              avatar: next.avatar.replace('{BASEDIR}', serviceUrl),
+            },
+          };
         },
         {},
       );
@@ -128,12 +66,4 @@ export const getAllUser = async () => {
   } catch (e) {
     throw new Error('Server Error');
   }
-};
-
-export const getUser = ({ address }: { address: string }) => {
-  return _axios.get('/getval', {
-    params: {
-      id: address,
-    },
-  });
 };

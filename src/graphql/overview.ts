@@ -3,15 +3,20 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query MyQuery {
-    lockedUserParams {
+    histories {
+      action
       amount
       block
-      fromTimestamp
+      txHash
+      timestamp
+      txOrigin
+      sequencer {
+        address
+        id
+        status
+        pubkey
+      }
       id
-      signerPubkey
-      user
-      sequencerId
-      claimAmount
     }
   }
 `;
@@ -24,7 +29,7 @@ const fetchOverview = async (chainId?: number) => {
   });
 
   const data: any = await perpetualClient.request(userTxs);
-  return data;
+  return data?.histories?.filter((i) => i.action === 'Lock');
 };
 
 export default fetchOverview;

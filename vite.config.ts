@@ -20,6 +20,22 @@ const customLogger = (): Logger => {
 // https://vitejs.dev/config/
 export default defineConfig({
   customLogger: customLogger(),
+  server: {
+    proxy: {
+      '/l1': {
+        target: 'https://sequencer.metisdevops.link',
+        changeOrigin: true,
+      },
+      '/l2': {
+        target: 'https://sequencer.metisdevops.link',
+        changeOrigin: true,
+      },
+      '/v1': {
+        target: 'https://sequencer.metisdevops.link',
+        changeOrigin: true,
+      }
+    },
+  },
   plugins: [
     react(),
     UnoCSS(),

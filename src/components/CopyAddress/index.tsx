@@ -25,12 +25,14 @@ const CopyAddress = ({
   reverse,
   hide = true,
   copyTrigger,
+  dark = true,
 }: {
   addr?: string;
   className?: any;
   reverse?: boolean;
   hide?: boolean;
   copyTrigger?: any;
+  dark?: boolean;
 }) => {
   const { address } = useAuth(true);
 
@@ -52,7 +54,15 @@ const CopyAddress = ({
         {addr || address ? (hide ? filterHideText(addr || (address as string), 6, 4) : addr) : '-'}
       </span>
 
-      {copyTrigger || <img src={getImageUrl('@/assets/images/_global/ic_copy.svg')} />}
+      {copyTrigger || (
+        <img
+          src={
+            dark
+              ? getImageUrl('@/assets/images/_global/ic_copy_dark.svg')
+              : getImageUrl('@/assets/images/_global/ic_copy.svg')
+          }
+        />
+      )}
     </Container>
   );
 };

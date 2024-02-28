@@ -19,7 +19,7 @@
       font-weight: 700;
       font-size: 16px;
       line-height: 100%;
-      color: #ffffff;
+      color: #fff;
     }
     .close {
       width: 18px;
@@ -39,7 +39,7 @@
 
 #global-bedrock {
   position: fixed;
-  inset: 0 0 auto 0;
+  inset: 0 0 auto;
   height: 0;
   z-index: 999999;
 }

@@ -19,6 +19,7 @@ import Loading from '../Loading';
 import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
 import WalletModal from '@/components/WalletModal';
+import { deepCopy } from 'ethers/lib/utils';
 
 const StyledModal = styled(Modal)``;
 
@@ -335,7 +336,7 @@ const Container = styled.section`
   }
 `;
 
-const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
+const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   const { address, chainId } = useAuth(true);
   const { run, data } = useRequest(fetchOverview, { manual: true });
   const { sequencerTotalInfo, liquidateReward } = useUpdate();
@@ -347,7 +348,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
 
   useEffect(() => {
     if (chainId) {
-      run(chainId);
+      run(+chainId);
     }
   }, [chainId]);
 
@@ -370,12 +371,12 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
       const multiP: any = [
         {
           ...contracts.lock?.[chainId],
-          functionName: 'whiteListAddresses',
+          functionName: 'whitelist', // whitelist
           args: [address],
         },
         {
           ...contracts.lock?.[chainId],
-          functionName: 'getSequencerId',
+          functionName: 'seqOwners', // seqOwners
           args: [address],
         },
       ];
@@ -405,16 +406,16 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
   };
 
   const sequencerCards = React.useMemo(() => {
-    if (!data?.lockedUserParams) return [];
-    return data?.lockedUserParams?.map((i) => ({
-      id: i.address,
+    if (!data?.length) return [];
+    return data?.map((i) => ({
+      id: i?.sequencer?.address,
       ...i,
     }));
   }, [data]);
 
   const fetchBatchSequencerInfo = async () => {
     if (!sequencerCards?.length) return undefined;
-    const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencerId)));
+    const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencer?.id)));
     const batchInfo = await runOnce({
       sequencerIds: ids,
     });
@@ -422,7 +423,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
     return batchInfo?.map((i, index) => {
       return {
         ...i,
-        ...sequencerCards?.[index],
+        ...sequencerCards?.find((j) => j?.sequencer?.address?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
       };
     });
   };
@@ -446,7 +447,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
 
   const filteredFetchBatchSequencerInfoData = useMemo(
     () =>
-      fetchBatchSequencerInfoData
+      deepCopy(fetchBatchSequencerInfoData)
         ?.filter((i) => {
           if (filterBy === 'all') {
             return true;
@@ -454,17 +455,20 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
           if (filterBy === 'healthy') {
             return !i.ifInUnlockProgress && i.ifActive;
           }
+          return false;
         })
         ?.map((i) => {
           return {
             ...i,
             infos: {
-              ...allSequencerInfo?.[i?.user?.toLowerCase()],
+              ...allSequencerInfo?.[i?.sequencers?.owner?.toLowerCase()],
             },
           };
         }),
     [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
   );
+
+
 
   const totalReward = useMemo(() => {
     // ele?.rewardReadable
@@ -482,6 +486,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
   }, [sequencerCards, chainId]);
 
   const { ifMobile } = useDevice();
+
 
   return (
     <>
@@ -508,7 +513,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
                 )}
                 <Button
                   onClick={() => {
-                    jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
+                    jumpLink('https://docs.metis.io/dev/decentralized-sequencer/overview', '_blank');
                   }}
                   type="light"
                   className="radius-50 w-full"
@@ -536,7 +541,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
                   </Button>
                   <Button
                     onClick={() => {
-                      jumpLink('https://github.com/Rodney1998/mvm-testnet-sequencer-node', '_blank');
+                      jumpLink('https://docs.metis.io/dev/decentralized-sequencer/overview', '_blank');
                     }}
                     type="light"
                     className="radius-50"
@@ -659,10 +664,10 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy: string }) => {
                   .div(1e18)
                   .toString()}
                 uptime=""
-                since={dayjs(i?.fromTimestamp * 1000).format('YYYY-MM-DD')}
+                since={dayjs(i?.timestamp * 1000).format('YYYY-MM-DD')}
                 earned=""
                 onClick={() => {
-                  jumpSequencer(i?.user);
+                  jumpSequencer(i?.sequencer?.address);
                 }}
                 key={index}
               />

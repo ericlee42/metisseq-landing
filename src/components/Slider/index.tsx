@@ -10,7 +10,7 @@ export interface SliderProps {
   value: number;
   min?: number;
   max?: number;
-  step?: number; // 步长，取值必须大于 0，并且可被 (max - min) 整除。
+  step?: number; // must >0, mod (max - min) = 0
   unit?: React.ReactNode;
   marks?: number[];
   tooltip?: React.ReactNode;

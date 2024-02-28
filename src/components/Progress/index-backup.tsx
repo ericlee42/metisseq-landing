@@ -19,12 +19,12 @@ const Bar = styled.div<{ activePercent?: string; activeIndex?: string }>`
     display: inline-block;
     border-radius: 26px;
     width: ${({ activePercent, activeIndex }) =>
-      (BigNumber(activePercent || 0).gt(0)
+      BigNumber(activePercent || 0).gt(0)
         ? `calc(${activePercent || 0}% + ${BigNumber(activeIndex || 0)
             .minus(1)
             .multipliedBy(84)
             .toString()}px)`
-        : '0')};
+        : '0'};
     height: 100%;
     background: rgba(0, 210, 193, 1);
   }

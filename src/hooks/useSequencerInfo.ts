@@ -23,13 +23,13 @@ const useSequencerInfo = () => {
     }
   }, [getAllUserData]);
 
-  const getSequencerId = async (address?: string) => {
+  const seqOwners = async (address?: string) => {
     if (!address || !chainId) return;
     try {
       const data = await readContract({
         address: contracts.lock?.[chainId?.toString()].address,
         abi: contracts.lock?.[chainId?.toString()].abi,
-        functionName: 'getSequencerId',
+        functionName: 'seqOwners', // seqOwners
         args: [address],
       });
 
@@ -41,6 +41,7 @@ const useSequencerInfo = () => {
 
   const handleSequencerCal = (sequencerInfo: any, multicallFuntions: any) => {
     const result: any = {};
+
     sequencerInfo.forEach((i: any, index: string | number) => {
       if (Array.isArray(i?.result)) {
         let flattedData: any = {};
@@ -62,11 +63,14 @@ const useSequencerInfo = () => {
     const status = result?.sequencers?.status;
     const unlockClaimTime = result?.sequencers?.unlockClaimTime?.toString();
     // const reward = BigNumber(result?.sequencers?.reward || '0').minus(1)?.toString();
-    const reward = result?.sequencerReward.toString();
+    const reward = result?.sequencers?.reward?.toString();
     const rewardReadable = ethers.utils.formatEther(reward || '0').toString();
 
-    const ifActive = BigNumber(status).eq(1) && BigNumber(result?.sequencers?.deactivationBatch?.toString()).isZero();
+    const ifActive = BigNumber(status).eq(2) && BigNumber(result?.sequencers?.deactivationBatch?.toString()).isZero();
     const ifInUnlockProgress = !BigNumber(unlockClaimTime).isZero();
+
+    const sequencerLock = BigNumber(result?.sequencers?.amount).toString();
+    const sequencerLockReadable = BigNumber(result?.sequencers?.amount).div(1e18).toString();
 
     const finalRes = {
       ...result,
@@ -76,6 +80,8 @@ const useSequencerInfo = () => {
       rewardReadable,
       ifActive,
       ifInUnlockProgress,
+      sequencerLock,
+      sequencerLockReadable
     };
 
     return finalRes;
@@ -105,18 +111,18 @@ const useSequencerInfo = () => {
     const s = sequencerIds || [sequencerId];
     const multiP: any[] = s.reduce((prev: any, next: any) => {
       const n = [
-        {
-          ...contracts.lock?.[chainId?.toString()],
-          chainId,
-          functionName: 'sequencerReward',
-          args: [next],
-        },
-        {
-          ...contracts.lock?.[chainId?.toString()],
-          chainId,
-          functionName: 'sequencerLock',
-          args: [next],
-        },
+        // {
+        //   ...contracts.lock?.[chainId?.toString()],
+        //   chainId,
+        //   functionName: 'sequencerReward', // unknown
+        //   args: [next],
+        // },
+        // {
+        //   ...contracts.lock?.[chainId?.toString()],
+        //   chainId,
+        //   functionName: 'sequencerLock', // unknown
+        //   args: [next],
+        // },
         {
           ...contracts.lock?.[chainId?.toString()],
           chainId,
@@ -148,11 +154,11 @@ const useSequencerInfo = () => {
 
   const props = useRequest(intervalUpdate, {
     manual: true,
-    pollingInterval: 5000,
+    // pollingInterval: 15000,
     refreshDeps: [chainId],
   });
 
-  return { getAllUserRun, allSequencerInfo, getSequencerId, runOnce: intervalUpdate, sequencerInfo, ...props };
+  return { getAllUserRun, allSequencerInfo, seqOwners, runOnce: intervalUpdate, sequencerInfo, ...props };
 };
 
 export default useSequencerInfo;

@@ -15,7 +15,7 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
   const { current = 1, total, pageSize = 20, onChange } = props;
 
   const [currentPage, setCurrentPage] = React.useState<number>(current);
-  const [startPage, setStartPage] = React.useState<number>(1); // 分组开始页码
+  const [startPage, setStartPage] = React.useState<number>(1);
   const [totalPage, setTotalPage] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -24,14 +24,12 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
 
   const pageClick = React.useCallback(
     (num: number) => {
-      // 当当前页码大于分组的页码时，使当前页前面显示两个页码
       if (num >= groupCount) {
         setStartPage(num - 2);
       }
       if (num < groupCount) {
         setStartPage(1);
       }
-      // 第一页时重新设置分组的起始页
       if (num === 1) {
         setStartPage(1);
       }
@@ -79,7 +77,6 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
 
     const pages: React.ReactNode[] = [];
 
-    // 首页
     pages.push(
       <li
         className={`item flex flex-row items-center justify-center ${currentPage === 1 ? 'selected' : ''}`}
@@ -97,7 +94,6 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
       pageLength = groupCount + startPage;
     }
 
-    // 左省略
     if (currentPage >= groupCount) {
       pages.push(
         <li
@@ -112,7 +108,6 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
       );
     }
 
-    // 中间页码
     for (let i = startPage; i < pageLength; i++) {
       if (i <= totalPage - 1 && i > 1) {
         pages.push(
@@ -127,7 +122,6 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
       }
     }
 
-    // 右省略
     if (totalPage - startPage >= groupCount + 1) {
       pages.push(
         <li
@@ -141,7 +135,6 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
         </li>,
       );
     }
-    // 末页
     pages.push(
       <li
         className={`item flex flex-row items-center justify-center ${currentPage === totalPage ? 'selected' : ''}`}

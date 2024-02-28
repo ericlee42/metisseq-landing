@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { cloneElement } from '../_util/reactNode';
-import { getImageUrl } from '@/utils/tools';
 import './index.scss';
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -39,8 +38,10 @@ const Checkbox: React.FC<CheckboxProps> = React.forwardRef((props: CheckboxProps
     <div className={classes}>
       <input type="checkbox" id={uuid} ref={ref} disabled={disabled} checked={checked} onChange={handleChange} />
       <label className="flex flex-row items-center justify-start" htmlFor={uuid}>
-        <div className="choose">
-          <img src={getImageUrl('@/assets/images/_global/icon-checkbox.svg')} alt="icon" />
+        <div className="choose flex flex-row items-center justify-center">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 4.5L4.33333 8L11 1" stroke="black" strokeWidth="2" />
+          </svg>
         </div>
         {memoElement}
       </label>

@@ -7,8 +7,8 @@
             <stop stop-color="#CDE1FC" offset="100%"></stop>
         </linearGradient>
     </defs>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="切图" transform="translate(-607.000000, -1790.000000)" fill="url(#linearGradient-1)">
+    <g id="page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cut" transform="translate(-607.000000, -1790.000000)" fill="url(#linearGradient-1)">
             <path d="M630.624151,1790 L721.624151,1790 L721.624151,1820 L740.398735,1820 C742.607874,1820 744.398735,1821.79086 744.398735,1824 C744.398735,1825.27464 743.791248,1826.47297 742.763122,1827.2264 L678.554047,1874.28038 C677.155106,1875.30556 675.254882,1875.31241 673.848588,1874.29734 L608.659222,1827.24336 C606.867964,1825.95042 606.463996,1823.45019 607.756934,1821.65893 C608.508889,1820.61716 609.71549,1820 611.000294,1820 L630.624151,1820 L630.624151,1790 Z" id="ic_up" transform="translate(675.699368, 1832.526989) rotate(-180.000000) translate(-675.699368, -1832.526989) "></path>
         </g>
     </g>

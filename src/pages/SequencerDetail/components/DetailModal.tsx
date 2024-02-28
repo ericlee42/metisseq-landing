@@ -52,7 +52,7 @@ const Container = styled(Modal)`
   }
 `;
 
-const DetailModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
+const DetailModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
   return (
     <Container
       visible={visible}

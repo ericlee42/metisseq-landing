@@ -18,14 +18,11 @@ const RangeCalendar = (props: RangeCalendarProps) => {
 
   const now = dayjs(value[0]).locale(LOCALE_DAYJS['en-US']);
   const next = now.add(1, 'month');
-  // 用来标记当前用户选择的是最大值还是最小值，能整除2就是最小值
   const currentStepRef = React.useRef(0);
   const [sequenceMonth, setSequenceMonth] = React.useState<Dayjs[]>([now, next]);
   const [rangeDateList, setRangeDateList] = React.useState<number[]>(value);
   const [hoverDateList, setHoverDateList] = React.useState<number[]>([]);
-  /**
-   * 当日历组件选择某个日期时，根据当前状态判断是选择的最大日期还是最小日期
-   */
+
   const handleChooseDate = React.useCallback(
     (date: dayjs.Dayjs) => {
       let tempRangeDateList: number[] = [];
@@ -34,7 +31,6 @@ const RangeCalendar = (props: RangeCalendarProps) => {
       if (isMin) {
         tempRangeDateList = [date.startOf('day').valueOf()];
       } else {
-        // 判断第二次选中的日期是前面还是后面，
         const prevTime = rangeDateList[0];
         const nowChooseTime = +date;
         if (prevTime <= nowChooseTime) {
@@ -44,7 +40,6 @@ const RangeCalendar = (props: RangeCalendarProps) => {
         }
       }
 
-      // console.log(isMin, tempRangeDateList);
       currentStepRef.current++;
       setRangeDateList(tempRangeDateList);
 
@@ -59,9 +54,6 @@ const RangeCalendar = (props: RangeCalendarProps) => {
     [setRangeDateList, rangeDateList, onChange],
   );
 
-  /**
-   * 当日历组件上的月份被改变时触发
-   */
   const handleChangeMonth = React.useCallback(
     (type: 'left' | 'right', d: Dayjs) => {
       if (type === 'left') {

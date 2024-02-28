@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Scrollbar } from '@/components';
@@ -8,48 +10,52 @@ import useUpdate from '@/hooks/useUpdate';
 import useAuth from '@/hooks/useAuth';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import SubHeader from './SubHeader';
-import useBlock from '@/hooks/useBlock';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import { useEffect } from 'react';
-import { updateLocalChainId, defaultChainId } from '@/configs/common';
+import { defaultRewardRecipient } from '@/configs/common';
 import { useNetwork } from 'wagmi';
 import useDevice from '@/hooks/useDevice';
+import RewardReceipientModal from '@/components/_global/RewardReceipientModal';
+import { useSetRecoilState } from 'recoil';
+import { recoilRewardRecipientModalVisible } from '@/models';
+import useL2EpochStatus from '@/hooks/useL2EpochStatus';
+import useL2Block from '@/hooks/useL2Block';
+import BigNumber from 'bignumber.js';
 
 function BasicLayout() {
   const { address, chainId } = useAuth(true);
-  const { run, cancel } = useBlock();
   const { chain } = useNetwork();
   const { sequencerId, run: updateRun, cancel: updateCancel } = useUpdate();
-  const { allSequencerInfo, run: sequencerInfoRun, cancel: sequencerInfoCancel, getAllUserRun } = useSequencerInfo();
+  const {
+    sequencerInfo,
+    allSequencerInfo,
+    run: sequencerInfoRun,
+    cancel: sequencerInfoCancel,
+    getAllUserRun,
+  } = useSequencerInfo();
+
   const { run: getMetisPrice } = useMetisPrice();
 
   const seqAddress = React.useMemo(
-    () =>
-      (allSequencerInfo
-        ? Object?.values?.(allSequencerInfo)?.find(
-            (i: any) => address && i?.address && i?.address?.toLowerCase() === address?.toLowerCase(),
-            // @ts-ignore
-          )?.seq_addr
-        : undefined),
+    () => (address ? allSequencerInfo?.[address?.toLowerCase?.()]?.seq_addr : undefined),
     [address, allSequencerInfo],
   );
 
+  const rewardReceipient = React.useMemo(
+    () => sequencerInfo?.sequencers?.rewardRecipient,
+    [sequencerInfo?.sequencers?.rewardRecipient],
+  );
+
+  const setRewardRecipientModalVisible = useSetRecoilState(recoilRewardRecipientModalVisible);
   useEffect(() => {
-    if (chain) {
-      updateLocalChainId((chain?.unsupported ? defaultChainId : chain?.id || defaultChainId)?.toString());
+    if (rewardReceipient && rewardReceipient === defaultRewardRecipient && BigNumber(sequencerId).gt(0)) {
+      // set rewardReceipient
+      setRewardRecipientModalVisible(true);
     }
-  }, [chain]);
+  }, [rewardReceipient, sequencerId]);
 
   React.useEffect(() => {
-    if (chainId) {
-      cancel();
-      run(chainId);
-    }
     getAllUserRun();
-
-    return () => {
-      cancel();
-    };
   }, [chainId]);
 
   useEffect(() => {
@@ -87,10 +93,72 @@ function BasicLayout() {
     }
   }, [hash, pathname, ifMobile]);
 
+  const { watchBlock, l2Block } = useL2Block();
+  const { checkSeqStatus, initL2Event } = useL2EpochStatus();
+
+  useEffect(() => {
+    if (l2Block) {
+      checkSeqStatus();
+    }
+  }, [l2Block]);
+
+  useEffect(() => {
+    const handleOffEvent = watchBlock();
+    const handleOffL2Event = initL2Event();
+    return () => {
+      handleOffEvent();
+      handleOffL2Event();
+    };
+  }, []);
+
+  // event
+  // useContractEvent({
+  //   ...contracts.lockInfo?.[chainId?.toString() as string],
+  //   eventName: 'Locked',
+  //   listener(logs: any) {
+  //     const logSequencerId = logs?.args?.sequencerId;
+  //     console.log('New logs!', logs, sequencerId, logSequencerId);
+  //   },
+  // });
+  // useContractEvent({
+  //   ...contracts.lockInfo?.[chainId?.toString() as string],
+  //   eventName: 'Relocked',
+  //   listener(logs: any) {
+  //     const logSequencerId = logs?.args?.sequencerId;
+  //     console.log('New logs!', logs, sequencerId, logSequencerId);
+  //   },
+  // });
+  // useContractEvent({
+  //   ...contracts.lockInfo?.[chainId?.toString() as string],
+  //   eventName: 'Unlocked',
+  //   listener(logs: any) {
+  //     const logSequencerId = logs?.args?.sequencerId;
+  //     console.log('New logs!', logs, sequencerId, logSequencerId);
+  //   },
+  // });
+  // useContractEvent({
+  //   ...contracts.lockInfo?.[chainId?.toString() as string],
+  //   eventName: 'ClaimRewards',
+  //   listener(logs: any) {
+  //     const logSequencerId = logs?.args?.sequencerId;
+  //     console.log('New logs!', logs, sequencerId, logSequencerId);
+  //   },
+  // });
+  // useContractEvent({
+  //   ...contracts.lockInfo?.[chainId?.toString() as string],
+  //   eventName: 'UnlockInit',
+  //   listener(logs: any) {
+  //     const logSequencerId = logs?.args?.sequencerId;
+  //     console.log('New logs!', logs, sequencerId, logSequencerId);
+  //   },
+  // });
+
   return (
     <React.Fragment>
       <Header />
       {ifMobile ? null : <SubHeader />}
+
+      <RewardReceipientModal />
       <Scrollbar id="vite-content" trackGap={[10, 10, 10, 10]}>
         <main>
           <Outlet />

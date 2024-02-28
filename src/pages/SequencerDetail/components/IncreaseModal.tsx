@@ -58,8 +58,8 @@ const Container = styled(Modal)`
   }
 `;
 
-const IncreaseModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
-  const { sequencerInfo } = useSequencerInfo();
+const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
+  const { sequencerInfo, run } = useSequencerInfo();
 
   const { address } = useAuth(true);
 
@@ -118,6 +118,9 @@ const IncreaseModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: an
       setApproveLoadingFalse();
       console.log(e);
       // catchError(e);
+    } finally {
+      run?.({ sequencerId: sequencerId, self: true });
+      refetchGraph?.();
     }
   };
 

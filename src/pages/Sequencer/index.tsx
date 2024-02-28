@@ -318,53 +318,6 @@ const Container = styled.section`
 `;
 
 export function Component() {
-  const navigate = useNavigate();
-  const jumpLink = () => {
-    navigate('/becomeSequencer');
-  };
-
-  const jumpSequencer = (id: string) => {
-    navigate(`/sequencers/${id}`);
-  };
-
-  const option = React.useMemo(() => {
-    return [
-      {
-        name: 'Newest',
-        value: '0',
-        label: 'Newest',
-      },
-      {
-        name: 'Health',
-        value: '1',
-        label: 'Health',
-      },
-    ];
-  }, []);
-
-  const [curOption, setCurOption] = React.useState(option?.[0]?.value);
-
-  const onChange = (ele: any) => {
-    setCurOption(ele?.value);
-  };
-
-  const { data, loading } = useRequest(fetchOverview);
-
-  const sequencerCards = React.useMemo(() => {
-    if (!data?.lockedUserParams) return [];
-    return data?.lockedUserParams?.map((i) => ({
-      name: '1',
-      avatar: '1',
-      status: 'HEALTH',
-      color: 'rgba(0, 218, 203, 1)',
-      totalLockUp: '20,000 metis',
-      id: i.address,
-      ...i,
-    }));
-  }, [data]);
-
-  const { sequencerTotalInfo } = useUpdate();
-
   return (
     <Container className="pages-landing flex flex-col ">
       <SequencerHeader />

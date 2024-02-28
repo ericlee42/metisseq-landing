@@ -12,7 +12,7 @@ import './index.scss';
 export interface PopupProps {
   className?: string;
   visible?: boolean;
-  unusual?: 'buy' | 'sell'; // 买卖样式
+  unusual?: 'buy' | 'sell';
   title?: React.ReactNode;
   closable?: boolean;
   loading?: boolean;

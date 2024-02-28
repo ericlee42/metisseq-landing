@@ -18,27 +18,27 @@
     font-size: 14px;
     transition: all 0.3s ease-in-out;
   }
-  &.metis-solid{
+  &.metis-solid {
     border: 1px solid #878787;
     span {
       color: #878787;
     }
   }
-  &.metis{
+  &.metis {
     background-color: #000;
     span {
       color: #fff;
     }
   }
-  &.dark{
+  &.dark {
     background-color: #000;
-    span{
+    span {
       color: #fff;
     }
   }
-  &.light{
+  &.light {
     background-color: #fff;
-    span{
+    span {
       color: #000;
     }
   }
@@ -56,7 +56,7 @@
   &.short-solid {
     border: 1px solid rgba(255, 104, 104, 1);
     span {
-      color: #FF6868;
+      color: #ff6868;
     }
   }
   &.long-solid {
@@ -69,7 +69,7 @@
   &.short {
     background: rgba(255, 104, 104, 0.1);
     span {
-      color: #FF6868;
+      color: #ff6868;
     }
   }
   &.long {
@@ -88,7 +88,7 @@
   }
   &.text {
     span {
-      color: #ffffff;
+      color: #fff;
     }
   }
   &.disabled {
@@ -97,8 +97,8 @@
     // border: 1px solid rgba(255, 255, 255, 0.08) !important;
     // cursor: not-allowed;
     // span {
-      // color: hsl(240, 18%, 23%)!important;
-      // color: rgba(255, 255, 255, 0.3) !important;
+    // color: hsl(240, 18%, 23%)!important;
+    // color: rgba(255, 255, 255, 0.3) !important;
     // }
   }
   &.loading {

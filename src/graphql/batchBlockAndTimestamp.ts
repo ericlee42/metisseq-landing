@@ -1,6 +1,5 @@
-// 获取最近出的区块和时间
-// todo 优化
-import { getLocalChainId, graphUrl } from '@/configs/common';
+// todo
+import { graphUrl } from '@/configs/common';
 import { gql, GraphQLClient } from 'graphql-request';
 
 // "add1": "0xfe08ee83b1f01d6d7c6eff3c8c84fa6fe02fca17",
@@ -9,12 +8,14 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query MyQuery($address: String) {
-    userEpochParams(first: 5, orderDirection: desc, orderBy: epochId, where: { signer: $address }) {
-      signer
+    epoches(first: 5, orderDirection: desc, orderBy: id, where: { signer: $address }) {
       id
-      epochId
-      endBlock
       startBlock
+      endBlock
+      signer
+      transaction
+      recommited
+      block
       blockTimestamp
     }
   }
@@ -41,11 +42,10 @@ const fetchBatchBlockTx = async (address: string, chainId: string | number) => {
     address: _address,
   });
 
-  const startBlock = txData?.userEpochParams?.[txData?.userEpochParams?.length - 1]?.startBlock;
-  const endBlock = txData?.userEpochParams?.[0]?.endBlock;
+  const startBlock = txData?.epoches?.[txData?.epoches?.length - 1]?.startBlock;
+  const endBlock = txData?.epoches?.[0]?.endBlock;
   if (!endBlock || !startBlock) return undefined;
 
-  // 查询block服务查询时间
   const blockData: any = await perpetualClient.request(blocks, {
     from: startBlock,
     to: endBlock,
@@ -53,7 +53,7 @@ const fetchBatchBlockTx = async (address: string, chainId: string | number) => {
 
   const timestamp = blockData?.blocks?.[0]?.timestamp;
 
-  return { timestamp, producingBlocks: txData?.userEpochParams };
+  return { timestamp, producingBlocks: txData?.epoches };
 };
 
 export default fetchBatchBlockTx;

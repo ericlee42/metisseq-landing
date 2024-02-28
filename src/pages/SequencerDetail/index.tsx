@@ -3,9 +3,9 @@
 import * as React from 'react';
 import './index.scss';
 import { styled } from 'styled-components';
-import { catchError, filterHideText, getImageUrl, jumpLink } from '@/utils/tools';
+import { filterHideText, getImageUrl, jumpLink } from '@/utils/tools';
 import { Button, Input, Pagination, Tooltip } from '@/components';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import CopyAddress from '@/components/CopyAddress';
 import IncreaseModal from './components/IncreaseModal';
@@ -16,7 +16,7 @@ import ClaimModal from './components/ClaimModal';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import { ethers } from 'ethers';
 import useUpdate from '@/hooks/useUpdate';
-import { useBoolean, useCountDown, useRequest } from 'ahooks';
+import { useBoolean, useRequest } from 'ahooks';
 import fetchUserTx from '@/graphql/tx';
 import BigNumber from 'bignumber.js';
 import useAuth from '@/hooks/useAuth';
@@ -24,27 +24,10 @@ import useAllowance from '@/hooks/useAllowance';
 import useLock from '@/hooks/useLock';
 import { explorer, isDev } from '@/configs/common';
 import fetchBlock from '@/graphql/blocks';
-import useBalance from '@/hooks/useBalance';
-import { getUser } from '@/services';
-import useBlock from '@/hooks/useBlock';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
-
-const testMode = true;
-
-const switchTxType = (type: string) => {
-  switch (type) {
-    case 'locked':
-      return 'Lockup';
-    case 'claimRewards':
-      return 'Claim';
-    case 'relocked':
-      return 'Add';
-    case 'unlockInit':
-      return 'Unlock';
-  }
-};
+import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 
 const getSignedStatus = ({
   start,
@@ -313,11 +296,11 @@ export function Component() {
       eles[0].scrollTop = 0;
     }
   }, []);
-  const { id } = useParams();
   const { address, chainId, realChainId } = useAuth(true);
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
-  const { allSequencerInfo, run, cancel, data: sequencerInfoList, getSequencerId } = useSequencerInfo();
+  const { id } = useParams();
+  const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners } = useSequencerInfo();
 
   const currentSequencerInfo = React.useMemo(() => {
     if (!allSequencerInfo || !id) return null;
@@ -343,13 +326,8 @@ export function Component() {
   }: any = useRequest(fetchBlock, { manual: true });
 
   const curUserActiveSequencerId = React.useMemo(
-    () =>
-      (fetchUserTxData?.origin?.lockedParams?.length
-        ? Array.from(
-            new Set(fetchUserTxData?.origin?.lockedParams?.map((i: { sequencerId: any }) => i.sequencerId)),
-          )?.[0]
-        : undefined),
-    [fetchUserTxData?.origin?.lockedParams],
+    () => (fetchUserTxData?.[0]?.sequencer?.id ? BigNumber(fetchUserTxData?.[0]?.sequencer?.id).toString() : undefined),
+    [fetchUserTxData],
   );
 
   const ifSelf = React.useMemo(
@@ -360,7 +338,7 @@ export function Component() {
   const handleInitCheck = async () => {
     let activeSequencerId = curUserActiveSequencerId;
     if (!activeSequencerId) {
-      activeSequencerId = await getSequencerId(whitelistedAddress);
+      activeSequencerId = await seqOwners(whitelistedAddress);
     }
 
     if (!activeSequencerId) return;
@@ -375,16 +353,25 @@ export function Component() {
     handleInitCheck();
   }, [curUserActiveSequencerId, ifSelf, whitelistedAddress]);
 
-  React.useEffect(() => {
+  const refetchGraph = () => {
     if (id) {
       fetchUserTxRun(id, chainId);
       fetchBlockTxRun(id, chainId);
     }
+  }
+
+  const refresh = ()=>{
+    run({ sequencerId: curUserActiveSequencerId, self: ifSelf });
+    refetchGraph() 
+  }
+
+  React.useEffect(() => {
+    refetchGraph()
   }, [id, chainId]);
 
   const txCol = React.useMemo(() => {
-    return fetchUserTxData?.combinedData?.sort((a, b) => +b?.blockTimestamp - +a?.blockTimestamp);
-  }, [fetchUserTxData?.combinedData]);
+    return fetchUserTxData?.sort((a, b) => +b?.timestamp - +a?.timestamp);
+  }, [fetchUserTxData]);
 
   const [txCurrentPage, setTxCurrentPage] = React.useState(1);
   const txTotal = React.useMemo(() => txCol?.length || 0, [txCol?.length]);
@@ -399,9 +386,11 @@ export function Component() {
   }, [txCurrentPage, txCol]);
 
   const totalRewards = React.useMemo(() => {
-    const claimedAmount = fetchUserTxData?.origin?.claimRewardsParams?.reduce((prev: any, next: any) => {
-      return BigNumber(prev).plus(next?.amount).toString();
-    }, '0');
+    const claimedAmount = fetchUserTxData
+      ?.filter((i) => i.action === 'Claim')
+      ?.reduce((prev: any, next: any) => {
+        return BigNumber(prev).plus(next?.amount).toString();
+      }, '0');
 
     const claimedAmountReadable = BigNumber(claimedAmount || 0)
       .div(1e18)
@@ -410,15 +399,15 @@ export function Component() {
     return BigNumber(sequencerInfo?.rewardReadable || 0)
       .plus(claimedAmountReadable || 0)
       .toString();
-  }, [fetchUserTxData?.origin?.claimRewardsParams, sequencerInfo?.rewardReadable]);
+  }, [fetchUserTxData, sequencerInfo?.rewardReadable]);
 
   const blocksCol = React.useMemo(() => {
-    return fetchBlockTxData?.userEpochParams?.map((i: any) => {
+    return fetchBlockTxData?.epoches?.map((i: any) => {
       const blockNumbers = BigNumber(i?.endBlock).minus(i?.startBlock).plus(1).toString();
       const rewards = BigNumber(blockNumbers).multipliedBy(blockReward).toFixed(4, BigNumber.ROUND_DOWN);
       return { ...i, rewards: rewards };
     });
-  }, [blockReward, fetchBlockTxData?.userEpochParams]);
+  }, [blockReward, fetchBlockTxData?.epoches]);
 
   const [blocksCurrentPage, setBlocksCurrentPage] = React.useState(1);
   const blocksTotal = React.useMemo(() => blocksCol?.length || 0, [blocksCol?.length]);
@@ -479,8 +468,11 @@ export function Component() {
       console.log(e);
       setApproveLoadingFalse();
       // catchError(e);
+    } finally {
+      refresh?.()
     }
   };
+
 
   const [increaseVisible, setIncreaseVisible] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
@@ -488,7 +480,7 @@ export function Component() {
   const [claimVisible, setClaimVisible] = React.useState(false);
   const [withdrawVisible, setWithdrawVisible] = React.useState(false);
 
-  // 是否unlock后等待中
+  // if unlock window
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
 
   // const unlockTo = React.useMemo(
@@ -503,16 +495,16 @@ export function Component() {
   const unclaimed = React.useMemo(() => sequencerInfo?.rewardReadable || '0', [sequencerInfo?.rewardReadable]);
 
   const joinedDuration = React.useMemo(() => {
-    // 默认 desc，todo 保证不出错进行排序
-    const fromDate = fetchUserTxData?.origin?.lockedParams?.[0]?.blockTimestamp;
-    const lastDate = fetchUserTxData?.origin?.unlockInitParams?.length
-      ? fetchUserTxData?.origin?.unlockInitParams?.[0]?.blockTimestamp
-      : +dayjs().unix();
+    // desc，todo make sure sort without error
+    const fromDate = fetchUserTxData?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
+
+    const unlockTxs = fetchUserTxData?.filter((i) => i.action === 'Unlock');
+    const lastDate = unlockTxs?.length ? unlockTxs?.[0]?.timestamp : +dayjs().unix();
 
     return BigNumber(lastDate).minus(fromDate).toString();
-  }, [fetchUserTxData?.origin?.lockedParams, fetchUserTxData?.origin?.unlockInitParams]);
+  }, [fetchUserTxData]);
 
-  // Current APR = (Total Reward/加入天数/Lock-up)*365*100%
+  // Current APR = (Total Reward/Join days/Lock-up)*365*100%
   const currentApr = React.useMemo(() => {
     const days = BigNumber(joinedDuration).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
 
@@ -534,10 +526,8 @@ export function Component() {
       .toFixed(2, BigNumber.ROUND_CEIL);
   }, [joinedDuration, lockedup, totalRewards]);
 
-  const { block } = useBlock();
-  const currentBlockNumber = block?.number;
+  const { l2Block: currentBlockNumber } = useL2EpochStatus();
 
-  // 总的出块数量
   const totalBlocks = React.useMemo(() => {
     return blocksCol?.reduce((prev: any, next: any) => {
       const curBlockRang = BigNumber(next?.endBlock).minus(next?.startBlock).plus(1);
@@ -545,7 +535,6 @@ export function Component() {
     }, 0);
   }, [blocksCol]);
 
-  // 已经出块数量
   const currentSigned = React.useMemo(() => {
     const hasProduced = blocksCol
       ?.filter((i) => {
@@ -637,16 +626,16 @@ export function Component() {
           >
             <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
               <div className="fz-26 fw-500 color-fff">Owner</div>
-              <CopyAddress addr={whitelistedAddress} className={'flex-1 fz-16 fw-400 inter color-fff'} />
+              <CopyAddress dark={false} addr={whitelistedAddress} className={'flex-1 fz-16 fw-400 inter color-fff'} />
             </div>
             <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
               <div className="fz-26 fw-500 color-fff">Signer</div>
-              <CopyAddress addr={id} className={'flex-1 fz-16 fw-400 inter color-fff'} />
+              <CopyAddress dark={false} addr={id} className={'flex-1 fz-16 fw-400 inter color-fff'} />
             </div>
             <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
               <div className="fz-26 fw-500 color-fff">Blocks Signed</div>
               <div className="flex flex-col gap-4">
-                <div className="fz-12 fw-700 color-fff inter align-right">{signedPercent || '-'}%</div>
+                <div className="fz-12 fw-700 color-fff inter align-right">{+signedPercent || '-'}%</div>
                 <div
                   className="progress w-full h-2 radius-50"
                   style={{
@@ -921,12 +910,11 @@ export function Component() {
                       <td>
                         <div
                           style={{ width: 'fit-content' }}
-                          className={`pl-10 pr-10 radius-5 ${
-                            getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
+                          className={`pl-10 pr-10 radius-5 ${getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
                             'Success'
-                              ? 'bg-color-00DACC33'
-                              : 'bg-color-E9B26133'
-                          }`}
+                            ? 'bg-color-00DACC33'
+                            : 'bg-color-E9B26133'
+                            }`}
                         >
                           <span
                             className={
@@ -949,8 +937,8 @@ export function Component() {
                             start: i?.startBlock,
                             end: i?.endBlock,
                             current: currentBlockNumber,
-                          }) === 'Pending'
-                            ? '-'
+                          }) !== 'Success'
+                            ? 'Calculating'
                             : `${i.rewards} METIS`}
                         </span>
                       </td>
@@ -1003,19 +991,19 @@ export function Component() {
                           className="align-center underlined pointer"
                           onClick={() => {
                             if (!chainId) return;
-                            jumpLink(`${explorer[chainId]}/tx/${i?.id}`, '_blank');
+                            jumpLink(`${explorer[chainId]}/tx/${i?.txHash}`, '_blank');
                           }}
                         >
-                          {filterHideText(i?.id, 8)}
+                          {filterHideText(i?.txHash, 8)}
                         </td>
-                        <td>{filterHideText(i?.user, 6, 4)}</td>
+                        <td>{filterHideText(i?.sequencer?.address, 6, 4)}</td>
                         <td>
-                          <span className="capitalized">{switchTxType(i?.type)}</span>
+                          <span className="capitalized">{i?.action}</span>
                         </td>
                         <td>
                           {i?.deltaAmountReadable || i?.amountReadable} {i?.symbol}
                         </td>
-                        <td>{dayjs.unix(i?.blockTimestamp).format('DD/MM/YYYY HH:mm:ss')}</td>
+                        <td>{dayjs.unix(i?.timestamp).format('DD/MM/YYYY HH:mm:ss')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1041,6 +1029,7 @@ export function Component() {
       {/* modals */}
       <>
         <IncreaseModal
+          refetchGraph={refresh}
           visible={ifSelf && increaseVisible}
           onClose={() => {
             setIncreaseVisible(false);
@@ -1048,6 +1037,7 @@ export function Component() {
         />
 
         <UnlockModal
+          refetchGraph={refresh}
           visible={ifSelf && unlockVisible}
           onClose={() => {
             setUnlockVisible(false);
@@ -1055,6 +1045,7 @@ export function Component() {
         />
 
         <DetailModal
+          refetchGraph={refresh}
           visible={ifSelf && detailsVisible}
           onClose={() => {
             setDetailsVisible(false);
@@ -1062,6 +1053,7 @@ export function Component() {
         />
 
         <WithdrawModal
+          refetchGraph={refresh}
           visible={ifSelf && withdrawVisible}
           onClose={() => {
             setWithdrawVisible(false);
@@ -1069,6 +1061,7 @@ export function Component() {
         />
 
         <ClaimModal
+          refetchGraph={refresh}
           visible={ifSelf && claimVisible}
           onClose={() => {
             setClaimVisible(false);

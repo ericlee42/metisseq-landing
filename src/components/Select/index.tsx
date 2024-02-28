@@ -37,12 +37,10 @@ export interface SelectProps {
   arrowPlacement?: 'left' | 'right';
   style?: any;
   /**
-   * @zh 是否插入父级容器
    * @defaultValue false
    */
   follow?: boolean;
   /**
-   * @zh 自定义选中内容
    * @defaultValue none
    */
   renderSelector?: React.ReactNode;

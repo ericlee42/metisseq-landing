@@ -60,9 +60,6 @@ const Calendar = (props: CalendarProps) => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs>(value ? dayjs(value) : dayjs());
   const [arrayOfDays, setArrayOfDays] = React.useState<WeekType[]>([]);
 
-  /**
-   * 渲染日历头部，年份
-   */
   const handlePrevMonth = (params: 'month' | 'year') => {
     const minus = (currentMonth as Dayjs).subtract(1, params);
 
@@ -83,9 +80,6 @@ const Calendar = (props: CalendarProps) => {
     setCurrentMonth(plus);
   };
 
-  /**
-   * 日期
-   */
   const handleClickCells = (day: DayType) => {
     if (day.isOuterRange || !day.isCurrentMonth) {
       return;
@@ -150,12 +144,10 @@ const Calendar = (props: CalendarProps) => {
         isEndRangeHover: false,
       };
 
-      // 如果是日期范围选择器
       if (isForRange === true && Array.isArray(rangeDateList) && rangeDateList.length > 0) {
         const minDate: Dayjs = dayjs(rangeDateList[0]);
         formatedObject['isCurrentDay'] = date.isSame(minDate, 'day');
 
-        // 虚线框的 Hover 状态相关
         if (Array.isArray(hoverRangeDateList) && hoverRangeDateList.length === 2 && rangeDateList.length === 1) {
           const maxHoverDate: Dayjs = dayjs(Math.max(...hoverRangeDateList));
           const minHoverDate: Dayjs = dayjs(Math.min(...hoverRangeDateList));
@@ -165,10 +157,9 @@ const Calendar = (props: CalendarProps) => {
           formatedObject['isEndRangeHover'] = date.isSame(maxHoverDate, 'day') && !date.isSame(minHoverDate, 'day');
         }
 
-        // 选中最大值的时候
         if (rangeDateList[1]) {
           const maxDate = dayjs(rangeDateList[1]);
-          formatedObject['isInRangeHover'] = false; // 当选中最大值后，去掉 hover 情况
+          formatedObject['isInRangeHover'] = false;
           formatedObject['isEndRangeHover'] = false;
           formatedObject['isStartRangeHover'] = false;
           formatedObject['isMinDateInRange'] = date.isSame(minDate, 'day');
@@ -216,14 +207,11 @@ const Calendar = (props: CalendarProps) => {
   }, [formatDateObject, currentMonth]);
 
   React.useEffect(() => {
-    // console.log('更新日期');
     getAllDays();
   }, [getAllDays]);
 
-  // 更新日历所在月份
   React.useEffect(() => {
     if (isForRange === true && propMonth) {
-      // console.log('由外部 props 更新月份');
       setCurrentMonth(propMonth);
     }
   }, [propMonth, isForRange, getAllDays]);

@@ -6,7 +6,7 @@ import useWatchAsset from '@/hooks/useWatchAsset';
 import { getImageUrl, jumpLink } from '@/utils/tools';
 import { styled } from 'styled-components';
 import Hamburger from 'hamburger-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 
 const Container = styled.div`
@@ -184,7 +184,11 @@ const Header = () => {
         </div>
       ) : (
         <div className="flex flex-row gap-20 items-center">
-          {isDev ? <div onClick={watchMetis}>Add Metis</div> : null}
+          {isDev ? (
+            <div className="pointer" onClick={watchMetis}>
+              Add Metis
+            </div>
+          ) : null}
           <div className="flex flex-row items-center gap-20">
             {headerNav.map((i) => (
               <div

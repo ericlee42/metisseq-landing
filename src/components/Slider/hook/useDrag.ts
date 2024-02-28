@@ -64,7 +64,6 @@ export default function useDrag(
   updateCacheValueRef.current = updateCacheValue;
 
   const onStartMove: OnStartMove = (e) => {
-    // 清除valueIndex
     e.stopPropagation();
 
     setDraggingIndex(0);

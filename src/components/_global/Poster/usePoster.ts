@@ -4,7 +4,6 @@ import QRCode from 'qrcode';
 import { download } from '@/utils/tools';
 import { useUpdateEffect } from 'ahooks';
 
-// 海报信息
 export interface IShareData {
   symbol: string;
   inviteCode: string;
@@ -19,7 +18,7 @@ export interface IShareData {
 
 interface IShare extends IShareData {
   showAmount?: boolean;
-  shareWay: 0 | 1; // 0竖 1横
+  shareWay: 0 | 1; // 0 vertical 1 horizontal
   locale?: string;
 }
 

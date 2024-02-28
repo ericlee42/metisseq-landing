@@ -10,7 +10,7 @@ dayjs.extend(UTC);
 type FormatType = 'DD/MM/YYYY' | 'DD/MM/YYYY HH:mm:ss' | 'HH:mm:ss' | 'MM/DD' | 'MM/DD HH:mm';
 
 /**
- * UTC时间格式化
+ * UTC time
  * @param value
  * @param format
  * @returns
@@ -21,7 +21,7 @@ export const filterTime = (value: string | number | Dayjs, format: FormatType = 
 };
 
 /**
- * 首字母大写
+ * First letter upper case
  * @param value
  * @returns
  */
@@ -30,7 +30,7 @@ export const filterTitleCase = (value: string) => {
 };
 
 /**
- * 数字精度 -> decimalPlaces[does not retain trailing zeros]
+ * decimalPlaces[does not retain trailing zeros]
  * @param value
  * @param decimal
  * @returns
@@ -42,7 +42,7 @@ export const filterPrecision = (value: string | number | undefined, decimal = 4)
 };
 
 /**
- * 数字千位分割
+ * thousands filter
  * @param value
  * @param decimal
  * @returns
@@ -54,7 +54,7 @@ export const filterThousands = (value: string | number, decimal = 4) => {
 };
 
 /**
- * 隐藏文本信息
+ * hide text
  * @param value
  * @param before
  * @param after
@@ -67,7 +67,7 @@ export const filterHideText = (value: string | Address, before = 4, after = 4, f
 };
 
 /**
- * 最大值过滤
+ * max filter
  * @param value
  * @param max
  * @param decimal
@@ -80,7 +80,7 @@ export const filterMaxNumber = (value: string, max = '0', decimal = 4) => {
 };
 
 /**
- * 最小精度显示优化
+ * small decimal display
  * @param value
  * @param decimal
  * @param prefix
@@ -95,7 +95,7 @@ export const filterMinimumPrecision = (value: string, decimal = 4, prefix = '<')
 };
 
 /**
- * 大数缩写 -> K M B
+ * Short unit -> K M B
  * @param value
  * @param decimal
  * @returns
@@ -108,7 +108,7 @@ export const filterAbbreviation = (value: string, decimal = 2) => {
 };
 
 /**
- * 邮箱校验
+ * email
  * @param value
  * @returns
  */
@@ -119,7 +119,7 @@ export const verifyEmail = (value: string) => {
 };
 
 /**
- * 密码校验
+ * password
  * @param value
  * @returns
  */
@@ -132,7 +132,7 @@ export const verifyPassword = (value: string) => {
 };
 
 /**
- * IP校验
+ * IP
  * @param value
  * @returns
  */
@@ -143,7 +143,7 @@ export const verifyIP = (value: string) => {
 };
 
 /**
- * 数组元素重复校验
+ * repeat elements check
  * @param value
  * @param key
  * @returns
@@ -155,7 +155,7 @@ export const verifyRepeat = (value: any[], key?: string) => {
 };
 
 /**
- * 非负数校验
+ * number >= 0 validate
  * @param value
  * @param decimal
  * @returns
@@ -167,7 +167,7 @@ export const verifyValidNumber = (value: string, decimal = 4) => {
 };
 
 /**
- * 导入图片资源 -> Vite
+ * import image -> Vite
  * @param value
  * @returns
  */
@@ -188,7 +188,7 @@ export const uuidv4 = () => {
 };
 
 /**
- * 外链跳转
+ * link
  * @param address
  * @param target
  */
@@ -197,7 +197,7 @@ export const jumpLink = (address: string, target: '_self' | '_blank' = '_blank')
 };
 
 /**
- * 搜索时排除正则符号
+ * exclude regex
  * @param value
  * @returns
  */
@@ -206,7 +206,7 @@ export const filterSearch = (value: string) => {
 };
 
 /**
- * blob下载
+ * blob download
  * @param fileName
  * @param content
  * @returns
@@ -250,7 +250,6 @@ export const catchError = (e: any) => {
 };
 
 // warning
-// 判断当前输入值 如果为6位则除100，4位则直接返回，当ETH价格超过9999时失效
 export const dangerouslyFormatPriceWithFourDecimals = (_i: number | string) => {
   const _input = _i.toString();
   if (_input.length === 6) {
@@ -269,27 +268,19 @@ function getRandom(min: number, max: number) {
 }
 
 export const parseRevertReason = (data: string) => {
-  // 检查 data 是否以 "0x" 开头，如果不是，添加 "0x"
   if (!data.startsWith('0x')) {
     data = `0x${data}`;
   }
 
-  // 检查 data 是否表示一个有效的错误信息
   if (ethers.utils.hexDataLength(data) >= 4) {
-    // 获取错误信息的 "selector" 部分
-    // const selector = ethers.utils.hexDataSlice(data, 0, 4);
-    // 以太坊 EIP-838 定义了 "Error(string)" 函数的 selector 为 "0x08c379a0"
-    // if (selector === '0x08c379a0') {
-    // 获取错误信息的 "data" 部分
     const errorMsgData = data || ethers.utils.hexDataSlice(data, 4);
     try {
       console.log('errorMsgData', errorMsgData);
-      // 尝试解析错误信息
       const errorMsg = ethers.utils.defaultAbiCoder.decode(['string'], errorMsgData);
       console.log('errorMsg', errorMsg);
       return errorMsg[0];
     } catch (error) {
-      console.error('无法解析错误信息', error);
+      console.error('unkown error', error);
     }
     // }
   }
@@ -311,36 +302,23 @@ export const getExtensive = (res: any, option: { suffix?: any; prefix?: any }) =
 };
 
 export function formatNumber(value: string | number, roundingMode = 'round') {
-  // 尝试将输入转换为数字
   let num = Number(value);
-
-  // 检查转换后的值是否为有效数字
   if ((typeof value !== 'number' && typeof value !== 'string') || isNaN(num)) {
     return '-';
   }
-
-  // 根据提供的取整模式执行对应的取整操作
   let roundedNum;
   if (roundingMode === 'floor') {
     roundedNum = Math.floor(num * 100) / 100;
   } else if (roundingMode === 'ceil') {
     roundedNum = Math.ceil(num * 100) / 100;
   } else {
-    // 默认使用四舍五入
     roundedNum = Math.round(num * 100) / 100;
   }
-
-  // 转换为字符串
   let numStr = roundedNum.toString();
-
-  // 分割整数和小数部分
   let parts = numStr.split('.');
-
-  // 如果不存在小数部分或者小数部分为0，则返回格式化的整数
   if (!parts[1] || parts[1] === '00' || parseFloat(`0.${parts[1]}`) === 0) {
     return parseInt(roundedNum?.toString(), 10).toLocaleString();
   } else {
-    // 存在小数部分，保留两位小数
     parts[0] = parseInt(parts[0]).toLocaleString();
     return parts.join('.');
   }

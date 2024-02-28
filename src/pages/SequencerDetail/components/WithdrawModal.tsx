@@ -1,10 +1,11 @@
-import { Button, Input, Modal, message } from '@/components';
+import { Button, Modal } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import Loading from '@/components/_global/Loading';
+import { l2Gas } from '@/configs/common';
+import useAuth from '@/hooks/useAuth';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
-import { catchError } from '@/utils/tools';
 import { useBoolean, useCountDown } from 'ahooks';
 import dayjs from 'dayjs';
 import { ethers } from 'ethers';
@@ -55,9 +56,9 @@ const Container = styled(Modal)`
   }
 `;
 
-const WithdrawModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: any; onClose?: any }) => {
-  const { sequencerInfo } = useSequencerInfo();
-
+const WithdrawModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
+  const { sequencerInfo, run } = useSequencerInfo();
+  const { chainId } = useAuth(true);
   const lockedup = React.useMemo(
     () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
     [sequencerInfo?.sequencerLock],
@@ -83,12 +84,15 @@ const WithdrawModal = ({ visible, onOk, onClose }: { visible: boolean; onOk?: an
       setTrue();
       await unlockClaim({
         sequencerId,
-        withdrawRewardToL2: false,
+        l2Gas: l2Gas[chainId?.toString() as string],
       });
       setFalse();
     } catch (e) {
       setFalse();
       // message.error(catchError(e));
+    } finally {
+      run?.({ sequencerId: sequencerId, self: true });
+      refetchGraph?.();
     }
   };
 
