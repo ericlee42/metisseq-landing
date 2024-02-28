@@ -40,9 +40,9 @@ const useSequencerInfo = () => {
   };
 
   const handleSequencerCal = (sequencerInfo: any, multicallFuntions: any) => {
-    const result: any = {};
-
+    let finalRes: any = {};
     sequencerInfo.forEach((i: any, index: string | number) => {
+      const result: any = {};
       if (Array.isArray(i?.result)) {
         let flattedData: any = {};
 
@@ -58,31 +58,31 @@ const useSequencerInfo = () => {
         const j = i?.result || 0;
         result[multicallFuntions[index].functionName] = j?.toString();
       }
+
+      const status = result?.sequencers?.status;
+      const unlockClaimTime = result?.sequencers?.unlockClaimTime?.toString();
+      // const reward = BigNumber(result?.sequencers?.reward || '0').minus(1)?.toString();
+      const reward = result?.sequencers?.reward?.toString();
+      const rewardReadable = ethers.utils.formatEther(reward || '0').toString();
+
+      const ifActive = BigNumber(status).eq(2) && BigNumber(result?.sequencers?.deactivationBatch?.toString()).isZero();
+      const ifInUnlockProgress = !BigNumber(unlockClaimTime).isZero();
+
+      const sequencerLock = BigNumber(result?.sequencers?.amount).toString();
+      const sequencerLockReadable = BigNumber(result?.sequencers?.amount).div(1e18).toString();
+
+      finalRes[result?.sequencers?.owner?.toLowerCase()] = {
+        ...result,
+        status,
+        unlockClaimTime,
+        reward,
+        rewardReadable,
+        ifActive,
+        ifInUnlockProgress,
+        sequencerLock,
+        sequencerLockReadable,
+      };
     });
-
-    const status = result?.sequencers?.status;
-    const unlockClaimTime = result?.sequencers?.unlockClaimTime?.toString();
-    // const reward = BigNumber(result?.sequencers?.reward || '0').minus(1)?.toString();
-    const reward = result?.sequencers?.reward?.toString();
-    const rewardReadable = ethers.utils.formatEther(reward || '0').toString();
-
-    const ifActive = BigNumber(status).eq(2) && BigNumber(result?.sequencers?.deactivationBatch?.toString()).isZero();
-    const ifInUnlockProgress = !BigNumber(unlockClaimTime).isZero();
-
-    const sequencerLock = BigNumber(result?.sequencers?.amount).toString();
-    const sequencerLockReadable = BigNumber(result?.sequencers?.amount).div(1e18).toString();
-
-    const finalRes = {
-      ...result,
-      status,
-      unlockClaimTime,
-      reward,
-      rewardReadable,
-      ifActive,
-      ifInUnlockProgress,
-      sequencerLock,
-      sequencerLockReadable
-    };
 
     return finalRes;
   };
@@ -137,19 +137,17 @@ const useSequencerInfo = () => {
       contracts: multiP,
     });
 
-    const listedData = s.map((i, index) => {
-      return res?.slice(index * 3, index * 3 + 3);
-    });
-
-    const finalRes = listedData.map((i) => {
+    const finalRes = [res].map((i) => {
       return handleSequencerCal(i, multiP);
     });
 
+    const sequencerInfo = finalRes?.[0] ? Object.values(finalRes?.[0]) : null;
+
     if (self) {
-      setSequencerInfo(finalRes?.[0]);
+      setSequencerInfo(sequencerInfo);
     }
 
-    return finalRes;
+    return sequencerInfo;
   };
 
   const props = useRequest(intervalUpdate, {

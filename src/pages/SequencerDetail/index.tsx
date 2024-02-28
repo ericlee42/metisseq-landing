@@ -296,20 +296,19 @@ export function Component() {
       eles[0].scrollTop = 0;
     }
   }, []);
-  const { address, chainId, realChainId } = useAuth(true);
+  const { address, chainId } = useAuth(true);
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
   const { id } = useParams();
   const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners } = useSequencerInfo();
+  const sequencerInfo: any = sequencerInfoList?.[0];
 
   const currentSequencerInfo = React.useMemo(() => {
     if (!allSequencerInfo || !id) return null;
     return allSequencerInfo?.[id?.toLowerCase()];
   }, [allSequencerInfo, id]);
 
-  const whitelistedAddress = React.useMemo(() => currentSequencerInfo?.address || '-', [currentSequencerInfo?.address]);
-
-  const sequencerInfo = sequencerInfoList?.[0];
+  const whitelistedAddress = React.useMemo(() => sequencerInfo?.sequencers?.owner?.toLowerCase() || '-', [sequencerInfo?.sequencers?.owner]);
 
   const { sequencerId, blockReward, metisBalance } = useUpdate();
 

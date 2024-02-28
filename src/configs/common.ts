@@ -161,4 +161,4 @@ export const l2Gas = {
 export const defaultRewardRecipient = '0x0000000000000000000000000000000000000000';
 
 export const l2Provider = new ethers.providers.JsonRpcProvider(VITE_APP_L2_RPC);
-l2Provider.pollingInterval = 6000;
+l2Provider.pollingInterval = 12000;

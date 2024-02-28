@@ -1,8 +1,8 @@
-import { createBrowserRouter, Navigate, Link, RouterProvider, redirect, useNavigate } from 'react-router-dom';
+import { createHashRouter, Navigate, Link, RouterProvider, redirect, useNavigate } from 'react-router-dom';
 import BasicLayout from '@/layouts';
 import { useEffect } from 'react';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <BasicLayout />,
@@ -61,8 +61,6 @@ const router = createBrowserRouter([
 ]);
 
 function NoMatch() {
-  // console.log('123123');
-
   const navigate = useNavigate();
 
   useEffect(() => {
