@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { Button, Input, Modal, Tooltip } from '@/components';
 import Loading from '@/components/_global/Loading';
-import { l2Gas } from '@/configs/common';
 import useAuth from '@/hooks/useAuth';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
@@ -77,13 +76,10 @@ const ClaimModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: a
   const [claimLoading, { setTrue, setFalse }] = useBoolean(false);
 
   const handleClaim = async () => {
-    if (!sequencerInfo?.sequencers?.rewardRecipient) return;
+    if (!sequencerInfo?.sequencers?.rewardRecipient || BigNumber(sequencerInfo?.reward).lte(0)) return;
     try {
       setTrue();
-      await withdrawRewards({
-        sequencerId,
-        l2Gas: l2Gas?.[chainId?.toString() as string],
-      });
+      await withdrawRewards({ sequencerId });
       setFalse();
       onClose?.();
     } catch (e) {

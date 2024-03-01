@@ -3,14 +3,16 @@ import { message } from '@/components';
 import useAuth from './useAuth';
 import { contracts } from '@/configs/common';
 import { catchError } from '@/utils/tools';
-import { calTxData, sendTx, txAwait } from '@/utils/tx';
+import { calTxData, getL2GasFee, sendTx, txAwait } from '@/utils/tx';
 import useChainWatcher from './useChainWatcher';
 import { Address } from 'viem';
+import useSequencerInfo from './useSequencerInfo';
+import BigNumber from 'bignumber.js';
 
 const useLock = () => {
-  const { connector, address } = useAuth(true);
+  const { connector } = useAuth(true);
   const { chain, unsupported } = useChainWatcher();
-
+  const { runOnce } = useSequencerInfo();
 
   const lockFor = async ({ address, amount, pubKey }: { address: string; amount: string; pubKey: string }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
@@ -42,7 +44,7 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
-    } 
+    }
   };
 
   const relock = async ({
@@ -55,6 +57,16 @@ const useLock = () => {
     lockRewards: boolean;
   }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
+
+    let l2Fee = '0x';
+    const latestStatus = await runOnce({ sequencerId, self: true });
+    const needL2Fee = BigNumber(latestStatus?.[0]?.reward || 0).gt(0);
+
+    if (needL2Fee) {
+      const l2GasFee = await getL2GasFee({ chainId: chain?.id });
+      l2Fee = l2GasFee?.l2Fee;
+    }
+
     try {
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
@@ -70,7 +82,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: '0x0',
+        value: l2Fee,
         data: txData,
         chain: chain,
       });
@@ -84,11 +96,13 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
-    } 
+    }
   };
 
-  const withdrawRewards = async ({ sequencerId, l2Gas }: { sequencerId: string; l2Gas: string }) => {
-    if (unsupported || !chain?.id || !l2Gas) throw new Error('Unsupported Chain');
+  const withdrawRewards = async ({ sequencerId }: { sequencerId: string }) => {
+    if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
+
+    const { l2Gas, l2Fee } = await getL2GasFee({ chainId: chain?.id });
     try {
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
@@ -104,7 +118,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: '0x0',
+        value: l2Fee,
         data: txData,
         chain: chain,
       });
@@ -119,12 +133,14 @@ const useLock = () => {
       console.log('e', e);
       message.error(catchError(e) || 'Fail');
       throw e;
-    } 
+    }
   };
 
-  const unlock = async ({ sequencerId, l2Gas }: { sequencerId: string; l2Gas: string }) => {
-    if (unsupported || !chain?.id || !l2Gas) throw new Error('Unsupported Chain');
+  const unlock = async ({ sequencerId }: { sequencerId: string }) => {
+    if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
     try {
+      const { l2Gas, l2Fee } = await getL2GasFee({ chainId: chain?.id });
+
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
         abi: contracts.lock?.[chain?.id?.toString()]?.abi,
@@ -139,7 +155,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: '0x0',
+        value: l2Fee,
         data: txData,
         chain: chain,
       });
@@ -153,12 +169,17 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
-    } 
+    }
   };
 
-  const unlockClaim = async ({ sequencerId, l2Gas }: { sequencerId: string; l2Gas: string }) => {
-    if (unsupported || !chain?.id || !l2Gas) throw new Error('Unsupported Chain');
+  const unlockClaim = async ({ sequencerId }: { sequencerId: string }) => {
+    if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
     try {
+      const latestStatus = await runOnce({ sequencerId, self: true });
+      const needL2Fee = BigNumber(latestStatus?.[0]?.reward || 0).gt(0);
+
+      const { l2Gas, l2Fee } = await getL2GasFee({ chainId: chain?.id });
+
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
         abi: contracts.lock?.[chain?.id?.toString()]?.abi,
@@ -173,7 +194,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: '0x0',
+        value: needL2Fee ? l2Fee : '0x',
         data: txData,
         chain: chain,
       });
@@ -187,7 +208,7 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
-    } 
+    }
   };
 
   // setSequencerRewardRecipient

@@ -42,13 +42,12 @@ const useL2EpochStatus = () => {
       // const l2Block = await getBlock();
       const l2BlockHeight = l2Block?.toString();
       const { currentEpoch, prevEpoch } = await getL2CurrentEpoch();
-
-      if (currentEpoch?.startBlock.lte(l2BlockHeight) && currentEpoch.endBlock.gt(l2BlockHeight)) {
+      if (currentEpoch?.startBlock.lte(l2BlockHeight) && currentEpoch.endBlock.gte(l2BlockHeight)) {
         setCurrentEpochRelatedSeqAddress(currentEpoch?.signer);
         return;
       }
 
-      if (prevEpoch?.startBlock.lte(l2BlockHeight) && prevEpoch.endBlock.gt(l2BlockHeight)) {
+      if (prevEpoch?.startBlock.lte(l2BlockHeight) && prevEpoch.endBlock.gte(l2BlockHeight)) {
         setCurrentEpochRelatedSeqAddress(prevEpoch?.signer);
         return;
       }
@@ -58,6 +57,7 @@ const useL2EpochStatus = () => {
       return currentEpochRelatedSeqAddress;
     } catch (e) {
       // todo retry & error
+      console.log('checkSeqStatus error', e);
     } finally {
       setCurrentActiveSeqAddressLoading(false);
     }

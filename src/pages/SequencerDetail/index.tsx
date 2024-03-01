@@ -301,6 +301,7 @@ export function Component() {
 
   const { id } = useParams();
   const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners } = useSequencerInfo();
+
   const sequencerInfo: any = sequencerInfoList?.[0];
 
   const currentSequencerInfo = React.useMemo(() => {
@@ -357,15 +358,15 @@ export function Component() {
       fetchUserTxRun(id, chainId);
       fetchBlockTxRun(id, chainId);
     }
-  }
+  };
 
-  const refresh = ()=>{
+  const refresh = () => {
     run({ sequencerId: curUserActiveSequencerId, self: ifSelf });
-    refetchGraph() 
-  }
+    refetchGraph();
+  };
 
   React.useEffect(() => {
-    refetchGraph()
+    refetchGraph();
   }, [id, chainId]);
 
   const txCol = React.useMemo(() => {
@@ -468,7 +469,7 @@ export function Component() {
       setApproveLoadingFalse();
       // catchError(e);
     } finally {
-      refresh?.()
+      refresh?.();
     }
   };
 

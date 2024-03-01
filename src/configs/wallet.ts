@@ -4,8 +4,9 @@ import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
 import { createPublicClient, defineChain, http } from 'viem';
 
 import { isProd } from './common';
-import { goerli, holesky, sepolia } from 'viem/chains';
+import { holesky, sepolia } from 'viem/chains';
 
+// disable wss, which is not available
 const _holesky = defineChain({
   id: 17000,
   network: 'holesky',
@@ -61,11 +62,6 @@ export const mainnetTxPublicClient = createPublicClient({
   // transport,
   transport: http(),
 });
-export const goerliTxPublicClient = createPublicClient({
-  chain: goerli,
-  // transport,
-  transport: http(),
-});
 export const holeskyTxPublicClient = createPublicClient({
   chain: holesky,
   // transport,
@@ -80,7 +76,6 @@ export const sepoliaTxPublicClient = createPublicClient({
 
 export const txPublicClients = {
   [sepolia.id.toString()]: sepoliaTxPublicClient,
-  [goerli.id.toString()]: goerliTxPublicClient,
   [mainnet.id.toString()]: mainnetTxPublicClient,
   [holesky.id.toString()]: holeskyTxPublicClient,
 };

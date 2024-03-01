@@ -107,8 +107,8 @@ const RewardReceipientModal = () => {
         return;
       }
       const ifSameAddress =
-        checksumAddress(recipient as Address) ===
-        checksumAddress(sequencerInfo?.sequencers?.rewardRecipient as Address);
+        (recipient as Address)?.toLowerCase() ===
+        (sequencerInfo?.sequencers?.rewardRecipient as Address)?.toLowerCase();
       if (ifSameAddress) {
         setHintMsg('You have changed the receiving address, which cannot be changed after confirmation.');
       }

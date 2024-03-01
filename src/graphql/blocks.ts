@@ -3,7 +3,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query MyQuery($address: String) {
-    epoches(first: 25, orderDirection: desc, orderBy: id, where: { signer: $address }) {
+    epoches(first: 25, orderDirection: desc, orderBy: endBlock, where: { signer: $address }) {
       id
       startBlock
       endBlock

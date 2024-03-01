@@ -1,7 +1,6 @@
 import { Button, Modal } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import Loading from '@/components/_global/Loading';
-import { l2Gas } from '@/configs/common';
 import useAuth from '@/hooks/useAuth';
 import useBalance from '@/hooks/useBalance';
 import useLock from '@/hooks/useLock';
@@ -104,10 +103,7 @@ const UnlockModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: 
     if (!lockedup || BigNumber(lockedup).isZero() || !sequencerId) return;
     try {
       setTrue();
-      await unlock({
-        sequencerId: sequencerId,
-        l2Gas: l2Gas?.[chainId?.toString() as string],
-      });
+      await unlock({ sequencerId: sequencerId });
       setFalse();
       onClose?.();
       // message.success("Success")

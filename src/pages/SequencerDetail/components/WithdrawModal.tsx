@@ -1,7 +1,6 @@
 import { Button, Modal } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import Loading from '@/components/_global/Loading';
-import { l2Gas } from '@/configs/common';
 import useAuth from '@/hooks/useAuth';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
@@ -82,10 +81,7 @@ const WithdrawModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
     if (countdown) return;
     try {
       setTrue();
-      await unlockClaim({
-        sequencerId,
-        l2Gas: l2Gas[chainId?.toString() as string],
-      });
+      await unlockClaim({ sequencerId });
       setFalse();
     } catch (e) {
       setFalse();

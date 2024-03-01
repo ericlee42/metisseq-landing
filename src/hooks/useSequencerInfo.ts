@@ -10,6 +10,33 @@ import { getAllUser } from '@/services';
 import React from 'react';
 import useAuth from './useAuth';
 
+interface baseSeqInfo {
+  amount: string;
+  reward: string;
+  activationBatch: string;
+  updatingBatch: string;
+  deactivationBatch: string;
+  deactivationTime: string;
+  unlockClaimTime: string;
+  nonce: string;
+  owner: string;
+  signer: string;
+  pubkey: string;
+  rewardRecipient: string;
+  status: string;
+}
+interface SeqInfo {
+  sequencers: baseSeqInfo;
+  status: string;
+  unlockClaimTime: string;
+  reward: string;
+  rewardReadable: string;
+  ifActive: boolean;
+  ifInUnlockProgress: boolean;
+  sequencerLock: string;
+  sequencerLockReadable: string;
+}
+
 const useSequencerInfo = () => {
   const { chainId } = useAuth(true);
   const [sequencerInfo, setSequencerInfo] = useRecoilState(recoilSequencerInfo);
@@ -93,7 +120,7 @@ const useSequencerInfo = () => {
       sequencerId: undefined,
       self: false,
     },
-  ) => {
+  ): Promise<SeqInfo[] | null | undefined> => {
     const {
       sequencerId,
       sequencerIds,
@@ -111,18 +138,6 @@ const useSequencerInfo = () => {
     const s = sequencerIds || [sequencerId];
     const multiP: any[] = s.reduce((prev: any, next: any) => {
       const n = [
-        // {
-        //   ...contracts.lock?.[chainId?.toString()],
-        //   chainId,
-        //   functionName: 'sequencerReward', // unknown
-        //   args: [next],
-        // },
-        // {
-        //   ...contracts.lock?.[chainId?.toString()],
-        //   chainId,
-        //   functionName: 'sequencerLock', // unknown
-        //   args: [next],
-        // },
         {
           ...contracts.lock?.[chainId?.toString()],
           chainId,
@@ -144,10 +159,11 @@ const useSequencerInfo = () => {
     const sequencerInfo = finalRes?.[0] ? Object.values(finalRes?.[0]) : null;
 
     if (self) {
-      setSequencerInfo(sequencerInfo);
+      setSequencerInfo(sequencerInfo?.[0]);
     }
 
-    return sequencerInfo;
+    // todo
+    return sequencerInfo as SeqInfo[];
   };
 
   const props = useRequest(intervalUpdate, {

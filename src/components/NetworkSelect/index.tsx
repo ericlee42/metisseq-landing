@@ -3,7 +3,7 @@ import { Select } from '..';
 import useChainWatcher from '@/hooks/useChainWatcher';
 import { useEffect, useMemo, useState } from 'react';
 import { mainnet, useNetwork } from 'wagmi';
-import { goerli, holesky, sepolia } from 'viem/chains';
+import { holesky } from 'viem/chains';
 import { isProd } from '@/configs/common';
 import useDevice from '@/hooks/useDevice';
 

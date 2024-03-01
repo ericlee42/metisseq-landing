@@ -1,5 +1,18 @@
+import { contracts } from '@/configs/common';
 import { txPublicClients } from '@/configs/wallet';
-import { encodeFunctionData, Abi, decodeFunctionResult, decodeEventLog, WalletClient } from 'viem';
+import oracleAbi from '@/configs/abi/oracle.json';
+import BigNumber from 'bignumber.js';
+import {
+  encodeFunctionData,
+  Abi,
+  decodeFunctionResult,
+  decodeEventLog,
+  WalletClient,
+  Address,
+  formatUnits,
+  formatEther,
+  toHex,
+} from 'viem';
 
 export interface SendTxInterface {
   walletClient: WalletClient;
@@ -146,6 +159,51 @@ export const sendTx = async ({ walletClient, to, account, value, data, chain }: 
       ...p,
     });
     return hash;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const getL2GasFee = async ({ chainId }: { chainId: string | number }) => {
+  if (!chainId) {
+    throw new Error('Invalid Clent');
+  }
+  try {
+    const txPublicClient = txPublicClients[chainId.toString()];
+
+    const oracleAddress = await txPublicClient?.readContract({
+      address: contracts?.lockAddressManager?.[chainId?.toString()]?.address,
+      abi: contracts?.lockAddressManager?.[chainId?.toString()]?.abi,
+      functionName: 'getAddress',
+      args: ['MVM_DiscountOracle'],
+    });
+
+    let l2Gas = (await txPublicClient?.readContract({
+      address: oracleAddress as Address,
+      abi: oracleAbi,
+      functionName: 'getMinL2Gas',
+      args: [],
+    })) as bigint;
+
+    l2Gas = l2Gas + 20_000n;
+
+    const discount =
+      1n ||
+      (await txPublicClient?.readContract({
+        address: oracleAddress as Address,
+        abi: oracleAbi,
+        functionName: 'getDiscount',
+        args: [],
+      }));
+
+    const l2Fee = BigNumber(l2Gas?.toString?.() || 0)
+      .multipliedBy(discount?.toString?.() || 0)
+      .toString();
+
+    return {
+      l2Fee,
+      l2Gas,
+    };
   } catch (e) {
     throw e;
   }
