@@ -60,15 +60,6 @@ const useLock = () => {
   }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
 
-    let l2Fee = '0x';
-    const latestStatus = await runOnce({ sequencerId, self: true });
-    const needL2Fee = BigNumber(latestStatus?.[0]?.reward || 0).gt(0);
-
-    if (needL2Fee) {
-      const l2GasFee = await getL2GasFee({ chainId: chain?.id });
-      l2Fee = l2GasFee?.l2Fee;
-    }
-
     try {
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
@@ -84,7 +75,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: l2Fee,
+        value: '0x0',
         data: txData,
         chain: chain,
       });
@@ -196,7 +187,7 @@ const useLock = () => {
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
-        value: needL2Fee ? l2Fee : '0x',
+        value: needL2Fee ? l2Fee : '0x0',
         data: txData,
         chain: chain,
       });

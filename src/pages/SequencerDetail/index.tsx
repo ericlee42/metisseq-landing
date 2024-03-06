@@ -287,20 +287,20 @@ export function Component() {
   const { address, chainId } = useAuth();
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
-  const { id } = useParams();
+  const { id } = useParams(); // signer addr
   const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners } = useSequencerInfo();
 
   const sequencerInfo: any = sequencerInfoList?.[0];
-
-  const currentSequencerInfo = React.useMemo(() => {
-    if (!allSequencerInfo || !id) return null;
-    return allSequencerInfo?.[id?.toLowerCase()];
-  }, [allSequencerInfo, id]);
 
   const whitelistedAddress = React.useMemo(
     () => sequencerInfo?.sequencers?.owner?.toLowerCase() || '-',
     [sequencerInfo?.sequencers?.owner],
   );
+
+  const currentSequencerInfo = React.useMemo(() => {
+    if (!allSequencerInfo || !whitelistedAddress) return null;
+    return allSequencerInfo?.[whitelistedAddress?.toLowerCase()];
+  }, [allSequencerInfo, whitelistedAddress]);
 
   const { sequencerId, blockReward, metisBalance } = useUpdate();
 
@@ -318,9 +318,9 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-      fetchUserTxData?.histories?.[0]?.sequencer?.id
+      (fetchUserTxData?.histories?.[0]?.sequencer?.id
         ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-        : undefined,
+        : undefined),
     [fetchUserTxData?.histories],
   );
 

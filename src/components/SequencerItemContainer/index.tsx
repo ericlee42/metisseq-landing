@@ -30,7 +30,7 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
   // data?.producingBlocks - latest 5 rotate sequencer height match
   // if height is between epoch range, last produce time > 60s, return warning
   const producingStatus = useMemo(() => {
-    // 下一个Next Period
+    // Next Period
     if (
       nextEpochRelatedSeqAddress &&
       ele?.sequencers?.signer?.toLowerCase() === nextEpochRelatedSeqAddress?.toLowerCase()
@@ -40,7 +40,7 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
       }
       return { label: 'Producing', color: '00EA5E' };
     }
-    // 当前Producing
+    // current Producing
     if (
       currentEpochRelatedSeqAddress &&
       ele?.sequencers?.signer?.toLowerCase() === currentEpochRelatedSeqAddress?.toLowerCase()
@@ -61,8 +61,8 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
   }, [ele?.ifActive, ele?.ifInUnlockProgress, producingStatus]);
 
   const totlaEarned = useMemo(() => {
-    // 待领取奖励+已领取奖励
-    return BigNumber(ele?.rewardReadable).plus(BigNumber(ele?.claimAmount).div(1e18)).toString();
+    // claimable + claimed
+    return BigNumber(ele?.rewardReadable || 0).plus(BigNumber(ele?.claimAmount || 0).div(1e18)).toString();
   }, [ele?.claimAmount, ele?.rewardReadable]);
 
   return (
