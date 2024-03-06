@@ -2,7 +2,7 @@ import { serviceUrl } from '@/configs/common';
 import axios from 'axios';
 
 const _axios = axios.create({
-  baseURL: `${serviceUrl}`,
+  // baseURL: `${serviceUrl}`,
   timeout: 30000,
 });
 
@@ -37,7 +37,8 @@ _axios.interceptors.request.use((config) => {
 
 export const getAllUser = async () => {
   try {
-    const res: any = await _axios.get('/all.json');
+    if (!serviceUrl) return;
+    const res: any = await _axios.get(`${serviceUrl}/all.json`);
 
     if (!res?.length) return null;
     const resolvedResult = res

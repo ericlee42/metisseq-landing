@@ -1,7 +1,7 @@
+/* eslint-disable max-len */
 import { Button, Modal } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import Loading from '@/components/_global/Loading';
-import useAuth from '@/hooks/useAuth';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
@@ -57,7 +57,6 @@ const Container = styled(Modal)`
 
 const WithdrawModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
   const { sequencerInfo, run } = useSequencerInfo();
-  const { chainId } = useAuth(true);
   const lockedup = React.useMemo(
     () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
     [sequencerInfo?.sequencerLock],

@@ -66,8 +66,19 @@ export const recoilL2Block = atom<number>({
   default: 0,
 });
 
+export const recoilL2BlockLoading = atom<boolean>({
+  key: 'l2BlockLoading',
+  default: true,
+});
+
+
 export const recoilCurrentActiveSeqAddress = atom<undefined | Address>({
   key: 'currentActiveSeqAddress',
+  default: undefined,
+});
+
+export const recoilNextActiveSeqAddress = atom<undefined | Address>({
+  key: 'nextActiveSeqAddress',
   default: undefined,
 });
 

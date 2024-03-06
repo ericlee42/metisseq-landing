@@ -61,7 +61,7 @@ const Container = styled(Modal)`
 const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
   const { sequencerInfo, run } = useSequencerInfo();
 
-  const { address } = useAuth(true);
+  const { address } = useAuth();
 
   const { sequencerId } = useUpdate();
 

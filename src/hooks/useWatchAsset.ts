@@ -14,7 +14,7 @@ import useAuth from './useAuth';
 // };
 
 const useWatchAsset = () => {
-  const { connector, chainId } = useAuth(true);
+  const { connector, chainId } = useAuth();
   //
 
   const watchAsset = async ({

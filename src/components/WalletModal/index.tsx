@@ -22,7 +22,7 @@ const Container = styled.div`
 `;
 
 const WalletModal = () => {
-  const { connect, isConnected, isConnecting, address } = useAuth(true);
+  const { connect, isConnected, isConnecting, address } = useAuth();
 
   const [claimable, setClaimable] = React.useState(false);
   const [visible, setVisible] = React.useState(false);

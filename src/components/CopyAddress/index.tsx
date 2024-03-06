@@ -34,7 +34,7 @@ const CopyAddress = ({
   copyTrigger?: any;
   dark?: boolean;
 }) => {
-  const { address } = useAuth(true);
+  const { address } = useAuth();
 
   const copy = () => {
     if (!(addr || address)) return;

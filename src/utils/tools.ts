@@ -2,8 +2,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import UTC from 'dayjs/plugin/utc';
 import BigNumber from 'bignumber.js';
 import { uniq, uniqBy } from 'lodash-es';
-import { Address } from 'wagmi';
+import { Address, mainnet, sepolia } from 'wagmi';
 import { ethers } from 'ethers';
+import { holesky } from 'viem/chains';
+import { VITE_APP_L2_CHAIN_ID, VITE_APP_L2_RPC, VITE_APP_L2_TESTNET_CHAIN_ID, VITE_APP_L2_TESTNET_RPC, l2Provider } from '@/configs/common';
 
 dayjs.extend(UTC);
 
@@ -323,3 +325,29 @@ export function formatNumber(value: string | number, roundingMode = 'round') {
     return parts.join('.');
   }
 }
+
+export function getL2RpcByL1ChainId(chianId) {
+  switch (+chianId) {
+    case mainnet.id:
+      return VITE_APP_L2_RPC;
+    case sepolia.id:
+      return VITE_APP_L2_TESTNET_RPC;
+    case holesky.id:
+      return VITE_APP_L2_TESTNET_RPC;
+    default:
+      return undefined;
+  }
+};
+
+export function getL2ChainIdByL1ChainId(chianId) {
+  switch (+chianId) {
+    case mainnet.id:
+      return VITE_APP_L2_CHAIN_ID;
+    case sepolia.id:
+      return VITE_APP_L2_TESTNET_CHAIN_ID;
+    case holesky.id:
+      return VITE_APP_L2_TESTNET_CHAIN_ID;
+    default:
+      return undefined;
+  }
+};

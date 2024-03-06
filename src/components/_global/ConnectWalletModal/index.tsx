@@ -14,7 +14,7 @@ const ConnectWalletModal = ({
   onCancel: () => void;
   onOk: () => void;
 }) => {
-  const { connect, isConnected } = useAuth(true);
+  const { connect, isConnected } = useAuth();
   useEffect(() => {
     if (isConnected) {
       onOk();

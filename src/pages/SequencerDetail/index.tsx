@@ -28,20 +28,8 @@ import useMetisPrice from '@/hooks/useMetisPrice';
 import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
-
-const getSignedStatus = ({
-  start,
-  end,
-  current,
-}: {
-  start: string | number;
-  end: string | number;
-  current: string | number;
-}) => {
-  if (BigNumber(current).gte(end)) return 'Success';
-  if (BigNumber(current).lt(end) && BigNumber(current).gte(start)) return 'In Progress';
-  return 'Pending';
-};
+import Row from './components/Row';
+import Avatar from '@/components/Avatar';
 
 const Container = styled.section`
   .half-w {
@@ -296,7 +284,7 @@ export function Component() {
       eles[0].scrollTop = 0;
     }
   }, []);
-  const { address, chainId } = useAuth(true);
+  const { address, chainId } = useAuth();
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
   const { id } = useParams();
@@ -309,7 +297,10 @@ export function Component() {
     return allSequencerInfo?.[id?.toLowerCase()];
   }, [allSequencerInfo, id]);
 
-  const whitelistedAddress = React.useMemo(() => sequencerInfo?.sequencers?.owner?.toLowerCase() || '-', [sequencerInfo?.sequencers?.owner]);
+  const whitelistedAddress = React.useMemo(
+    () => sequencerInfo?.sequencers?.owner?.toLowerCase() || '-',
+    [sequencerInfo?.sequencers?.owner],
+  );
 
   const { sequencerId, blockReward, metisBalance } = useUpdate();
 
@@ -325,9 +316,18 @@ export function Component() {
     data: fetchBlockTxData,
   }: any = useRequest(fetchBlock, { manual: true });
 
+  // const {
+  //   run: fetchrewardBatchesRun,
+  //   loading: fetchrewardBatchesLoading,
+  //   data: fetchrewardBatchesData,
+  // }: any = useRequest(fetchrewardBatches, { manual: true });
+
   const curUserActiveSequencerId = React.useMemo(
-    () => (fetchUserTxData?.[0]?.sequencer?.id ? BigNumber(fetchUserTxData?.[0]?.sequencer?.id).toString() : undefined),
-    [fetchUserTxData],
+    () =>
+      (fetchUserTxData?.histories?.[0]?.sequencer?.id
+        ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
+        : undefined),
+    [fetchUserTxData?.histories],
   );
 
   const ifSelf = React.useMemo(
@@ -357,6 +357,7 @@ export function Component() {
     if (id) {
       fetchUserTxRun(id, chainId);
       fetchBlockTxRun(id, chainId);
+      // fetchrewardBatchesRun(chainId);
     }
   };
 
@@ -370,8 +371,8 @@ export function Component() {
   }, [id, chainId]);
 
   const txCol = React.useMemo(() => {
-    return fetchUserTxData?.sort((a, b) => +b?.timestamp - +a?.timestamp);
-  }, [fetchUserTxData]);
+    return fetchUserTxData?.histories?.sort((a, b) => +b?.timestamp - +a?.timestamp);
+  }, [fetchUserTxData?.histories]);
 
   const [txCurrentPage, setTxCurrentPage] = React.useState(1);
   const txTotal = React.useMemo(() => txCol?.length || 0, [txCol?.length]);
@@ -385,8 +386,9 @@ export function Component() {
     return txCol?.slice(fromIndex, toIndex);
   }, [txCurrentPage, txCol]);
 
+  // sequencer.reward + claimed
   const totalRewards = React.useMemo(() => {
-    const claimedAmount = fetchUserTxData
+    const claimedAmount = fetchUserTxData?.histories
       ?.filter((i) => i.action === 'Claim')
       ?.reduce((prev: any, next: any) => {
         return BigNumber(prev).plus(next?.amount).toString();
@@ -399,15 +401,29 @@ export function Component() {
     return BigNumber(sequencerInfo?.rewardReadable || 0)
       .plus(claimedAmountReadable || 0)
       .toString();
-  }, [fetchUserTxData, sequencerInfo?.rewardReadable]);
+  }, [fetchUserTxData?.histories, sequencerInfo?.rewardReadable]);
 
   const blocksCol = React.useMemo(() => {
     return fetchBlockTxData?.epoches?.map((i: any) => {
       const blockNumbers = BigNumber(i?.endBlock).minus(i?.startBlock).plus(1).toString();
-      const rewards = BigNumber(blockNumbers).multipliedBy(blockReward).toFixed(4, BigNumber.ROUND_DOWN);
+      const curEpochId = parseInt(i?.id, 16);
+      let curEpochReward = '0';
+      // 如果seq 当前的 epoch 大于当前的batch，那么取 lockingPool.BLOCK_REWARD()
+      // 修改后：当前sequencer-set服务中查询到的每个id > curBatchState?.endEpoch 则使用BLOCK_REWARD
+      if (BigNumber(curEpochId).gt(sequencerInfo?.curBatchState?.endEpoch)) {
+        curEpochReward = blockReward;
+      } else {
+        // 如果小于等于，那么代码奖励已经发放，那么到 subgraph 取
+        // 修改后：当前sequencer-set服务中查询到的每个id <= curBatchState?.endEpoch 则从rewardBatches中查询当前id所在的batch，获取其rpb
+        curEpochReward =
+          fetchUserTxData?.rewardBatches?.find((i) => {
+            return BigNumber(curEpochId).gte(i?.startEpoch) && BigNumber(curEpochId).lte(i?.endEpoch);
+          })?.rpb || '0';
+      }
+      const rewards = BigNumber(blockNumbers).multipliedBy(curEpochReward).toFixed(4, BigNumber.ROUND_DOWN);
       return { ...i, rewards: rewards };
     });
-  }, [blockReward, fetchBlockTxData?.epoches]);
+  }, [blockReward, fetchBlockTxData?.epoches, fetchUserTxData?.rewardBatches, sequencerInfo?.curBatchState?.endEpoch]);
 
   const [blocksCurrentPage, setBlocksCurrentPage] = React.useState(1);
   const blocksTotal = React.useMemo(() => blocksCol?.length || 0, [blocksCol?.length]);
@@ -473,7 +489,6 @@ export function Component() {
     }
   };
 
-
   const [increaseVisible, setIncreaseVisible] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
   const [unlockVisible, setUnlockVisible] = React.useState(false);
@@ -496,13 +511,13 @@ export function Component() {
 
   const joinedDuration = React.useMemo(() => {
     // desc，todo make sure sort without error
-    const fromDate = fetchUserTxData?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
+    const fromDate = fetchUserTxData?.histories?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
 
-    const unlockTxs = fetchUserTxData?.filter((i) => i.action === 'Unlock');
+    const unlockTxs = fetchUserTxData?.histories?.filter((i) => i.action === 'Unlock');
     const lastDate = unlockTxs?.length ? unlockTxs?.[0]?.timestamp : +dayjs().unix();
 
     return BigNumber(lastDate).minus(fromDate).toString();
-  }, [fetchUserTxData]);
+  }, [fetchUserTxData?.histories]);
 
   // Current APR = (Total Reward/Join days/Lock-up)*365*100%
   const currentApr = React.useMemo(() => {
@@ -526,7 +541,7 @@ export function Component() {
       .toFixed(2, BigNumber.ROUND_CEIL);
   }, [joinedDuration, lockedup, totalRewards]);
 
-  const { l2Block: currentBlockNumber } = useL2EpochStatus();
+  const { l2Block: currentBlockNumber, l2BlockLoading } = useL2EpochStatus();
 
   const totalBlocks = React.useMemo(() => {
     return blocksCol?.reduce((prev: any, next: any) => {
@@ -591,7 +606,7 @@ export function Component() {
           <div className={'flex flex-row gap-32 items-center flex-wrap'}>
             {currentSequencerInfo?.avatar ? (
               <div className={'flex flex-row items-center justify-center mb-24'}>
-                <img className={`${ifMobile ? 's-80' : 's-150'} radiusp-50`} src={currentSequencerInfo?.avatar} />
+                <Avatar className={`${ifMobile ? 's-80' : 's-150'} radiusp-50`} src={currentSequencerInfo?.avatar} />
               </div>
             ) : (
               <div className={`avatar ${ifMobile ? 's-80' : 's-150 mb-24'}`} />
@@ -903,48 +918,7 @@ export function Component() {
                 </thead>
                 <tbody>
                   {filteredBlocksCol?.map((i, index) => (
-                    <tr key={index}>
-                      <td>
-                        {i?.startBlock} - {i?.endBlock}
-                      </td>
-                      <td>
-                        <div
-                          style={{ width: 'fit-content' }}
-                          className={`pl-10 pr-10 radius-5 ${getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber }) ===
-                            'Success'
-                            ? 'bg-color-00DACC33'
-                            : 'bg-color-E9B26133'
-                            }`}
-                        >
-                          <span
-                            className={
-                              getSignedStatus({
-                                start: i?.startBlock,
-                                end: i?.endBlock,
-                                current: currentBlockNumber,
-                              }) === 'Success'
-                                ? 'success-color'
-                                : 'pending-color'
-                            }
-                          >
-                            {getSignedStatus({ start: i?.startBlock, end: i?.endBlock, current: currentBlockNumber })}
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="fw-700 inter">
-                          {getSignedStatus({
-                            start: i?.startBlock,
-                            end: i?.endBlock,
-                            current: currentBlockNumber,
-                          }) !== 'Success'
-                            ? 'Calculating'
-                            : `${i.rewards} METIS`}
-                        </span>
-                      </td>
-                      <td>{dayjs.unix(i.blockTimestamp).format('DD/MM/YYYY')}</td>
-                      {ifMobile ? null : <td>{dayjs.unix(i.blockTimestamp).format('HH:mm:ss')}</td>}
-                    </tr>
+                    <Row key={index} col={i} />
                   ))}
                 </tbody>
               </table>

@@ -12,8 +12,7 @@ import useSequencerInfo from '@/hooks/useSequencerInfo';
 import SubHeader from './SubHeader';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import { useEffect } from 'react';
-import { defaultRewardRecipient } from '@/configs/common';
-import { useNetwork } from 'wagmi';
+import { defaultRewardRecipient, setL2Provider } from '@/configs/common';
 import useDevice from '@/hooks/useDevice';
 import RewardReceipientModal from '@/components/_global/RewardReceipientModal';
 import { useSetRecoilState } from 'recoil';
@@ -21,10 +20,10 @@ import { recoilRewardRecipientModalVisible } from '@/models';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 import useL2Block from '@/hooks/useL2Block';
 import BigNumber from 'bignumber.js';
+import { getL2ChainIdByL1ChainId, getL2RpcByL1ChainId } from '@/utils/tools';
 
 function BasicLayout() {
-  const { address, chainId } = useAuth(true);
-  const { chain } = useNetwork();
+  const { address, chainId } = useAuth();
   const { sequencerId, run: updateRun, cancel: updateCancel } = useUpdate();
   const {
     sequencerInfo,
@@ -53,10 +52,6 @@ function BasicLayout() {
       setRewardRecipientModalVisible(true);
     }
   }, [rewardReceipient, sequencerId]);
-
-  React.useEffect(() => {
-    getAllUserRun();
-  }, [chainId]);
 
   useEffect(() => {
     getMetisPrice();
@@ -96,6 +91,7 @@ function BasicLayout() {
   const { watchBlock, l2Block } = useL2Block();
   const { checkSeqStatus, initL2Event } = useL2EpochStatus();
 
+  console.log('l2Block', l2Block)
   useEffect(() => {
     if (l2Block) {
       checkSeqStatus();
@@ -103,13 +99,29 @@ function BasicLayout() {
   }, [l2Block]);
 
   useEffect(() => {
-    const handleOffEvent = watchBlock();
-    const handleOffL2Event = initL2Event();
-    return () => {
-      handleOffEvent();
-      handleOffL2Event();
+    if (!chainId) return;
+
+    setL2Provider(getL2RpcByL1ChainId(chainId), chainId);
+
+    const initAsync = async () => {
+      const handleOffL2Event = await initL2Event();
+      const handleOffEvent = await watchBlock(getL2ChainIdByL1ChainId(+chainId));
+      getAllUserRun();
+      return () => {
+        handleOffL2Event?.();
+        handleOffEvent?.();
+      };
     };
-  }, []);
+
+    let handleOffAllEvent;
+    initAsync().then((offL2Event) => {
+      handleOffAllEvent = offL2Event;
+    });
+
+    return () => {
+      handleOffAllEvent?.();
+    };
+  }, [chainId]);
 
   // event
   // useContractEvent({

@@ -9,7 +9,6 @@ import BigNumber from 'bignumber.js';
 import { getAllUser } from '@/services';
 import React from 'react';
 import useAuth from './useAuth';
-
 interface baseSeqInfo {
   amount: string;
   reward: string;
@@ -38,7 +37,7 @@ interface SeqInfo {
 }
 
 const useSequencerInfo = () => {
-  const { chainId } = useAuth(true);
+  const { chainId } = useAuth();
   const [sequencerInfo, setSequencerInfo] = useRecoilState(recoilSequencerInfo);
   const [allSequencerInfo, setAllSequencerInfo] = useRecoilState(recoilAllSequencerInfo);
 
@@ -66,7 +65,7 @@ const useSequencerInfo = () => {
     }
   };
 
-  const handleSequencerCal = (sequencerInfo: any, multicallFuntions: any) => {
+  const handleSequencerCal = (sequencerInfo: any, multicallFuntions: any, curBatchState?: any) => {
     let finalRes: any = {};
     sequencerInfo.forEach((i: any, index: string | number) => {
       const result: any = {};
@@ -100,6 +99,7 @@ const useSequencerInfo = () => {
 
       finalRes[result?.sequencers?.owner?.toLowerCase()] = {
         ...result,
+        curBatchState: curBatchState,
         status,
         unlockClaimTime,
         reward,
@@ -109,6 +109,32 @@ const useSequencerInfo = () => {
         sequencerLock,
         sequencerLockReadable,
       };
+    });
+
+    return finalRes;
+  };
+
+  const handleMulticallCal = (sequencerInfo: any, multicallFuntions: any) => {
+    let finalRes: any = {};
+    sequencerInfo.forEach((i: any, index: string | number) => {
+      const result: any = {};
+      if (Array.isArray(i?.result)) {
+        let flattedData: any = {};
+
+        const abiOutput = multicallFuntions[index].abi?.find(
+          (k) => multicallFuntions[index].functionName === k.name,
+        )?.outputs;
+        abiOutput.forEach((j: { name: string | number }, jndex: string | number) => {
+          flattedData[j?.name] = i?.result?.[jndex]?.toString();
+        });
+
+        result[multicallFuntions[index].functionName] = flattedData;
+      } else {
+        const j = i?.result || 0;
+        result[multicallFuntions[index].functionName] = j?.toString();
+      }
+
+      finalRes = result;
     });
 
     return finalRes;
@@ -148,12 +174,23 @@ const useSequencerInfo = () => {
       return [...prev, ...n];
     }, []);
 
+    const curBatchStateP = {
+      ...contracts.lock?.[chainId?.toString()],
+      chainId,
+      functionName: 'curBatchState',
+      args: [],
+    };
+
     const res = await multicall({
-      contracts: multiP,
+      contracts: [...multiP, curBatchStateP],
     });
 
-    const finalRes = [res].map((i) => {
-      return handleSequencerCal(i, multiP);
+    // todo 抽象通用方法
+    const curBatchState = res?.splice(-1);
+    const curBatchStateInfo = handleMulticallCal(curBatchState, [curBatchStateP])?.curBatchState;
+
+    const finalRes = (Array.isArray(res) ? [res] : [[res]])?.map((i) => {
+      return handleSequencerCal(i, multiP, curBatchStateInfo);
     });
 
     const sequencerInfo = finalRes?.[0] ? Object.values(finalRes?.[0]) : null;

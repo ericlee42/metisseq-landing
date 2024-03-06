@@ -5,14 +5,13 @@ import { contracts, defaultExpectedApr } from '@/configs/common';
 import fetchOverview from '@/graphql/overview';
 import useAuth from '@/hooks/useAuth';
 import useUpdate from '@/hooks/useUpdate';
-import { formatNumber, getImageUrl, jumpLink } from '@/utils/tools';
+import { getImageUrl, jumpLink } from '@/utils/tools';
 import { useBoolean, useRequest } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useNetwork } from 'wagmi';
 import { multicall } from '@wagmi/core';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import Loading from '../Loading';
@@ -337,7 +336,7 @@ const Container = styled.section`
 `;
 
 const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
-  const { address, chainId } = useAuth(true);
+  const { address, chainId } = useAuth();
   const { run, data } = useRequest(fetchOverview, { manual: true });
   const { sequencerTotalInfo, liquidateReward } = useUpdate();
   const { runOnce, allSequencerInfo } = useSequencerInfo();

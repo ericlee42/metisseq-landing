@@ -151,7 +151,7 @@ const MyAccount = ({
   onOk?: any;
   claimable?: boolean;
 }) => {
-  const { address, chainId, disconnect } = useAuth(true);
+  const { address, chainId, disconnect } = useAuth();
   const { sequencerId, whiteListed } = useUpdate();
   const { balance } = useBalance();
 
@@ -183,12 +183,12 @@ const MyAccount = ({
   }, [sequencerInfo?.reward]);
 
   const claimedAmount = useMemo(() => {
-    return data
+    return data?.histories
       ?.filter((i) => i.action === 'Claim')
       ?.reduce((prev, next) => {
         return BigNumber(prev).plus(BigNumber(next?.amount).div(1e18)).toString();
       }, 0);
-  }, [data]);
+  }, [data?.histories]);
 
   const lockedup = React.useMemo(
     () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),

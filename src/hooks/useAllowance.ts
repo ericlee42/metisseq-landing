@@ -8,7 +8,7 @@ import useChainWatcher from './useChainWatcher';
 
 const useAllowance = () => {
   const { chain } = useChainWatcher();
-  const { connector, address } = useAuth(true);
+  const { connector, address } = useAuth();
   const [allowance, setAllowance] = useRecoilState(recoilAllowance);
   const approve = async () => {
     if (!chain?.id) return 'Invalid Chain ID';

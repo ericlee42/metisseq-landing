@@ -1,12 +1,7 @@
-import * as React from 'react';
 import './index.scss';
 import { styled } from 'styled-components';
 import { getImageUrl } from '@/utils/tools';
 
-import { useNavigate } from 'react-router-dom';
-import useUpdate from '@/hooks/useUpdate';
-import { useRequest } from 'ahooks';
-import fetchOverview from '@/graphql/overview';
 import SequencerHeader from '@/components/_global/SequencerHeader';
 
 const Container = styled.section`

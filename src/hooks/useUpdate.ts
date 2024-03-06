@@ -17,7 +17,7 @@ import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 
 const useUpdate = () => {
-  const { chainId } = useAuth(true);
+  const { chainId } = useAuth();
 
   const [sequencerId, setSequencerId] = useRecoilState(recoilSequencerId);
   const [whiteListed, setWhiteListed] = useRecoilState(recoilWhitelisted);

@@ -10,7 +10,7 @@ import useSequencerInfo from './useSequencerInfo';
 import BigNumber from 'bignumber.js';
 
 const useLock = () => {
-  const { connector } = useAuth(true);
+  const { connector } = useAuth();
   const { chain, unsupported } = useChainWatcher();
   const { runOnce } = useSequencerInfo();
 

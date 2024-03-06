@@ -9,6 +9,7 @@ import Loading from '../_global/Loading';
 import NumberText from '../NumberText';
 import BigNumber from 'bignumber.js';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
+import Avatar from '../Avatar';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -20,20 +21,33 @@ const SequencerStatusContainer = styled.div`
 `;
 
 const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
-  const { currentEpochRelatedSeqAddress, currentActiveSeqAddressLoading } = useL2EpochStatus();
+  const { currentEpochRelatedSeqAddress, nextEpochRelatedSeqAddress, currentActiveSeqAddressLoading } =
+    useL2EpochStatus();
+
   // produce status
   // block - current height and timestamp
   // data?.producingBlocks - latest 5 rotate sequencer height match
   // if height is between epoch range, last produce time > 60s, return warning
   const producingStatus = useMemo(() => {
+    // 下一个Next Period
+    if (
+      nextEpochRelatedSeqAddress &&
+      ele?.sequencers?.signer?.toLowerCase() === nextEpochRelatedSeqAddress?.toLowerCase()
+    ) {
+      if (nextEpochRelatedSeqAddress?.toLowerCase() !== currentEpochRelatedSeqAddress?.toLowerCase()) {
+        return { label: 'Next Period', color: '00EA5E' };
+      }
+      return { label: 'Producing', color: '00EA5E' };
+    }
+    // 当前Producing
     if (
       currentEpochRelatedSeqAddress &&
       ele?.sequencers?.signer?.toLowerCase() === currentEpochRelatedSeqAddress?.toLowerCase()
     ) {
-      return { label: 'Healthy', color: '00EA5E' };
+      return { label: 'Producing', color: '00EA5E' };
     }
-    return { label: 'Pending', color: 'E9B261' };
-  }, [currentEpochRelatedSeqAddress, ele?.sequencers?.signer]);
+    return { label: 'Waiting', color: 'E9B261' };
+  }, [currentEpochRelatedSeqAddress, ele?.sequencers?.signer, nextEpochRelatedSeqAddress]);
 
   const status = useMemo(() => {
     if (ele?.ifInUnlockProgress) {
@@ -49,7 +63,7 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
     // 待领取奖励+已领取奖励
     return BigNumber(ele?.rewardReadable).plus(BigNumber(ele?.claimAmount).div(1e18)).toString();
   }, [ele?.claimAmount, ele?.rewardReadable]);
-  
+
   return (
     <SequencerStatusContainer
       onClick={onClick}
@@ -82,7 +96,7 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
       <div className="flex flex-col gap-5 items-center">
         {ele?.infos?.avatar ? (
           <div className="flex flex-row items-center justify-center">
-            <img className="s-90 radiusp-50" crossOrigin="anonymous" src={ele?.infos?.avatar} />
+            <Avatar src={ele?.infos?.avatar} className="s-90 radiusp-50"/>
           </div>
         ) : (
           <div className={'avatar s-90 radiusp-50'} />

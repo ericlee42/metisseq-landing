@@ -65,7 +65,7 @@ const Container = styled(Modal)`
 `;
 
 const ClaimModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
-  const { chainId } = useAuth(true);
+  const { chainId } = useAuth();
   const [, setRewardRecipientModalVisible] = useRecoilState(recoilRewardRecipientModalVisible);
   const { sequencerInfo, run } = useSequencerInfo();
 

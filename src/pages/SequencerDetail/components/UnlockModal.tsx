@@ -69,7 +69,7 @@ const Container = styled(Modal)`
 `;
 
 const UnlockModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
-  const { chainId } = useAuth(true);
+  const { chainId } = useAuth();
   const { sequencerInfo, run } = useSequencerInfo();
 
   const { balance } = useBalance();

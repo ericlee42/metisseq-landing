@@ -164,7 +164,7 @@ export function Component() {
 
   const navigate = useNavigate();
 
-  const { address, connector } = useAuth(true);
+  const { address, connector } = useAuth();
 
   const { balance } = useBalance();
 
@@ -231,28 +231,6 @@ export function Component() {
 
   const handleIndex = (index: string) => {
     setActiveIndex(index);
-  };
-
-  // const [testPubKey, setTestPubKey] = React.useState<undefined | string>()
-  const handleSignAndRecover = async () => {
-    const t = defaultPubKeyList.find((i) => i.address.toLowerCase() === address?.toLowerCase());
-
-    setPubKey(t?.pubKey);
-    // setPubKey(undefined)
-    // const message = 'hello world'
-    // const signer = await connector?.getWalletClient();
-    // const signature = await signer?.signMessage({
-    //   account: address,
-    //   message: message,
-    // })
-    // if (!signature) return;
-    // const publicKey = await recoverPublicKey({
-    //   hash: hashMessage(message),
-    //   signature
-    // })
-
-    // console.log('publicKey', publicKey)
-    // setPubKey(publicKey)
   };
 
   const validStep2 = React.useMemo(
@@ -455,7 +433,6 @@ export function Component() {
     account,
     pubKey,
     formattedPubKey,
-    handleSignAndRecover,
     desc,
     validStep2,
     balance?.readable,

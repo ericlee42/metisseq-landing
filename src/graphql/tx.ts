@@ -4,6 +4,14 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query TxHistory($address: String) {
+    rewardBatches {
+      endEpoch
+      rpb
+      id
+      startEpoch
+      timestamp
+      total
+    }
     histories(where: { sequencer_: { address: $address } }) {
       action
       amount
@@ -13,6 +21,7 @@ const userTxs = gql`
       txOrigin
       sequencer {
         address
+        claimed
         id
         status
         pubkey
@@ -59,7 +68,8 @@ const fetchUserTx = async (address: string, chainId: number, current?: any, page
     };
   });
 
-  return formattedData;
+  return { histories: formattedData,
+rewardBatches: data?.rewardBatches };
   // return { ...formattedData, sequencer: data?.histories?.[data?.histories?.length - 1]?.sequencer || {}};
 };
 
