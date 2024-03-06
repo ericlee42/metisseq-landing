@@ -187,14 +187,12 @@ export const getL2GasFee = async ({ chainId }: { chainId: string | number }) => 
 
     l2Gas = l2Gas + 20_000n;
 
-    const discount =
-      1n ||
-      (await txPublicClient?.readContract({
+    const discount = await txPublicClient?.readContract({
         address: oracleAddress as Address,
         abi: oracleAbi,
         functionName: 'getDiscount',
         args: [],
-      }));
+      });
 
     const l2Fee = BigNumber(l2Gas?.toString?.() || 0)
       .multipliedBy(discount?.toString?.() || 0)
