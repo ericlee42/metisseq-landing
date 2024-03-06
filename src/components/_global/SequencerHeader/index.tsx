@@ -415,6 +415,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   const fetchBatchSequencerInfo = async () => {
     if (!sequencerCards?.length) return undefined;
     const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencer?.id)));
+
     const batchInfo = await runOnce({
       sequencerIds: ids,
     });
@@ -422,7 +423,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     return batchInfo?.map((i, index) => {
       return {
         ...i,
-        ...sequencerCards?.find((j) => j?.sequencer?.address?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
+        ...sequencerCards?.find((j) => j?.txOrigin?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
       };
     });
   };
@@ -433,16 +434,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     loading: fetchBatchSequencerInfoLoading,
     error: fetchBatchSequencerInfoError,
   } = useRequest(fetchBatchSequencerInfo, { manual: true });
-
-  // const status = useMemo(() => {
-  //   if (ele?.ifInUnlockProgress) {
-  //     return { label: 'Exit Period', color: 'E9B261' };
-  //   }
-  //   if (!ele?.ifInUnlockProgress && !ele?.ifActive) {
-  //     return { label: 'Exited', color: 'B3B3B3' };
-  //   }
-  //   return { label: 'Healthy', color: '00EA5E' };
-  // }, [ele?.ifActive, ele?.ifInUnlockProgress]);
 
   const filteredFetchBatchSequencerInfoData = useMemo(
     () =>

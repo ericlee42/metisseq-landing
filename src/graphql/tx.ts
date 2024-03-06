@@ -68,9 +68,7 @@ const fetchUserTx = async (address: string, chainId: number, current?: any, page
     };
   });
 
-  return { histories: formattedData,
-rewardBatches: data?.rewardBatches };
-  // return { ...formattedData, sequencer: data?.histories?.[data?.histories?.length - 1]?.sequencer || {}};
+  return { histories: formattedData, rewardBatches: data?.rewardBatches };
 };
 
 export default fetchUserTx;

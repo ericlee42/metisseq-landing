@@ -16,16 +16,18 @@ const useLock = () => {
 
   const lockFor = async ({ address, amount, pubKey }: { address: string; amount: string; pubKey: string }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
+
+    const formattedPubKey = pubKey?.replace('0x04', '0x');
     try {
       const signer = await connector?.getWalletClient();
       const txData = calTxData({
         abi: contracts.lock?.[chain?.id?.toString()]?.abi,
         functionName: 'lockFor',
-        args: [address, amount, pubKey],
+        args: [address, amount, formattedPubKey],
       });
 
       if (!signer) {
-        throw new Error('Invalid Signer');
+        throw new Error('Please submit your sequencer information on Github');
       }
 
       const hash = await sendTx({

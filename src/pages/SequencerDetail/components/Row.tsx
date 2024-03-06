@@ -1,5 +1,6 @@
 /* eslint-disable no-negated-condition */
 import { IconGlobalSpin } from '@/assets/icons/IconGroup';
+import { Tooltip } from '@/components';
 import useDevice from '@/hooks/useDevice';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 import BigNumber from 'bignumber.js';

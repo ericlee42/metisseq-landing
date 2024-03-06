@@ -16,7 +16,8 @@ dayjs.extend(relativeTime);
 
 const SequencerStatusContainer = styled.div`
   .avatar {
-    background: url(${getImageUrl('@/assets/images/sequencer/avatar.svg')}) no-repeat;
+    background: url(${getImageUrl('@/assets/images/sequencer/defaultAvatar.svg')}) no-repeat;
+    background-size: contain;
   }
 `;
 

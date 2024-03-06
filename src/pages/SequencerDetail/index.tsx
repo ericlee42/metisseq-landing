@@ -122,7 +122,7 @@ const Container = styled.section`
   }
 
   .avatar {
-    background: url(${getImageUrl('@/assets/images/sequencer/avatar.svg')}) no-repeat;
+    background: url(${getImageUrl('@/assets/images/sequencer/defaultAvatar.svg')}) no-repeat;
     background-size: contain;
     border-radius: 50%;
   }
@@ -316,17 +316,11 @@ export function Component() {
     data: fetchBlockTxData,
   }: any = useRequest(fetchBlock, { manual: true });
 
-  // const {
-  //   run: fetchrewardBatchesRun,
-  //   loading: fetchrewardBatchesLoading,
-  //   data: fetchrewardBatchesData,
-  // }: any = useRequest(fetchrewardBatches, { manual: true });
-
   const curUserActiveSequencerId = React.useMemo(
     () =>
-      (fetchUserTxData?.histories?.[0]?.sequencer?.id
+      fetchUserTxData?.histories?.[0]?.sequencer?.id
         ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-        : undefined),
+        : undefined,
     [fetchUserTxData?.histories],
   );
 
@@ -377,8 +371,6 @@ export function Component() {
   const [txCurrentPage, setTxCurrentPage] = React.useState(1);
   const txTotal = React.useMemo(() => txCol?.length || 0, [txCol?.length]);
 
-  // a.slice(0,10)
-  // a.slice(10,20)
   const filteredTxCol = React.useMemo(() => {
     const curPage = txCurrentPage - 1;
     const fromIndex = txPageSize * curPage;
@@ -408,17 +400,17 @@ export function Component() {
       const blockNumbers = BigNumber(i?.endBlock).minus(i?.startBlock).plus(1).toString();
       const curEpochId = parseInt(i?.id, 16);
       let curEpochReward = '0';
-      // 如果seq 当前的 epoch 大于当前的batch，那么取 lockingPool.BLOCK_REWARD()
-      // 修改后：当前sequencer-set服务中查询到的每个id > curBatchState?.endEpoch 则使用BLOCK_REWARD
+      // get rewards from lockingPool.BLOCK_REWARD
       if (BigNumber(curEpochId).gt(sequencerInfo?.curBatchState?.endEpoch)) {
         curEpochReward = blockReward;
       } else {
-        // 如果小于等于，那么代码奖励已经发放，那么到 subgraph 取
-        // 修改后：当前sequencer-set服务中查询到的每个id <= curBatchState?.endEpoch 则从rewardBatches中查询当前id所在的batch，获取其rpb
-        curEpochReward =
+        // get rewards from graph
+        const tempCurEpochReward =
           fetchUserTxData?.rewardBatches?.find((i) => {
             return BigNumber(curEpochId).gte(i?.startEpoch) && BigNumber(curEpochId).lte(i?.endEpoch);
           })?.rpb || '0';
+
+        curEpochReward = BigNumber(tempCurEpochReward).div(1e18).toString();
       }
       const rewards = BigNumber(blockNumbers).multipliedBy(curEpochReward).toFixed(4, BigNumber.ROUND_DOWN);
       return { ...i, rewards: rewards };
@@ -495,18 +487,7 @@ export function Component() {
   const [claimVisible, setClaimVisible] = React.useState(false);
   const [withdrawVisible, setWithdrawVisible] = React.useState(false);
 
-  // if unlock window
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
-
-  // const unlockTo = React.useMemo(
-  //   () => dayjs.unix(sequencerInfo?.unlockClaimTime || 0).format('YYYY-MM-DD HH:mm:ss'),
-  //   [sequencerInfo?.unlockClaimTime],
-  // );
-
-  // const [countdown, formattedRes] = useCountDown({
-  //   targetDate: unlockTo,
-  // });
-
   const unclaimed = React.useMemo(() => sequencerInfo?.rewardReadable || '0', [sequencerInfo?.rewardReadable]);
 
   const joinedDuration = React.useMemo(() => {
@@ -710,8 +691,8 @@ export function Component() {
               {/* Locked UP */}
               <div className="flex-1 flex flex-col gap-12">
                 <div className="flex flex-row items-center gap-6">
-                  <div className="color-848484 fz-20 fw-500">Locked-UP</div>
-                  <Tooltip title={<span>The amount of METIS tokens sequencer locked up in the pool.</span>}>
+                  <div className="color-848484 fz-20 fw-500">Locked-Up</div>
+                  <Tooltip title={<span>Amount of METIS locked by the sequencer.</span>}>
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                   </Tooltip>
                 </div>
@@ -757,7 +738,11 @@ export function Component() {
               <div className="flex-1 flex flex-col gap-12">
                 <div className="flex flex-row items-center gap-6">
                   <div className="color-848484 fz-20 fw-500">Mining Rewards Rate(MRR)</div>
-                  <Tooltip title={<span>The annual rate of return from sequencer mining.</span>}>
+                  <Tooltip
+                    title={
+                      <span>The rewards rate from the sequencer mining. (Data may be delayed by up to 24 hours.)</span>
+                    }
+                  >
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                   </Tooltip>
                 </div>
@@ -767,8 +752,15 @@ export function Component() {
               {/* TOTAL REWARDS  */}
               <div className="flex-1 flex flex-col gap-12">
                 <div className="flex flex-row items-center gap-6">
-                  <div className="color-848484 fz-20 fw-500">TOTAL REWARDS</div>
-                  <Tooltip title={<span>The total amount of METIS tokens the sequencer has earned from mining.</span>}>
+                  <div className="color-848484 fz-20 fw-500">Total Rewards</div>
+                  <Tooltip
+                    title={
+                      <span>
+                        Total METIS tokens earned by this sequencer through sequencer mining.(Data may be delayed by up
+                        to 24 hours.)
+                      </span>
+                    }
+                  >
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                   </Tooltip>
                 </div>
@@ -797,8 +789,15 @@ export function Component() {
                   {/* Claim Your Rewards */}
                   <div className="flex-1 flex flex-col gap-12">
                     <div className="flex flex-row items-center gap-6">
-                      <div className="color-848484 fz-20 fw-500">Unclaimed Rewards</div>
-                      <Tooltip title={<span>Tooltip</span>}>
+                      <div className="color-848484 fz-18 fw-500">Unclaimed Rewards</div>
+                      <Tooltip
+                        title={
+                          <span>
+                            Rewards are calculated and distributed daily. You can claim your earned rewards to L2 at any
+                            time.
+                          </span>
+                        }
+                      >
                         <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                       </Tooltip>
                     </div>
@@ -837,7 +836,7 @@ export function Component() {
 
               <div className={`${ifMobile ? 'w-full' : 'flex-1'} wp-50 basic-card gap-21 flex flex-col pb-38`}>
                 <div className="flex flex-row items-center justify-between">
-                  <div className="fz-28 fw-500 ">Add</div>
+                  <div className="fz-28 fw-500 ">Increase Locked-up</div>
                 </div>
 
                 <div className="h-1 bg-color-DFDFDF" />
@@ -846,7 +845,7 @@ export function Component() {
                   {/* amount */}
                   <div className="flex-2 flex flex-col gap-12">
                     <div className="flex flex-row items-center gap-6">
-                      <div className="color-848484 fz-20 fw-500">Amount</div>
+                      <div className="color-848484 fz-18 fw-500">Amount</div>
                     </div>
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                       <Input
@@ -862,7 +861,7 @@ export function Component() {
                   {/* apr */}
                   <div className="flex-2 flex flex-col gap-12">
                     <div className="flex flex-row items-center gap-6">
-                      <div className="color-848484 fz-20 fw-500">Expected Rewards</div>
+                      <div className="color-848484 fz-18 fw-500">Expected Rewards</div>
                     </div>
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                       <span>
@@ -911,7 +910,14 @@ export function Component() {
                   <tr>
                     <th>Latest Block Produced</th>
                     <th>Status</th>
-                    <th>Rewards</th>
+                    <th>
+                      <div className="flex flex-row items-center  gap-6">
+                        <span>Rewards</span>
+                        <Tooltip title={<span>Rewards are calculated and distributed daily.</span>}>
+                          <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
+                        </Tooltip>
+                      </div>
+                    </th>
                     <th>Date</th>
                     {ifMobile ? null : <th>Time</th>}
                   </tr>

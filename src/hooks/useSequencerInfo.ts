@@ -87,7 +87,6 @@ const useSequencerInfo = () => {
 
       const status = result?.sequencers?.status;
       const unlockClaimTime = result?.sequencers?.unlockClaimTime?.toString();
-      // const reward = BigNumber(result?.sequencers?.reward || '0').minus(1)?.toString();
       const reward = result?.sequencers?.reward?.toString();
       const rewardReadable = ethers.utils.formatEther(reward || '0').toString();
 
@@ -185,7 +184,6 @@ const useSequencerInfo = () => {
       contracts: [...multiP, curBatchStateP],
     });
 
-    // todo 抽象通用方法
     const curBatchState = res?.splice(-1);
     const curBatchStateInfo = handleMulticallCal(curBatchState, [curBatchStateP])?.curBatchState;
 
@@ -205,7 +203,6 @@ const useSequencerInfo = () => {
 
   const props = useRequest(intervalUpdate, {
     manual: true,
-    // pollingInterval: 15000,
     refreshDeps: [chainId],
   });
 

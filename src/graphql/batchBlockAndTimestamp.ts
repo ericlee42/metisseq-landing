@@ -1,10 +1,5 @@
-// todo
 import { graphUrl } from '@/configs/common';
 import { gql, GraphQLClient } from 'graphql-request';
-
-// "add1": "0xfe08ee83b1f01d6d7c6eff3c8c84fa6fe02fca17",
-// "add2": "0x1267397fb5bf6f6dcc3d18d673616d512dbcd8f0",
-// "add3": "0x3eb630c3c267395fee216b603a02061330d39642",
 
 const userTxs = gql`
   query MyQuery($address: String) {

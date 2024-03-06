@@ -1,4 +1,3 @@
-// https://wagmi.sh/react/hooks/useSwitchNetwork
 import { useNetwork, useSwitchNetwork } from 'wagmi';
 
 const useChainWatcher = () => {
@@ -10,12 +9,6 @@ const useChainWatcher = () => {
   };
 
   const currentStatus = chain?.unsupported;
-
-  // useEffect(() => {
-  //   if (chain?.unsupported) {
-  //     setupNetwork();
-  //   }
-  // }, [chain?.unsupported]);
 
   return { unsupported: currentStatus, isLoading, pendingChainId, setupNetwork, chain };
 };

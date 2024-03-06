@@ -58,7 +58,6 @@ function BasicLayout() {
   }, []);
 
   React.useEffect(() => {
-    // if (!seqAddress) return;
     updateCancel();
     updateRun({ address, seqAddress });
     return () => {
@@ -67,7 +66,6 @@ function BasicLayout() {
   }, [seqAddress, address, chainId]);
 
   React.useEffect(() => {
-    // if (!sequencerId) return;
     sequencerInfoCancel();
     sequencerInfoRun({ sequencerId: sequencerId, self: true });
     return () => {
@@ -91,7 +89,6 @@ function BasicLayout() {
   const { watchBlock, l2Block } = useL2Block();
   const { checkSeqStatus, initL2Event } = useL2EpochStatus();
 
-  console.log('l2Block', l2Block)
   useEffect(() => {
     if (l2Block) {
       checkSeqStatus();

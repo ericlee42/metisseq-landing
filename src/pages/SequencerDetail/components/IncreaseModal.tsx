@@ -100,16 +100,12 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
       setApproveLoadingTrue();
 
       console.log('---relock---', {
-        // address: address as Address,
         amount: ethers.utils.parseEther(relockAmount || '0').toString(),
-        // pubKey: pubKey as string,
         lockRewards: sequencerInfo?.reward,
         sequencerId,
       });
       await relock({
-        // address: address as Address,
         amount: ethers.utils.parseEther(relockAmount || '0').toString(),
-        // pubKey: pubKey as string,
         lockRewards: false,
         sequencerId,
       });
@@ -117,7 +113,6 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
     } catch (e) {
       setApproveLoadingFalse();
       console.log(e);
-      // catchError(e);
     } finally {
       run?.({ sequencerId: sequencerId, self: true });
       refetchGraph?.();
@@ -152,7 +147,7 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
             className="flex items-center justify-center"
           >
             <div className="flex items-center justify-center">
-              {approveLoading ? <Loading color="#fff" /> : needApprove ? <span>Approve</span> : <span>Add</span>}
+              {approveLoading ? <Loading color="#fff" /> : needApprove ? <span>Approve</span> : <span>Increase Locked-up</span>}
             </div>
           </Button>
         </div>

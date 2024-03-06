@@ -1,4 +1,3 @@
-// todo
 import { graphUrl } from '@/configs/common';
 import { gql, GraphQLClient } from 'graphql-request';
 
@@ -16,8 +15,6 @@ const fetchLatestBlockTimestamp = async (chainId: string | number) => {
     headers: {},
   });
   const blockData: any = await perpetualClient.request(blocks);
-
-  //   const timestamp = blockData?.blocks?.[0]?.timestamp;
 
   return blockData?.blocks?.[0];
 };

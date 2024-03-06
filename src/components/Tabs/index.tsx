@@ -67,7 +67,6 @@ const Tabs: React.FC<TabsProps> = (props: TabsProps) => {
 
   // handle event
   const handleChange = (ele: TabsObjectType, index: number) => {
-    // if (disabled) return;
     setTabActive(index);
     onChange?.(ele.value, index);
   };

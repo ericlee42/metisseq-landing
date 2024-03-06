@@ -25,7 +25,6 @@ export interface TooltipProps {
   placement?: TooltipPlacement;
   title?: React.ReactNode;
   children?: React.ReactNode;
-  // todo
   underline?: boolean;
 }
 

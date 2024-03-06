@@ -23,10 +23,6 @@ const links = [
     content: 'Carrers',
     link: 'https://www.metis.io/jobs',
   },
-  // {
-  //   content: 'Search',
-  //   link: '',
-  // },
   {
     content: 'Subscribe',
     link: 'https://www.metis.io/newsletter',

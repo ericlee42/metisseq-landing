@@ -33,14 +33,6 @@ export const chainId = isProd ? [_holesky, mainnet] : [_holesky, mainnet];
 
 export const injectedConnector = new InjectedConnector({
   chains: [...chainId],
-  // options: {
-  //   getProvider: () => ({
-  //     ...ethersProvider,
-  //     emit: ethersProvider?.emit,
-  //     request: ethersProvider.send,
-  //     isMetaMask: false,
-  //   }),
-  // },
 });
 
 const { chains, publicClient } = configureChains([...chainId], [publicProvider()]);
@@ -49,13 +41,8 @@ const config = createConfig({
   autoConnect: true,
   connectors: [injectedConnector],
   publicClient,
-  // provider: getDefaultProvider(),
-  // webSocketPublicClient,
 });
-
-// const transport = webSocket('wss://ethereum-holesky.publicnode.com', {
-//   timeout: 60_000,
-// });
+;
 
 export const mainnetTxPublicClient = createPublicClient({
   chain: mainnet,

@@ -5,7 +5,7 @@ const Avatar = ({ src, className }: { src?: string; className?: string }) => {
   const [validSrc, setValidSrc] = useState(src);
 
   const handleError = () => {
-    setValidSrc(getImageUrl('@/assets/images/sequencer/avatar.svg'));
+    setValidSrc(getImageUrl('@/assets/images/sequencer/defaultAvatar.svg'));
   };
   return <img crossOrigin="anonymous" onError={handleError} src={validSrc} className={className} />;
 };

@@ -3,10 +3,10 @@
 import * as React from 'react';
 import './index.scss';
 import { styled } from 'styled-components';
-import { catchError, getImageUrl } from '@/utils/tools';
+import { catchError, getImageUrl, jumpLink as jumpOuterLink } from '@/utils/tools';
 import { useNavigate } from 'react-router-dom';
 import Progress from '@/components/Progress';
-import { Button, Input } from '@/components';
+import { Button, Input, message } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import useBalance from '@/hooks/useBalance';
 import useAllowance from '@/hooks/useAllowance';
@@ -16,7 +16,7 @@ import { useBoolean } from 'ahooks';
 import useLock from '@/hooks/useLock';
 import useAuth from '@/hooks/useAuth';
 import { Address } from 'wagmi';
-import { defaultExpectedApr, defaultPubKeyList, isProd } from '@/configs/common';
+import { defaultExpectedApr, isProd } from '@/configs/common';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useDevice from '@/hooks/useDevice';
 import { checksumAddress } from 'viem';
@@ -130,8 +130,6 @@ const Container = styled.section`
   }
 `;
 
-const message = 'test';
-
 export function Component() {
   const { allSequencerInfo } = useSequencerInfo();
 
@@ -181,7 +179,7 @@ export function Component() {
   const handleLockup = async () => {
     try {
       const curSeq = allSequencerInfo?.[address?.toLowerCase() as string];
-      if (!curSeq) throw { message: 'Invalid Sequencer Address' };
+      if (!curSeq) throw { message: 'Please submit your sequencer information on Github' };
       if (!allowance || needApprove) {
         setApproveLoadingTrue();
         await approve();
@@ -200,10 +198,10 @@ export function Component() {
       await lockFor(p);
       setApproveLoadingFalse();
 
-      handleIndex('4');
+      handleIndex('3');
     } catch (e) {
       console.log(e);
-      catchError(e);
+      message.error(catchError(e));
       setApproveLoadingFalse();
     }
   };
@@ -247,7 +245,8 @@ export function Component() {
           <div className="flex flex-col gap-32">
             <div className="flex flex-col gap-20">
               <div
-                className={`radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
+                onClick={() => jumpOuterLink('https://github.com/MetisProtocol/mvm-sequencer-node', '_blank')}
+                className={`pointer radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
                 style={{
                   background:
                     'var(--gradient-glass, linear-gradient(91deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%))',
@@ -290,7 +289,7 @@ export function Component() {
             </div>
             <div className="fz-18 fw-500 color-fff raleway">
               You have questions? Make sure to read our{' '}
-              <a className="fz-18 fw-700 color-fff underlined" href="" target="_blank">
+              <a className="fz-18 fw-700 color-fff underlined" href="https://github.com/MetisProtocol/mvm-testnet-sequencer-node/blob/main/README.md" target="_blank">
                 Dev Docs
               </a>
               <br />
@@ -334,7 +333,7 @@ export function Component() {
 
                   {/* website */}
                   <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
-                    <div className="fz-14 fw-400 color-fff inter">Expected APR</div>
+                    <div className="fz-14 fw-400 color-fff inter">Expected MMR</div>
                     <Input
                       disabled
                       value={apr}
@@ -371,7 +370,7 @@ export function Component() {
             <div className="flex flex-row items-center justify-center gap-10">
               <Button
                 type="solid"
-                onClick={() => handleIndex('2')}
+                onClick={() => handleIndex('1')}
                 className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
                 style={{ border: '2px solid #FFF' }}
               >
@@ -407,7 +406,7 @@ export function Component() {
               <div className="color-fff flex flex-col gap-6 justify-center">
                 <span className={`${ifMobile ? 'fz-31' : 'fz-46'} fw-700 raleway align-center`}>Congraturations!</span>
                 <span className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway align-center`}>
-                  Your Sequencer has been set up successfully.
+                  METIS locked! Please proceed with sequencer setup.
                 </span>
               </div>
             </div>
@@ -416,11 +415,11 @@ export function Component() {
               <Button
                 type="metis"
                 onClick={() => {
-                  navigate(`/sequencers/${address}`);
+                  navigate('/');
                 }}
                 className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}
               >
-                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>CHECK MY SEQUENCER</div>
+                <div className={`${ifMobile ? 'fz-16' : 'fz-26'} fw-700 raleway color-fff`}>Close</div>
               </Button>
             </div>
           </div>

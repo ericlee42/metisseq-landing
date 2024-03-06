@@ -1,17 +1,6 @@
-// import { getProvider } from '@wagmi/core'
 import { message } from '@/components';
 import { contracts } from '@/configs/common';
 import useAuth from './useAuth';
-
-// export const watchAssets = (options) => {
-//   globalThis.ethereum.request({
-//     method: 'wallet_watchAsset',
-//     params: {
-//       type: 'ERC20',
-//       options,
-//     },
-//   });
-// };
 
 const useWatchAsset = () => {
   const { connector, chainId } = useAuth();

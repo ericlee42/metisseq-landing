@@ -2,12 +2,10 @@ import { l2Provider } from '@/configs/common';
 import { recoilL2Block, recoilL2BlockLoading } from '@/models';
 import BigNumber from 'bignumber.js';
 import { useRecoilState } from 'recoil';
-// import useAuth from './useAuth';
 
 const useL2Block = () => {
-  // const { relatedL2Provider } = useAuth();
   const [l2Block, setL2Block] = useRecoilState(recoilL2Block);
-  const [l2BlockLoading, setL2BlockLoading] = useRecoilState(recoilL2BlockLoading);
+  const [, setL2BlockLoading] = useRecoilState(recoilL2BlockLoading);
 
 
   const watchBlock = async (chainId: number) => {

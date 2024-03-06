@@ -613,7 +613,6 @@ export function Component() {
         <div className="flex flex-row items-center flex-2 w-full">
           <Faq
             data={section5}
-            // styles={styles} config={config}
           />
         </div>
       </div>

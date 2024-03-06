@@ -4,9 +4,6 @@ export type { ScrollbarProps } from './Scrollbar';
 export type { ButtonProps } from './Button';
 export { default as Button } from './Button';
 
-// export { default as Popup } from './Popup';
-// export type { PopupProps } from './Popup';
-
 export { default as Select } from './Select';
 export type { SelectProps, SelectObjectType } from './Select';
 
@@ -21,9 +18,6 @@ export type { ModalProps } from './Modal';
 
 export { default as Tabs } from './Tabs';
 export type { TabsProps } from './Tabs';
-
-// // export { default as Radio } from './Radio';
-// // export type { RadioProps } from './Radio';
 
 export { default as Checkbox } from './Checkbox';
 export type { CheckboxProps } from './Checkbox';

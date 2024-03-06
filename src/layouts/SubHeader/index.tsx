@@ -1,6 +1,5 @@
-import WalletModal from '@/components/WalletModal';
 import useWatchAsset from '@/hooks/useWatchAsset';
-import { getImageUrl, jumpLink } from '@/utils/tools';
+import { jumpLink } from '@/utils/tools';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -32,22 +31,10 @@ const leftNav = [
   },
 ];
 const rightNav = [
-  // {
-  //     label: 'Systems Updates ',
-  //     link: '',
-  // },
-  // {
-  //     label: 'Rewards Calculator',
-  //     link: '',
-  // },
   {
     label: 'Metis Explorer',
     link: 'https://explorer.metis.io/',
   },
-  // {
-  //   label: 'FAQ',
-  //   link: '',
-  // },
   {
     label: 'Support',
     link: 'mailto:sequencer@metis.io',
