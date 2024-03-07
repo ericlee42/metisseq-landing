@@ -35,8 +35,8 @@ function BasicLayout() {
 
   const { run: getMetisPrice } = useMetisPrice();
 
-  const seqAddress = React.useMemo(
-    () => (address ? allSequencerInfo?.[address?.toLowerCase?.()]?.seq_addr : undefined),
+  const ownerAddress = React.useMemo(
+    () => (address ? allSequencerInfo?.[address?.toLowerCase?.()]?.address : undefined),
     [address, allSequencerInfo],
   );
 
@@ -46,6 +46,7 @@ function BasicLayout() {
   );
 
   const setRewardRecipientModalVisible = useSetRecoilState(recoilRewardRecipientModalVisible);
+
   useEffect(() => {
     if (rewardReceipient && rewardReceipient === defaultRewardRecipient && BigNumber(sequencerId).gt(0)) {
       // set rewardReceipient
@@ -59,11 +60,11 @@ function BasicLayout() {
 
   React.useEffect(() => {
     updateCancel();
-    updateRun({ address, seqAddress });
+    updateRun({ address, ownerAddress });
     return () => {
       updateCancel();
     };
-  }, [seqAddress, address, chainId]);
+  }, [ownerAddress, address, chainId]);
 
   React.useEffect(() => {
     sequencerInfoCancel();

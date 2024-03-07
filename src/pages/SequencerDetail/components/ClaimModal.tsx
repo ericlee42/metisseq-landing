@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { Button, Input, Modal, Tooltip } from '@/components';
+import { Button, Input, Modal, Tooltip, message } from '@/components';
 import Loading from '@/components/_global/Loading';
 import useAuth from '@/hooks/useAuth';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
 import { recoilRewardRecipientModalVisible } from '@/models';
-import { getImageUrl } from '@/utils/tools';
+import { catchError, getImageUrl } from '@/utils/tools';
 import { useBoolean } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import { useRecoilState } from 'recoil';
@@ -76,15 +76,16 @@ const ClaimModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: a
   const [claimLoading, { setTrue, setFalse }] = useBoolean(false);
 
   const handleClaim = async () => {
+    // check recipient
     if (!sequencerInfo?.sequencers?.rewardRecipient || BigNumber(sequencerInfo?.reward).lte(0)) return;
     try {
       setTrue();
       await withdrawRewards({ sequencerId });
-      setFalse();
       onClose?.();
     } catch (e) {
-      setFalse();
+      message.error(catchError(e));
     } finally {
+      setFalse();
       run?.({ sequencerId: sequencerId, self: true });
       refetchGraph?.();
     }

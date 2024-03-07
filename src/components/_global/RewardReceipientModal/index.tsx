@@ -130,7 +130,6 @@ const RewardReceipientModal = () => {
       }
 
       const result = await setRewardRecipient({ sequencerId, recipient: checksumAddress(recipient as Address) });
-      console.log('result', result);
       if (result?.status === 'success') {
         message.success('Success');
         onClose?.();

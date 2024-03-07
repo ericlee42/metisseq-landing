@@ -31,14 +31,14 @@ const useUpdate = () => {
   const intervalUpdate = async (
     props: any = {
       address: undefined,
-      seqAddress: undefined,
+      ownerAddress: undefined,
     },
   ) => {
     const {
       address,
-      seqAddress,
+      ownerAddress,
     }: {
-      seqAddress?: string;
+      ownerAddress?: string;
       address?: string;
     } = props;
 
@@ -64,14 +64,14 @@ const useUpdate = () => {
     ];
 
     // seq_addr
-    if (seqAddress) {
+    if (ownerAddress) {
       p = [
         ...p,
         {
           ...contracts.lock?.[chainId?.toString()],
           chainId,
           functionName: 'seqOwners', // seqOwners
-          args: [seqAddress],
+          args: [ownerAddress],
         },
       ];
     }

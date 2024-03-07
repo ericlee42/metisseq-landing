@@ -344,6 +344,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   const [ifWhiteListed, setIfWhiteListed] = useState<boolean>(false);
   const [isSequencer, setSequencer] = useState<boolean>(false);
   const [visible, { setTrue, setFalse }] = useBoolean(false);
+  const [signerAddr, setSignerAddr] = useState<undefined | string>(undefined);
 
   useEffect(() => {
     if (chainId) {
@@ -351,7 +352,11 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     }
   }, [chainId]);
 
-  const jumpSequencer = (id: string) => {
+  const jumpSequencer = (id: string | undefined) => {
+    if (!id) {
+      message.error('Unknown Sequencer');
+      return;
+    }
     navigate(`/sequencers/${id}`);
   };
 
@@ -388,6 +393,14 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
       const isSequencer: any = res?.[1]?.result;
 
       if (isSequencer) {
+        const batchInfo = await runOnce({
+          sequencerId: isSequencer,
+          self: true,
+        });
+
+        setSignerAddr(batchInfo?.[0]?.sequencers?.signer);
+
+
         setIfWhiteListed(true);
         setSequencer(true);
       } else if (isWhiteListed) {
@@ -457,7 +470,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
         }),
     [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
   );
-
 
 
   const totalReward = useMemo(() => {
@@ -713,7 +725,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
               <Button
                 className="h-48 flex-1 fz-18 fw-500 poppins"
                 type="metis"
-                onClick={() => jumpSequencer(address as string)}
+                onClick={() => jumpSequencer(signerAddr as string)}
               >
                 Check my Sequencer
               </Button>

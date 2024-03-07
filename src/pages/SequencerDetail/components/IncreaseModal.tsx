@@ -74,7 +74,7 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
     [sequencerInfo?.sequencerLock],
   );
 
-  const { relock, lockFor } = useLock();
+  const { relock } = useLock();
 
   const { allowance, approve } = useAllowance();
   const [approveLoading, { setTrue: setApproveLoadingTrue, setFalse: setApproveLoadingFalse }] = useBoolean(false);

@@ -22,7 +22,7 @@ import BigNumber from 'bignumber.js';
 import useAuth from '@/hooks/useAuth';
 import useAllowance from '@/hooks/useAllowance';
 import useLock from '@/hooks/useLock';
-import { explorer, isDev } from '@/configs/common';
+import { defaultRewardRecipient, explorer, isDev } from '@/configs/common';
 import fetchBlock from '@/graphql/blocks';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import NumberText from '@/components/NumberText';
@@ -30,6 +30,8 @@ import useDevice from '@/hooks/useDevice';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 import Row from './components/Row';
 import Avatar from '@/components/Avatar';
+import { recoilRewardRecipientModalVisible } from '@/models';
+import { useSetRecoilState } from 'recoil';
 
 const Container = styled.section`
   .half-w {
@@ -318,9 +320,9 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-      (fetchUserTxData?.histories?.[0]?.sequencer?.id
-        ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-        : undefined),
+    (fetchUserTxData?.histories?.[0]?.sequencer?.id
+      ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
+      : undefined),
     [fetchUserTxData?.histories],
   );
 
@@ -567,8 +569,16 @@ export function Component() {
         .toString(),
     [metisPrice, unclaimed],
   );
-
   const { ifMobile } = useDevice();
+
+  const setRewardRecipientModalVisible = useSetRecoilState(recoilRewardRecipientModalVisible);
+  const handleClaim = () => {
+    if (!sequencerInfo?.sequencers?.rewardRecipient || sequencerInfo?.sequencers?.rewardRecipient === defaultRewardRecipient) {
+      setRewardRecipientModalVisible(true)
+      return;
+    }
+    setClaimVisible(true);
+  }
   return (
     <Container className={'pages-landing flex flex-col'}>
       {ifMobile ? null : <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} />}
@@ -667,9 +677,7 @@ export function Component() {
                   </Button>
                   <Button
                     type="solid"
-                    onClick={() => {
-                      setClaimVisible(true);
-                    }}
+                    onClick={handleClaim}
                   >
                     <div style={{ padding: '10px 16px' }}>Claim</div>
                   </Button>
@@ -806,9 +814,7 @@ export function Component() {
                       <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                       {ifMobile ? null : (
                         <Button
-                          onClick={() => {
-                            setClaimVisible(true);
-                          }}
+                          onClick={handleClaim}
                           disabled={BigNumber(unclaimed).lte(0)}
                           className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
                           type="metis"
@@ -820,9 +826,7 @@ export function Component() {
                     <span className="color-848484 fz-14 fw-400 inter">{unclaimedUsdValue} USD</span>
                     {ifMobile ? (
                       <Button
-                        onClick={() => {
-                          setClaimVisible(true);
-                        }}
+                        onClick={handleClaim}
                         disabled={BigNumber(unclaimed).lte(0)}
                         className={ifMobile ? 'w-120 h-36 self-end' : 'pl-15 pr-15'}
                         type="metis"
