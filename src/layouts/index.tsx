@@ -12,21 +12,17 @@ import useSequencerInfo from '@/hooks/useSequencerInfo';
 import SubHeader from './SubHeader';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import { useEffect } from 'react';
-import { defaultRewardRecipient, setL2Provider } from '@/configs/common';
+import { setL2Provider } from '@/configs/common';
 import useDevice from '@/hooks/useDevice';
 import RewardReceipientModal from '@/components/_global/RewardReceipientModal';
-import { useSetRecoilState } from 'recoil';
-import { recoilRewardRecipientModalVisible } from '@/models';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 import useL2Block from '@/hooks/useL2Block';
-import BigNumber from 'bignumber.js';
 import { getL2ChainIdByL1ChainId, getL2RpcByL1ChainId } from '@/utils/tools';
 
 function BasicLayout() {
   const { address, chainId } = useAuth();
   const { sequencerId, run: updateRun, cancel: updateCancel } = useUpdate();
   const {
-    sequencerInfo,
     allSequencerInfo,
     run: sequencerInfoRun,
     cancel: sequencerInfoCancel,
@@ -39,20 +35,6 @@ function BasicLayout() {
     () => (address ? allSequencerInfo?.[address?.toLowerCase?.()]?.address : undefined),
     [address, allSequencerInfo],
   );
-
-  const rewardReceipient = React.useMemo(
-    () => sequencerInfo?.sequencers?.rewardRecipient,
-    [sequencerInfo?.sequencers?.rewardRecipient],
-  );
-
-  const setRewardRecipientModalVisible = useSetRecoilState(recoilRewardRecipientModalVisible);
-
-  useEffect(() => {
-    if (rewardReceipient && rewardReceipient === defaultRewardRecipient && BigNumber(sequencerId).gt(0)) {
-      // set rewardReceipient
-      setRewardRecipientModalVisible(true);
-    }
-  }, [rewardReceipient, sequencerId]);
 
   useEffect(() => {
     getMetisPrice();

@@ -21,7 +21,7 @@ const SequencerStatusContainer = styled.div`
   }
 `;
 
-const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
+const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick, totalLockUp, since }: any) => {
   const { currentEpochRelatedSeqAddress, nextEpochRelatedSeqAddress, currentActiveSeqAddressLoading } =
     useL2EpochStatus();
 
@@ -62,8 +62,8 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
 
   const totlaEarned = useMemo(() => {
     // claimable + claimed
-    return BigNumber(ele?.rewardReadable || 0).plus(BigNumber(ele?.claimAmount || 0).div(1e18)).toString();
-  }, [ele?.claimAmount, ele?.rewardReadable]);
+    return BigNumber(ele?.rewardReadable || 0).plus(claimedInfo?.amountReadable || 0).toString();
+  }, [claimedInfo?.amountReadable, ele?.rewardReadable]);
 
   return (
     <SequencerStatusContainer
@@ -97,7 +97,7 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
       <div className="flex flex-col gap-5 items-center">
         {ele?.infos?.avatar ? (
           <div className="flex flex-row items-center justify-center">
-            <Avatar src={ele?.infos?.avatar} className="s-90 radiusp-50"/>
+            <Avatar src={ele?.infos?.avatar} className="s-90 radiusp-50" />
           </div>
         ) : (
           <div className={'avatar s-90 radiusp-50'} />
@@ -133,7 +133,9 @@ const SequencerItemContainer = ({ ele, onClick, totalLockUp, since }: any) => {
           <div className="flex flex-row items-center gap-4">
             <img src={getImageUrl('@/assets/images/sequencer/avatar.svg')} className="s-13" />
             <div className="fz-14 fw-700 color-000">
-              <NumberText value={totlaEarned} />
+              {
+                claimedInfoLoading ? (<Loading />) : (<NumberText value={totlaEarned} />)
+              }
             </div>
           </div>
         </div>

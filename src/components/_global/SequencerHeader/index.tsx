@@ -19,6 +19,7 @@ import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
 import WalletModal from '@/components/WalletModal';
 import { deepCopy } from 'ethers/lib/utils';
+import fetchClaimedRewards from '@/graphql/claimedReward';
 
 const StyledModal = styled(Modal)``;
 
@@ -400,7 +401,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
 
         setSignerAddr(batchInfo?.[0]?.sequencers?.signer);
 
-
         setIfWhiteListed(true);
         setSequencer(true);
       } else if (isWhiteListed) {
@@ -445,8 +445,13 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     run: fetchBatchSequencerInfoRun,
     data: fetchBatchSequencerInfoData,
     loading: fetchBatchSequencerInfoLoading,
-    error: fetchBatchSequencerInfoError,
   } = useRequest(fetchBatchSequencerInfo, { manual: true });
+
+  const {
+    run: fetchClaimedRewardsRun,
+    data: fetchClaimedRewardsData,
+    loading: fetchClaimedRewardsLoading,
+  } = useRequest(fetchClaimedRewards, { manual: true });
 
   const filteredFetchBatchSequencerInfoData = useMemo(
     () =>
@@ -471,7 +476,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
   );
 
-
   const totalReward = useMemo(() => {
     // ele?.rewardReadable
     const amount = fetchBatchSequencerInfoData?.reduce((prev, next) => {
@@ -487,8 +491,18 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     fetchBatchSequencerInfoRun();
   }, [sequencerCards, chainId]);
 
-  const { ifMobile } = useDevice();
+  const totalSignerAddressList = useMemo(
+    () => fetchBatchSequencerInfoData?.map((i) => i?.sequencers?.signer?.toLowerCase()),
+    [fetchBatchSequencerInfoData],
+  );
 
+  useEffect(() => {
+    if (totalSignerAddressList?.length) {
+      fetchClaimedRewardsRun(totalSignerAddressList, +chainId);
+    }
+  }, [totalSignerAddressList, chainId]);
+
+  const { ifMobile } = useDevice();
 
   return (
     <>
@@ -660,14 +674,13 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
           <div className={`flex flex-row items-center ${ifMobile ? 'justify-center' : ''} gap-20 flex-wrap`}>
             {filteredFetchBatchSequencerInfoData?.map((i, index) => (
               <SequencerItemContainer
+                claimedInfoLoading={fetchClaimedRewardsLoading}
+                claimedInfo={fetchClaimedRewardsData?.[i?.sequencers?.signer?.toLowerCase()]}
                 ele={i}
-                title="SEQ"
                 totalLockUp={BigNumber(i?.sequencerLock || 0)
                   .div(1e18)
                   .toString()}
-                uptime=""
                 since={dayjs(i?.timestamp * 1000).format('YYYY-MM-DD')}
-                earned=""
                 onClick={() => {
                   jumpSequencer(i?.sequencer?.address);
                 }}

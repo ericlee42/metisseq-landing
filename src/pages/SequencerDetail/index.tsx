@@ -290,7 +290,7 @@ export function Component() {
   const [relockAmount, setRelockAmount] = React.useState<string | undefined>();
 
   const { id } = useParams(); // signer addr
-  const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners } = useSequencerInfo();
+  const { allSequencerInfo, run, cancel, data: sequencerInfoList, seqOwners, runOnce } = useSequencerInfo();
 
   const sequencerInfo: any = sequencerInfoList?.[0];
 
@@ -320,9 +320,9 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-    (fetchUserTxData?.histories?.[0]?.sequencer?.id
-      ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-      : undefined),
+      (fetchUserTxData?.histories?.[0]?.sequencer?.id
+        ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
+        : undefined),
     [fetchUserTxData?.histories],
   );
 
@@ -572,13 +572,24 @@ export function Component() {
   const { ifMobile } = useDevice();
 
   const setRewardRecipientModalVisible = useSetRecoilState(recoilRewardRecipientModalVisible);
-  const handleClaim = () => {
-    if (!sequencerInfo?.sequencers?.rewardRecipient || sequencerInfo?.sequencers?.rewardRecipient === defaultRewardRecipient) {
-      setRewardRecipientModalVisible(true)
-      return;
-    }
-    setClaimVisible(true);
-  }
+
+  const [claimLoading, setClaimLoading] = React.useState(false);
+  const handleClaim = async () => {
+    try {
+      setClaimLoading(true);
+      const res = await runOnce({ sequencerId, self: true });
+      setClaimLoading(false);
+      if (
+        !res?.[0]?.sequencers?.rewardRecipient ||
+        res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient
+      ) {
+        setRewardRecipientModalVisible(true);
+        return;
+      }
+      setClaimVisible(true);
+    } catch (err) {
+    } finally { }
+  };
   return (
     <Container className={'pages-landing flex flex-col'}>
       {ifMobile ? null : <div className={`banner ${ifMobile ? 'h-full' : 'h-410'}`} />}
@@ -675,10 +686,7 @@ export function Component() {
                   >
                     <div style={{ padding: '10px 16px' }}>Unlock</div>
                   </Button>
-                  <Button
-                    type="solid"
-                    onClick={handleClaim}
-                  >
+                  <Button type="solid" onClick={handleClaim}>
                     <div style={{ padding: '10px 16px' }}>Claim</div>
                   </Button>
                   <Button
@@ -815,7 +823,8 @@ export function Component() {
                       {ifMobile ? null : (
                         <Button
                           onClick={handleClaim}
-                          disabled={BigNumber(unclaimed).lte(0)}
+                          disabled={BigNumber(unclaimed).lte(0) || claimLoading}
+                          loading={claimLoading}
                           className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
                           type="metis"
                         >
@@ -827,7 +836,8 @@ export function Component() {
                     {ifMobile ? (
                       <Button
                         onClick={handleClaim}
-                        disabled={BigNumber(unclaimed).lte(0)}
+                        disabled={BigNumber(unclaimed).lte(0) || claimLoading}
+                        loading={claimLoading}
                         className={ifMobile ? 'w-120 h-36 self-end' : 'pl-15 pr-15'}
                         type="metis"
                       >

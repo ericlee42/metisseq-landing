@@ -12,6 +12,7 @@ import { styled } from 'styled-components';
 import { Address, checksumAddress, isAddress } from 'viem';
 
 const Container = styled(Modal)`
+z-index: 999999;
   .f-20-bold {
     font-size: 20px;
     font-family: Poppins-SemiBold, Poppins;
