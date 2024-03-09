@@ -346,7 +346,7 @@ const MyAccount = ({
                       </clipPath>
                     </defs>
                   </svg>
-                  <span className="fz-12 fw-400 color-8E8E8E poppins">Andromeda-explore</span>
+                  <span className="fz-12 fw-400 color-8E8E8E poppins">Metis Explorer</span>
                 </div>
               </div>
             </div>

@@ -8,8 +8,10 @@ import useChainWatcher from './useChainWatcher';
 import { Address } from 'viem';
 import useSequencerInfo from './useSequencerInfo';
 import BigNumber from 'bignumber.js';
+import useUpdate from './useUpdate';
 
 const useLock = () => {
+  const { runOnce: updateRunOnce } = useUpdate();
   const { connector } = useAuth();
   const { chain, unsupported } = useChainWatcher();
   const { runOnce } = useSequencerInfo();
@@ -46,6 +48,8 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
+    } finally {
+      updateRunOnce();
     }
   };
 
@@ -89,6 +93,8 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
+    } finally {
+      updateRunOnce();
     }
   };
 
@@ -126,6 +132,8 @@ const useLock = () => {
       console.log('e', e);
       message.error(catchError(e) || 'Fail');
       throw e;
+    } finally {
+      updateRunOnce();
     }
   };
 
@@ -162,6 +170,8 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
+    } finally {
+      updateRunOnce();
     }
   };
 
@@ -201,6 +211,8 @@ const useLock = () => {
     } catch (e) {
       message.error(catchError(e) || 'Fail');
       throw e;
+    } finally {
+      updateRunOnce();
     }
   };
 

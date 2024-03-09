@@ -103,7 +103,7 @@
   }
   &.loading {
     cursor: not-allowed;
-    svg {
+    svg:has(~ span) {
       margin-right: 6px;
     }
   }

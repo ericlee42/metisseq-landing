@@ -79,12 +79,12 @@ const headerNav = [
 const sequencerHeaderNav = [
   {
     label: 'Overview',
-    link: '/#sequencer',
+    link: '/#/#sequencer',
     target: '_self',
   },
   {
-    label: 'All Validators',
-    link: '/sequencers#sequencer',
+    label: 'All Sequencers',
+    link: '/#/sequencers#sequencer',
     target: '_self',
   },
   {
@@ -111,6 +111,7 @@ const Header = () => {
       return;
     }
     jumpLink(link, target);
+    setOpen(false);
   };
 
   return (

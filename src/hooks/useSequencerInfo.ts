@@ -93,8 +93,8 @@ const useSequencerInfo = () => {
       const ifActive = BigNumber(status).eq(2) && BigNumber(result?.sequencers?.deactivationBatch?.toString()).isZero();
       const ifInUnlockProgress = !BigNumber(unlockClaimTime).isZero();
 
-      const sequencerLock = BigNumber(result?.sequencers?.amount).toString();
-      const sequencerLockReadable = BigNumber(result?.sequencers?.amount).div(1e18).toString();
+      const sequencerLock = result?.sequencers?.amount?.toString();
+      const sequencerLockReadable = BigNumber(result?.sequencers?.amount || '0').div(1e18).toString();
 
       finalRes[result?.sequencers?.owner?.toLowerCase()] = {
         ...result,

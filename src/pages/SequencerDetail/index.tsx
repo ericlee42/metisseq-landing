@@ -440,7 +440,7 @@ export function Component() {
   const [approveLoading, { setTrue: setApproveLoadingTrue, setFalse: setApproveLoadingFalse }] = useBoolean(false);
 
   const needApprove = React.useMemo(
-    () => BigNumber(allowance || '0').lte(ethers.utils.parseEther(relockAmount || '0').toString()),
+    () => BigNumber(allowance || '0').lt(ethers.utils.parseEther(relockAmount || '0').toString()),
     [allowance, relockAmount],
   );
 
@@ -473,13 +473,13 @@ export function Component() {
         lockRewards: false,
         sequencerId,
       });
-      setApproveLoadingFalse();
+      setRelockAmount('');
     } catch (e) {
       console.log(e);
-      setApproveLoadingFalse();
       // catchError(e);
     } finally {
       refresh?.();
+      setApproveLoadingFalse();
     }
   };
 
@@ -735,6 +735,7 @@ export function Component() {
                       <Button
                         className="pl-15 pr-15"
                         type="metis"
+                        loading={!sequencerId}
                         onClick={() => {
                           if (BigNumber(lockedup).gt(0)) {
                             setUnlockVisible(true);
@@ -823,8 +824,8 @@ export function Component() {
                       {ifMobile ? null : (
                         <Button
                           onClick={handleClaim}
-                          disabled={BigNumber(unclaimed).lte(0) || claimLoading}
-                          loading={claimLoading}
+                          disabled={!sequencerId ? false : (BigNumber(unclaimed).lte(0) || claimLoading)}
+                          loading={claimLoading || !sequencerId}
                           className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
                           type="metis"
                         >
@@ -836,8 +837,8 @@ export function Component() {
                     {ifMobile ? (
                       <Button
                         onClick={handleClaim}
-                        disabled={BigNumber(unclaimed).lte(0) || claimLoading}
-                        loading={claimLoading}
+                        disabled={!sequencerId ? false : (BigNumber(unclaimed).lte(0) || claimLoading)}
+                        loading={claimLoading || !sequencerId}
                         className={ifMobile ? 'w-120 h-36 self-end' : 'pl-15 pr-15'}
                         type="metis"
                       >
@@ -894,9 +895,9 @@ export function Component() {
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 self-end">
                       <Button
                         type="metis"
-                        className={ifMobile ? 'h-36 w-120 self-end' : 'h-26'}
-                        disabled={!relockAmount}
-                        loading={approveLoading}
+                        className={ifMobile ? 'h-36 w-120 self-end' : 'h-26 pl-15 pr-15'}
+                        disabled={!sequencerId ? false : !relockAmount}
+                        loading={approveLoading || !sequencerId}
                         onClick={handleRelock}
                       >
                         {needApprove ? <span>Approve</span> : <span>Confirm</span>}

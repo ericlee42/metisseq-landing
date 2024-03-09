@@ -94,8 +94,8 @@ const useL2EpochStatus = () => {
 
     const contract = new Contract(address, abi, undefined).connect(l2Provider);
     currentContract.current = contract;
-    contract.on('NewEpoch', checkSeqStatus);
-    contract.on('ReCommitEpoch', checkSeqStatus);
+    // contract.on('NewEpoch', checkSeqStatus);
+    // contract.on('ReCommitEpoch', checkSeqStatus);
 
     return () => contract.removeAllListeners();
   };

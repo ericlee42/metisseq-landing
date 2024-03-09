@@ -122,7 +122,8 @@ const useUpdate = () => {
 
     if (result?.seqOwners) {
       setSequencerId(result?.seqOwners);
-    } else {
+    } else if (ownerAddress) {
+      // has ownerAddress but no seqOwners result
       setSequencerId('');
     }
 
@@ -154,7 +155,7 @@ const useUpdate = () => {
 
   const props = useRequest(intervalUpdate, {
     manual: true,
-    pollingInterval: 5000,
+    pollingInterval: 60_000,
     refreshDeps: [chainId],
   });
 
@@ -166,6 +167,7 @@ const useUpdate = () => {
     whiteListed,
     sequencerId,
     blockReward,
+    runOnce: intervalUpdate,
   };
 };
 

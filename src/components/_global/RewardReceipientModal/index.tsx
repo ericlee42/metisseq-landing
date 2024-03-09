@@ -12,7 +12,7 @@ import { styled } from 'styled-components';
 import { Address, checksumAddress, isAddress } from 'viem';
 
 const Container = styled(Modal)`
-z-index: 999999;
+  z-index: 999999;
   .f-20-bold {
     font-size: 20px;
     font-family: Poppins-SemiBold, Poppins;
@@ -133,6 +133,7 @@ const RewardReceipientModal = () => {
       const result = await setRewardRecipient({ sequencerId, recipient: checksumAddress(recipient as Address) });
       if (result?.status === 'success') {
         message.success('Success');
+        await runOnce({ sequencerId: sequencerId, self: true });
         onClose?.();
       } else {
         throw { message: 'Transaction Failed', shortMessage: 'Transaction Failed' };
@@ -140,7 +141,6 @@ const RewardReceipientModal = () => {
     } catch (e) {
       message.error(catchError(e));
     } finally {
-      runOnce({ sequencerId: sequencerId, self: true });
       setHandleSubmitRecipientChangeLoading(false);
     }
   };

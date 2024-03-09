@@ -96,7 +96,7 @@ export const decodeEventDataWithFunctionName = ({
   return decodedData;
 };
 
-export const txAwait = async (hash: string | `0x${string}`, chainId: number) => {
+export const txAwait = async (hash: string | `0x${string}`, chainId: number, confirmations?: number) => {
   if (!hash) {
     throw new Error('Invalid hash');
   }
@@ -110,6 +110,7 @@ export const txAwait = async (hash: string | `0x${string}`, chainId: number) => 
     }
     const transaction = await txPublicClient.waitForTransactionReceipt({
       hash: hash as `0x${string}`,
+      confirmations: confirmations || 1,
     });
     // console.log('txAwait', transaction);
     if (transaction.status !== 'success') {

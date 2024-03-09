@@ -172,7 +172,7 @@ export function Component() {
   const [approveLoading, { setTrue: setApproveLoadingTrue, setFalse: setApproveLoadingFalse }] = useBoolean(false);
 
   const needApprove = React.useMemo(
-    () => BigNumber(allowance || '0').lte(ethers.utils.parseEther(stakeAmount || '0').toString()),
+    () => BigNumber(allowance || '0').lt(ethers.utils.parseEther(stakeAmount || '0').toString()),
     [allowance, stakeAmount],
   );
 

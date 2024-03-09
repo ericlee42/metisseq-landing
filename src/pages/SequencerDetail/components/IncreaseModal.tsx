@@ -80,7 +80,7 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
   const [approveLoading, { setTrue: setApproveLoadingTrue, setFalse: setApproveLoadingFalse }] = useBoolean(false);
 
   const needApprove = React.useMemo(
-    () => BigNumber(allowance || '0').lte(ethers.utils.parseEther(relockAmount || '0').toString()),
+    () => BigNumber(allowance || '0').lt(ethers.utils.parseEther(relockAmount || '0').toString()),
     [allowance, relockAmount],
   );
 

@@ -18,16 +18,12 @@ import RewardReceipientModal from '@/components/_global/RewardReceipientModal';
 import useL2EpochStatus from '@/hooks/useL2EpochStatus';
 import useL2Block from '@/hooks/useL2Block';
 import { getL2ChainIdByL1ChainId, getL2RpcByL1ChainId } from '@/utils/tools';
+import BigNumber from 'bignumber.js';
 
 function BasicLayout() {
   const { address, chainId } = useAuth();
   const { sequencerId, run: updateRun, cancel: updateCancel } = useUpdate();
-  const {
-    allSequencerInfo,
-    run: sequencerInfoRun,
-    cancel: sequencerInfoCancel,
-    getAllUserRun,
-  } = useSequencerInfo();
+  const { allSequencerInfo, run: sequencerInfoRun, cancel: sequencerInfoCancel, getAllUserRun } = useSequencerInfo();
 
   const { run: getMetisPrice } = useMetisPrice();
 
@@ -71,9 +67,11 @@ function BasicLayout() {
 
   const { watchBlock, l2Block } = useL2Block();
   const { checkSeqStatus, initL2Event } = useL2EpochStatus();
+  const lastL2Block = React.useRef(0);
 
   useEffect(() => {
-    if (l2Block) {
+    if (l2Block && BigNumber(l2Block).minus(lastL2Block.current).gt(10)) {
+      lastL2Block.current = l2Block;
       checkSeqStatus();
     }
   }, [l2Block]);
