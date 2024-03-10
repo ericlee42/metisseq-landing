@@ -39,10 +39,14 @@ export const {
   VITE_APP_L2_CHAIN_ID,
   VITE_APP_L2_RPC,
   VITE_APP_L2_SEQ_SET_CONTRACT,
-  // l2-testnet
-  VITE_APP_L2_TESTNET_CHAIN_ID,
-  VITE_APP_L2_TESTNET_RPC,
-  VITE_APP_L2_TESTNET_SEQ_SET_CONTRACT,
+  // l2-holesky-testnet
+  VITE_APP_HOLESKY_L2_CHAIN_ID,
+  VITE_APP_HOLESKY_L2_RPC,
+  VITE_APP_HOLESKY_L2_SEQ_SET_CONTRACT,
+  // l2-sepolia-testnet
+  VITE_APP_SEPOLIA_L2_CHAIN_ID,
+  VITE_APP_SEPOLIA_L2_RPC,
+  VITE_APP_SEPOLIA_L2_SEQ_SET_CONTRACT,
 } = import.meta.env;
 
 export const contracts = {
@@ -68,15 +72,19 @@ export const contracts = {
   },
   metisSequencerSet: {
     [VITE_APP_L2_CHAIN_ID.toString()]: { address: VITE_APP_L2_SEQ_SET_CONTRACT, abi: SEQUENCER_SET_ABI },
-    [VITE_APP_L2_TESTNET_CHAIN_ID.toString()]: {
-      address: VITE_APP_L2_TESTNET_SEQ_SET_CONTRACT,
+    [VITE_APP_HOLESKY_L2_CHAIN_ID.toString()]: {
+      address: VITE_APP_HOLESKY_L2_SEQ_SET_CONTRACT,
+      abi: SEQUENCER_SET_ABI,
+    },
+    [VITE_APP_SEPOLIA_L2_CHAIN_ID.toString()]: {
+      address: VITE_APP_SEPOLIA_L2_SEQ_SET_CONTRACT,
       abi: SEQUENCER_SET_ABI,
     },
   },
 };
 
-export const defaultChainId = isProd ? holesky.id.toString() : holesky.id.toString();
-export const defaultChain = isProd ? holesky : holesky;
+export const defaultChainId = isProd ? mainnet.id.toString() : holesky.id.toString();
+export const defaultChain = isProd ? mainnet : holesky;
 
 // todo first render
 export let serviceUrl;

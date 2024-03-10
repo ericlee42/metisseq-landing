@@ -3,7 +3,7 @@ import { Select } from '..';
 import useChainWatcher from '@/hooks/useChainWatcher';
 import { useEffect, useMemo, useState } from 'react';
 import { mainnet, useNetwork } from 'wagmi';
-import { holesky } from 'viem/chains';
+import { holesky, sepolia } from 'viem/chains';
 import { isProd } from '@/configs/common';
 import useDevice from '@/hooks/useDevice';
 
@@ -20,12 +20,12 @@ const Container = styled.div`
 
 const options = isProd
   ? [
-      { ...holesky, label: holesky.name, value: holesky.id, name: holesky.name },
       { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
     ]
   : [
       { ...holesky, label: holesky.name, value: holesky.id, name: holesky.name },
       { ...mainnet, label: mainnet.name, value: mainnet.id, name: mainnet.name },
+      { ...sepolia, label: sepolia.name, value: sepolia.id, name: sepolia.name },
     ];
 
 const NetworkSelect = () => {

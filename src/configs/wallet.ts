@@ -29,7 +29,7 @@ const _holesky = defineChain({
   testnet: true,
 });
 
-export const chainId = isProd ? [_holesky, mainnet] : [_holesky, mainnet];
+export const chainId = isProd ? [_holesky, sepolia, mainnet] : [_holesky, sepolia, mainnet];
 
 export const injectedConnector = new InjectedConnector({
   chains: [...chainId],

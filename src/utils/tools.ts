@@ -5,7 +5,7 @@ import { uniq, uniqBy } from 'lodash-es';
 import { Address, mainnet, sepolia } from 'wagmi';
 import { ethers } from 'ethers';
 import { holesky } from 'viem/chains';
-import { VITE_APP_L2_CHAIN_ID, VITE_APP_L2_RPC, VITE_APP_L2_TESTNET_CHAIN_ID, VITE_APP_L2_TESTNET_RPC, l2Provider } from '@/configs/common';
+import { VITE_APP_HOLESKY_L2_CHAIN_ID, VITE_APP_HOLESKY_L2_RPC, VITE_APP_L2_CHAIN_ID, VITE_APP_L2_RPC, VITE_APP_SEPOLIA_L2_CHAIN_ID, VITE_APP_SEPOLIA_L2_RPC } from '@/configs/common';
 
 dayjs.extend(UTC);
 
@@ -331,9 +331,9 @@ export function getL2RpcByL1ChainId(chianId) {
     case mainnet.id:
       return VITE_APP_L2_RPC;
     case sepolia.id:
-      return VITE_APP_L2_TESTNET_RPC;
+      return VITE_APP_SEPOLIA_L2_RPC;
     case holesky.id:
-      return VITE_APP_L2_TESTNET_RPC;
+      return VITE_APP_HOLESKY_L2_RPC;
     default:
       return undefined;
   }
@@ -344,9 +344,9 @@ export function getL2ChainIdByL1ChainId(chianId) {
     case mainnet.id:
       return VITE_APP_L2_CHAIN_ID;
     case sepolia.id:
-      return VITE_APP_L2_TESTNET_CHAIN_ID;
+      return VITE_APP_SEPOLIA_L2_CHAIN_ID;
     case holesky.id:
-      return VITE_APP_L2_TESTNET_CHAIN_ID;
+      return VITE_APP_HOLESKY_L2_CHAIN_ID;
     default:
       return undefined;
   }
