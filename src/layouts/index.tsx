@@ -70,7 +70,7 @@ function BasicLayout() {
   const lastL2Block = React.useRef(0);
 
   useEffect(() => {
-    if (l2Block && BigNumber(l2Block).minus(lastL2Block.current).gt(10)) {
+    if (l2Block && BigNumber(l2Block).minus(lastL2Block.current).gt(30)) {
       lastL2Block.current = l2Block;
       checkSeqStatus();
     }

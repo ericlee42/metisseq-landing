@@ -109,7 +109,7 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
       <div className="flex flex-col w-full gap-4">
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center w-full">
-            <div className="fz-14 color-000 fw-400">Lock-up</div>
+            <div className="fz-14 color-000 fw-400">Locked-Up</div>
             <div className="flex flex-row items-center gap-4">
               <img src={getImageUrl('@/assets/images/sequencer/avatar.svg')} className="s-13" />
               <div className="fz-14 fw-700 color-000">
@@ -128,7 +128,7 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
         </div>
         <div className="h-1 w-full mt-10 mb-10 bg-color-CDCDCD" />
         <div className="flex flex-row justify-between items-center w-full">
-          <div className="fz-14 color-000 fw-400">Earned</div>
+          <div className="fz-14 color-000 fw-400">Total Rewards</div>
 
           <div className="flex flex-row items-center gap-4">
             <img src={getImageUrl('@/assets/images/sequencer/avatar.svg')} className="s-13" />

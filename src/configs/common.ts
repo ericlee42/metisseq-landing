@@ -84,7 +84,7 @@ export let l2Provider;
 
 export const setL2Provider = (rpcUrl, chainId) => {
   l2Provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-  l2Provider.pollingInterval = 12000;
+  l2Provider.pollingInterval = 60_000;
   serviceUrl = `${VITE_APP_ASSET_BASE}${getL2ChainIdByL1ChainId(+chainId)}`;
 };
 
@@ -116,7 +116,7 @@ export const explorer = {
 
 export const l2explorer = {
   [mainnet.id.toString()]: 'https://explorer.metis.io',
-  [holesky.id.toString()]: 'https://holesky.explorer.metisdevops.link',
+  [holesky.id.toString()]: 'https://explorer.holesky.metisdevops.link',
   [sepolia.id.toString()]: 'https://sepolia.explorer.metisdevops.link',
 };
 
