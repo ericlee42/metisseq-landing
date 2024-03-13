@@ -3,6 +3,7 @@ import { IconPaginationArrowLeft, IconPaginationArrowRight } from '@/assets/icon
 import './index.scss';
 
 export interface PaginationProps {
+  unlimited?: boolean;
   current: number;
   total: number;
   pageSize?: number;
@@ -58,16 +59,18 @@ const Pagination: React.FC<PaginationProps> = React.forwardRef((props: Paginatio
     const disabled = currentPage >= totalPage;
     return (
       <li
-        className={`flex flex-row items-center justify-center ${disabled ? 'disabled' : ''}`.trimEnd()}
+        className={`flex flex-row items-center justify-center ${
+          props?.unlimited ? '' : disabled ? 'disabled' : ''
+        }`.trimEnd()}
         onClick={() => {
-          if (disabled) return;
+          if (!props?.unlimited && disabled) return;
           pageClick(currentPage + 1);
         }}
       >
         <IconPaginationArrowLeft />
       </li>
     );
-  }, [currentPage, pageClick, totalPage]);
+  }, [currentPage, pageClick, props?.unlimited, totalPage]);
 
   const calcList = React.useMemo(() => {
     const pageListArr: number[] = [];

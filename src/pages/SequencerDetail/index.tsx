@@ -397,8 +397,12 @@ export function Component() {
       .toString();
   }, [fetchUserTxData?.histories, sequencerInfo?.rewardReadable]);
 
+  const [prevBlockData, setPrevBlockData] = React.useState<any[]>([]);
+  const [skip, setSkip] = React.useState(0);
+  const [blocksCurrentPage, setBlocksCurrentPage] = React.useState(1);
+
   const blocksCol = React.useMemo(() => {
-    return fetchBlockTxData?.epoches?.map((i: any) => {
+    return [...prevBlockData, ...(fetchBlockTxData?.epoches || [])]?.map((i: any) => {
       const blockNumbers = BigNumber(i?.endBlock).minus(i?.startBlock).plus(1).toString();
       const curEpochId = parseInt(i?.id, 16);
       let curEpochReward = '0';
@@ -417,10 +421,31 @@ export function Component() {
       const rewards = BigNumber(blockNumbers).multipliedBy(curEpochReward).toFixed(4, BigNumber.ROUND_DOWN);
       return { ...i, rewards: rewards };
     });
-  }, [blockReward, fetchBlockTxData?.epoches, fetchUserTxData?.rewardBatches, sequencerInfo?.curBatchState?.endEpoch]);
+  }, [
+    blockReward,
+    fetchBlockTxData?.epoches,
+    fetchUserTxData?.rewardBatches,
+    prevBlockData,
+    sequencerInfo?.curBatchState?.endEpoch,
+  ]);
 
-  const [blocksCurrentPage, setBlocksCurrentPage] = React.useState(1);
   const blocksTotal = React.useMemo(() => blocksCol?.length || 0, [blocksCol?.length]);
+
+  const needLoading = React.useMemo(() => (BigNumber(blocksCurrentPage).gt(6) ? fetchBlockTxLoading : false), [blocksCurrentPage, fetchBlockTxLoading]);
+
+  const handleNextPage = async (v) => {
+    const nextSkipTriggerPage = BigNumber(blocksCol?.length).div(blocksPageSize).minus(1).toFixed(0, BigNumber.ROUND_DOWN);
+    if (v >= +nextSkipTriggerPage) {
+        const newSkip = (skip + blocksPageSize * 6);
+        setSkip(newSkip);
+        setPrevBlockData(blocksCol);
+        fetchBlockTxRun(id, chainId, newSkip);
+        // if (BigNumber(blocksCurrentPage).gt(6)) {
+        //   document.querySelectorAll('#block-produced')?.[0]?.scrollIntoView();
+        // }
+    }
+    setBlocksCurrentPage(v);
+  };
 
   const filteredBlocksCol = React.useMemo(() => {
     const curPage = blocksCurrentPage - 1;
@@ -579,16 +604,14 @@ export function Component() {
       setClaimLoading(true);
       const res = await runOnce({ sequencerId, self: true });
       setClaimLoading(false);
-      if (
-        !res?.[0]?.sequencers?.rewardRecipient ||
-        res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient
-      ) {
+      if (!res?.[0]?.sequencers?.rewardRecipient || res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient) {
         setRewardRecipientModalVisible(true);
         return;
       }
       setClaimVisible(true);
     } catch (err) {
-    } finally { }
+    } finally {
+    }
   };
   return (
     <Container className={'pages-landing flex flex-col'}>
@@ -824,7 +847,7 @@ export function Component() {
                       {ifMobile ? null : (
                         <Button
                           onClick={handleClaim}
-                          disabled={!sequencerId ? false : (BigNumber(unclaimed).lte(0) || claimLoading)}
+                          disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
                           loading={claimLoading || !sequencerId}
                           className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
                           type="metis"
@@ -837,7 +860,7 @@ export function Component() {
                     {ifMobile ? (
                       <Button
                         onClick={handleClaim}
-                        disabled={!sequencerId ? false : (BigNumber(unclaimed).lte(0) || claimLoading)}
+                        disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
                         loading={claimLoading || !sequencerId}
                         className={ifMobile ? 'w-120 h-36 self-end' : 'pl-15 pr-15'}
                         type="metis"
@@ -912,12 +935,12 @@ export function Component() {
           {/* Blocks Signed */}
           <div className="sc2 w-full basic-card gap-20">
             <div className="flex flex-col gap-20">
-              <div className="fz-28 fw-500 ">Block Produced</div>
+              <div className="fz-28 fw-500" id="block-produced">Block Produced</div>
               <div className="h-1 bg-color-DFDFDF" />
             </div>
 
             <div
-              className="block-container flex flex-row ptb-28 w-full position-relative"
+              className="block-container flex flex-row ptb-28 w-full position-relative h-615"
               style={ifMobile ? { overflow: 'auto' } : {}}
             >
               <table className={`${ifMobile ? 'w-460' : 'w-full'}`}>
@@ -938,13 +961,13 @@ export function Component() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredBlocksCol?.map((i, index) => (
+                  {needLoading ? (<div className="position-absolute translateCenter topr-50 leftr-50 color-848484">Loading</div>) : filteredBlocksCol?.map((i, index) => (
                     <Row key={index} col={i} />
                   ))}
                 </tbody>
               </table>
 
-              {filteredBlocksCol?.length ? null : (
+              {(needLoading || filteredBlocksCol?.length) ? null : (
                 <div className="position-absolute translateCenter topr-50 leftr-50 color-848484">No Data</div>
               )}
             </div>
@@ -953,7 +976,7 @@ export function Component() {
                 current={blocksCurrentPage}
                 total={blocksTotal}
                 pageSize={blocksPageSize}
-                onChange={(v) => setBlocksCurrentPage(v)}
+                onChange={handleNextPage}
               />
             </div>
           </div>
