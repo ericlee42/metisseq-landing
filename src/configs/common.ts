@@ -83,8 +83,8 @@ export const contracts = {
   },
 };
 
-export const defaultChainId = isProd ? mainnet.id.toString() : holesky.id.toString();
-export const defaultChain = isProd ? mainnet : holesky;
+export const defaultChainId = isProd ? mainnet.id.toString() : sepolia.id.toString();
+export const defaultChain = isProd ? mainnet : sepolia;
 
 // todo first render
 export let serviceUrl;
@@ -99,14 +99,14 @@ export const setL2Provider = (rpcUrl, chainId) => {
 
 export const graphUrl = {
   staking: {
-    [mainnet.id.toString()]: '',
+    [mainnet.id.toString()]: 'https://subgraph.satsuma-prod.com/47e49d69fc65/erics-team--2882992/metis-sequencer-locking/api',
     [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-locking',
-    [sepolia.id.toString()]: '/l1/subgraphs/name/sepolia/staking',
+    [sepolia.id.toString()]: 'https://subgraph.satsuma-prod.com/47e49d69fc65/erics-team--2882992/metis-sepolia-sequencer-locking/api',
   },
   block: {
-    [mainnet.id.toString()]: '',
+    [mainnet.id.toString()]: 'https://andromeda-subgraph.metisdevops.link/subgraphs/name/metisio/sequencer-set',
     [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-set',
-    [sepolia.id.toString()]: '/l2/subgraphs/name/sepolia/block',
+    [sepolia.id.toString()]: 'https://sepolia-subgraph.metisdevops.link/subgraphs/name/metisio/sequencer-set',
   },
 };
 
@@ -125,7 +125,7 @@ export const explorer = {
 export const l2explorer = {
   [mainnet.id.toString()]: 'https://explorer.metis.io',
   [holesky.id.toString()]: 'https://explorer.holesky.metisdevops.link',
-  [sepolia.id.toString()]: 'https://sepolia.explorer.metisdevops.link',
+  [sepolia.id.toString()]: 'https://sepolia-explorer.metisdevops.link',
 };
 
 export const explorerName = {

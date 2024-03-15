@@ -29,7 +29,7 @@ const _holesky = defineChain({
   testnet: true,
 });
 
-export const network = isProd ? [_holesky, sepolia, mainnet] : [_holesky, sepolia, mainnet];
+export const network = isProd ? [mainnet, sepolia] : [mainnet, sepolia, _holesky];
 
 export const injectedConnector = new InjectedConnector({
   chains: [...network],
@@ -42,7 +42,6 @@ const config = createConfig({
   connectors: [injectedConnector],
   publicClient,
 });
-;
 
 export const mainnetTxPublicClient = createPublicClient({
   chain: mainnet,

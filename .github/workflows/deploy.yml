@@ -1,0 +1,38 @@
+name: s3-deploy
+on:
+  push:
+    branches:
+      - deploy
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  spa_build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::253189827591:role/GITHUB_WEBFE_DEPLOYER
+          aws-region: us-east-2
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - run: yarn
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        uses: islishude/spa-deploy-action@v1
+        with:
+          dir-path: "dist"
+          s3-bucket: metis-sequencer-web
+          cache-control: |
+            {
+              "index.html": "no-cache"
+            }
