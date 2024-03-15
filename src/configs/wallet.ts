@@ -29,13 +29,13 @@ const _holesky = defineChain({
   testnet: true,
 });
 
-export const chainId = isProd ? [_holesky, sepolia, mainnet] : [_holesky, sepolia, mainnet];
+export const network = isProd ? [_holesky, sepolia, mainnet] : [_holesky, sepolia, mainnet];
 
 export const injectedConnector = new InjectedConnector({
-  chains: [...chainId],
+  chains: [...network],
 });
 
-const { chains, publicClient } = configureChains([...chainId], [publicProvider()]);
+const { chains, publicClient } = configureChains([...network], [publicProvider()]);
 
 const config = createConfig({
   autoConnect: true,
