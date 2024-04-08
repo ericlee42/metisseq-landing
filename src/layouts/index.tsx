@@ -68,13 +68,19 @@ function BasicLayout() {
   const { watchBlock, l2Block } = useL2Block();
   const { checkSeqStatus, initL2Event } = useL2EpochStatus();
   const lastL2Block = React.useRef(0);
+  const lastL1ChainId = React.useRef(0);
 
   useEffect(() => {
-    if (l2Block && BigNumber(l2Block).minus(lastL2Block.current).gt(30)) {
-      lastL2Block.current = l2Block;
-      checkSeqStatus();
+    if (l2Block && BigNumber(l2Block).comparedTo(lastL2Block.current) != 0) {
+      if (BigNumber(l2Block).minus(lastL2Block.current).gt(30) || BigNumber(chainId).toNumber() !== lastL1ChainId.current) {
+        lastL2Block.current = l2Block;
+        checkSeqStatus();
+      }
+      if (BigNumber(chainId).toNumber() !== lastL1ChainId.current) {
+        lastL1ChainId.current = BigNumber(chainId).toNumber();
+      }
     }
-  }, [l2Block]);
+  }, [l2Block, chainId, checkSeqStatus]);
 
   useEffect(() => {
     if (!chainId) return;
