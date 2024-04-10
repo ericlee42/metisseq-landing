@@ -15,6 +15,7 @@ const userTxs = gql`
         id
         status
         pubkey
+        owner
       }
       id
     }

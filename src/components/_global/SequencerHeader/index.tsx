@@ -436,7 +436,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     return batchInfo?.map((i, index) => {
       return {
         ...i,
-        ...sequencerCards?.find((j) => j?.txOrigin?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
+        ...sequencerCards?.find((j) => j?.sequencer?.owner?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
       };
     });
   };
