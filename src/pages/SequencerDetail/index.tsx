@@ -519,13 +519,17 @@ export function Component() {
 
   const joinedDuration = React.useMemo(() => {
     // desc，todo make sure sort without error
-    const fromDate = fetchUserTxData?.histories?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
+    let fromDate = fetchUserTxData?.histories?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
+    const genesisSignersMainnet = ['0xeca7ae7de0d1978df299a547ee66c4503fba474d', '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04', '0xaff606251d8540f97ca2db12774c0147a170ab9e'];
+    if (chainId && chainId === 1 && genesisSignersMainnet.indexOf(id!.toLowerCase()) >= 0) {
+      fromDate = 1710406800; // 14/03/2024 9:00:00 UTC
+    }
 
     const unlockTxs = fetchUserTxData?.histories?.filter((i) => i.action === 'Unlock');
     const lastDate = unlockTxs?.length ? unlockTxs?.[0]?.timestamp : +dayjs().unix();
 
     return BigNumber(lastDate).minus(fromDate).toString();
-  }, [fetchUserTxData?.histories]);
+  }, [id, chainId, fetchUserTxData?.histories]);
 
   // Current APR = (Total Reward/Join days/Lock-up)*365*100%
   const currentApr = React.useMemo(() => {
@@ -780,7 +784,7 @@ export function Component() {
                   <div className="color-848484 fz-20 fw-500">Mining Rewards Rate(MRR)</div>
                   <Tooltip
                     title={
-                      <span>The rewards rate from the sequencer mining. (Data may be delayed by up to 24 hours.)</span>
+                      <span>The expected rewards rate from the sequencer mining. (Data may be delayed by up to 72 hours.)</span>
                     }
                   >
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
@@ -796,8 +800,7 @@ export function Component() {
                   <Tooltip
                     title={
                       <span>
-                        Total METIS tokens earned by this sequencer through sequencer mining.(Data may be delayed by up
-                        to 24 hours.)
+                        Total METIS tokens earned by this sequencer through sequencer mining.(Data may be delayed by up to 72 hours.)
                       </span>
                     }
                   >
@@ -833,8 +836,7 @@ export function Component() {
                       <Tooltip
                         title={
                           <span>
-                            Rewards are calculated and distributed daily. You can claim your earned rewards to L2 at any
-                            time.
+                            Mining rewards are calculated and distributed every 3 days. You can claim your earned rewards to L2 at any time.
                           </span>
                         }
                       >
@@ -951,7 +953,7 @@ export function Component() {
                     <th>
                       <div className="flex flex-row items-center  gap-6">
                         <span>Rewards</span>
-                        <Tooltip title={<span>Rewards are calculated and distributed daily.</span>}>
+                        <Tooltip title={<span>Mining rewards are calculated and distributed every 3 days.</span>}>
                           <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                         </Tooltip>
                       </div>

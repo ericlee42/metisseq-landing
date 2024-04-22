@@ -361,9 +361,9 @@ export function Component() {
               </div>
 
               <div className="fz-18 fw-400 inter color-fff self-start">
-                In order to become a Sequencer you need to lock up min. 20,000 METIS.
+                Become a Sequencer by locking up at least 20,000 METIS.
                 <br />
-                The more you lock up the higher reward you can receive.
+                Lock more, mine more!
               </div>
             </div>
 
