@@ -466,8 +466,14 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
           return false;
         })
         ?.map((i) => {
+          let renewTs = i.timestamp;
+          const genesisSignersMainnet = ['0xeca7ae7de0d1978df299a547ee66c4503fba474d', '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04', '0xaff606251d8540f97ca2db12774c0147a170ab9e'];
+          if (chainId == 1 && genesisSignersMainnet.indexOf(i.sequencer.address.toLowerCase()) >= 0) {
+            renewTs = 1710406800; // 14/03/2024 9:00:00 UTC
+          }
           return {
             ...i,
+            timestamp: renewTs,
             infos: {
               ...allSequencerInfo?.[i?.sequencers?.owner?.toLowerCase()],
             },
