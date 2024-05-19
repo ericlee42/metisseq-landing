@@ -533,25 +533,52 @@ export function Component() {
 
   // Current APR = (Total Reward/Join days/Lock-up)*365*100%
   const currentApr = React.useMemo(() => {
-    const days = BigNumber(joinedDuration).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
+    let days = BigNumber(joinedDuration).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
+    const eps = fetchBlockTxData?.epoches;
+    const rbs = fetchUserTxData?.rewardBatches;
+    if (rbs && rbs.length > 1) {
+      const ts = rbs[rbs.length - 1].timestamp - rbs[rbs.length - 2].timestamp;
+      days = BigNumber(ts).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
+    }
+    let realRewards = ethers.BigNumber.from('0');
+    if (rbs && rbs.length > 0 && eps && eps.length > 0) {
+      const rb = rbs[rbs.length - 1];
+      const rbStart = ethers.BigNumber.from(rb.startEpoch);
+      const rbEnd = ethers.BigNumber.from(rb.endEpoch);
+      const rpb = ethers.BigNumber.from(rb.rpb);
+      for (const ep of eps) {
+        const epochId = ethers.BigNumber.from(ep.id);
+        const startBlock = ethers.BigNumber.from(ep.startBlock);
+        const endBlock = ethers.BigNumber.from(ep.endBlock);
+        if (epochId.gt(rbEnd)) {
+          continue;
+        }
+        if (epochId.lt(rbStart)) {
+          break;
+        }
+        const epBlocks = endBlock.sub(startBlock).add(1);
+        realRewards = realRewards.add(epBlocks.mul(rpb));
+      }
+    }
 
+    const rrs = ethers.utils.formatEther(realRewards);
     if (
       BigNumber(days).isZero() ||
       BigNumber(days).isNaN() ||
-      BigNumber(totalRewards).isZero() ||
-      BigNumber(totalRewards).isNaN() ||
+      BigNumber(rrs).isZero() ||
+      BigNumber(rrs).isNaN() ||
       BigNumber(lockedup).isZero() ||
       BigNumber(lockedup).isNaN()
     ) {
       return '0';
     }
-    return BigNumber(totalRewards)
+    return BigNumber(rrs)
       .div(days)
       .div(lockedup)
       .multipliedBy(365)
       .multipliedBy(100)
       .toFixed(2, BigNumber.ROUND_CEIL);
-  }, [joinedDuration, lockedup, totalRewards]);
+  }, [joinedDuration, lockedup, fetchBlockTxData, fetchUserTxData]);
 
   const { l2Block: currentBlockNumber, l2BlockLoading } = useL2EpochStatus();
 
