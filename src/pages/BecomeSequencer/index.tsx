@@ -6,7 +6,7 @@ import { styled } from 'styled-components';
 import { catchError, getImageUrl, jumpLink as jumpOuterLink } from '@/utils/tools';
 import { useNavigate } from 'react-router-dom';
 import Progress from '@/components/Progress';
-import { Button, Input, message } from '@/components';
+import { Button, Checkbox, Input, message, Radio } from '@/components';
 import CopyAddress from '@/components/CopyAddress';
 import useBalance from '@/hooks/useBalance';
 import useAllowance from '@/hooks/useAllowance';
@@ -128,6 +128,41 @@ const Container = styled.section`
     .card {
     }
   }
+  .copy-address {
+    .sc-bczSft {
+      flex-direction: row !important;
+    }
+  }
+  .radio-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-box {
+      display: flex;
+      &-hr {
+        width: 2px;
+        background-color: #fff;
+        opacity: 0.2;
+        margin: 0 20px;
+      }
+      label {
+        margin-left: 6px;
+      }
+      .checked {
+        label {
+          color: #00d2ff;
+        }
+      }
+    }
+  }
+  .confirm-check {
+    border: 1px solid #00ea5e;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .visible {
+    visibility: hidden;
+  }
 `;
 
 export function Component() {
@@ -141,7 +176,9 @@ export function Component() {
   const [account, setAccount] = React.useState<undefined | string>();
   const [pubKey, setPubKey] = React.useState<undefined | string>();
   const [desc, setDesc] = React.useState<undefined | string>();
+  const [checkbox, setCheckbox] = React.useState(false);
 
+  const [receivingAddressWays, setReceivingAddressWays] = React.useState<number>(0);
   const formattedPubKey = React.useMemo(() => {
     if (pubKey?.startsWith('0x04')) {
       return pubKey?.replace('0x04', '0x');
@@ -150,7 +187,7 @@ export function Component() {
   }, [pubKey]);
 
   const [stakeAmount, setStakeAmount] = React.useState('');
-  const [apr, setApr] = React.useState<undefined | string>();
+  const [apr, setApr] = React.useState<undefined | string>('20%');
 
   const handleChangeApr = (v: string) => {
     setApr(v);
@@ -163,7 +200,7 @@ export function Component() {
   const navigate = useNavigate();
 
   const { address, connector } = useAuth();
-
+  const [newAddress, setNewAddress] = React.useState<string>(address as string);
   const { balance } = useBalance();
 
   const { lockFor } = useLock();
@@ -225,7 +262,7 @@ export function Component() {
     },
   ];
 
-  const [activeIndex, setActiveIndex] = React.useState('1');
+  const [activeIndex, setActiveIndex] = React.useState('2');
 
   const handleIndex = (index: string) => {
     setActiveIndex(index);
@@ -236,6 +273,16 @@ export function Component() {
     [name, website, account, formattedPubKey],
   );
 
+  const changeReceivingAddressWays = (e) => {
+    console.log(e, 'eeeeeeeeee');
+    setReceivingAddressWays(e);
+    if (e === 1) {
+      setNewAddress('');
+    } else {
+      setNewAddress(address as string);
+    }
+  };
+
   const { ifMobile } = useDevice();
 
   const step = React.useMemo(() => {
@@ -244,6 +291,19 @@ export function Component() {
         return (
           <div className="flex flex-col gap-32">
             <div className="flex flex-col gap-20">
+              <div
+                className="radius-30 flex flex-col gap-10 p-50"
+                style={{
+                  background:
+                    'var(--gradient-glass, linear-gradient(91deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%))',
+                  border: '1px solid rgba(255, 255, 255, 0.10)',
+                  backdropFilter: 'blur(30px)',
+                  overflow: 'hidden',
+                }}
+              >
+                <span className="fz-36 fw-700 color-fff raleway">Kubernetes</span>
+                <span className="fz-26 fw-500 color-fff raleway">Set up Sequencer via Kubernetes Helm Charts</span>
+              </div>
               <div
                 onClick={() => jumpOuterLink('https://github.com/MetisProtocol/mvm-sequencer-node', '_blank')}
                 className={`pointer radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
@@ -255,27 +315,11 @@ export function Component() {
                   overflow: 'hidden',
                 }}
               >
-                <span className={`${ifMobile ? 'fz-27' : 'fz-36'} fw-700 color-fff raleway`}>Docker</span>
+                <span className={`${ifMobile ? 'fz-27' : 'fz-36'} fw-700 color-fff raleway`}>Compose</span>
                 <span className={`${ifMobile ? 'fz-14' : 'fz-26'} fw-500 color-fff raleway`}>
-                  Set up Sequencer via Docker
+                  Set up Sequencer via Docker Compose
                 </span>
               </div>
-              {/*
-              <div
-                className="radius-30 flex flex-col gap-10 p-50"
-                style={{
-                  background:
-                    'var(--gradient-glass, linear-gradient(91deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%))',
-                  border: '1px solid rgba(255, 255, 255, 0.10)',
-                  backdropFilter: 'blur(30px)',
-                  overflow: 'hidden',
-                }}
-              >
-                <span className="fz-36 fw-700 color-fff raleway">Binaries</span>
-                <span className="fz-26 fw-500 color-fff raleway">
-                  Build from source to set up your Sequencer
-                </span>
-              </div> */}
 
               <div className="flex flex-row items-center justify-center">
                 <Button
@@ -289,7 +333,11 @@ export function Component() {
             </div>
             <div className="fz-18 fw-500 color-fff raleway">
               You have questions? Make sure to read our{' '}
-              <a className="fz-18 fw-700 color-fff underlined" href="https://github.com/MetisProtocol/mvm-testnet-sequencer-node/blob/main/README.md" target="_blank">
+              <a
+                className="fz-18 fw-700 color-fff underlined"
+                href="https://github.com/MetisProtocol/mvm-testnet-sequencer-node/blob/main/README.md"
+                target="_blank"
+              >
                 Dev Docs
               </a>
               <br />
@@ -313,14 +361,30 @@ export function Component() {
         return (
           <div className="flex flex-col gap-32">
             <div
-              className={`${ifMobile ? 'pb-66' : 'pb-16'
-                } pt-66  pl-38 pr-38 flex flex-col items-center gap-73 cards-container`}
+              className={`${
+                ifMobile ? 'pb-66' : 'pb-16'
+              } pt-66  pl-38 pr-38 flex flex-col items-center gap-73 cards-container`}
             >
               <div className={`flex flex-col gap-25 ${ifMobile ? 'minwp-100 w-full' : 'minw-620'}`}>
                 <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
                   {/* name */}
                   <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
-                    <div className="fz-14 fw-400 color-fff inter">Lockup</div>
+                    <div className="fz-14 fw-400 color-fff inter">Owner Address</div>
+                    <Input
+                      max={BigNumber(balance?.readable).toString()}
+                      value={address}
+                      solidLight
+                      className="flex-3 fz-22 fw-400 color-000 copy-address"
+                      suffix={
+                        <CopyAddress className="align-right fz-14 fw-700 inter color-fff" reverse addr={address} />
+                      }
+                    />
+                  </div>
+                </div>
+                <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
+                  {/* name */}
+                  <div className="flex-8 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
+                    <div className="fz-14 fw-400 color-fff inter">Lockup(*)</div>
                     <Input
                       max={BigNumber(balance?.readable).toString()}
                       value={stakeAmount}
@@ -353,10 +417,49 @@ export function Component() {
                       {balance?.readable} METIS
                     </div>
                   </div>
-                  <div className="flex flex-row items-center gap-19">
+                  {/* <div className="flex flex-row items-center gap-19">
                     <div className="w-158 fz-14 fw-400 inter color-fff">Wallet Address</div>
                     <CopyAddress className="align-right fz-14 fw-700 inter color-fff" reverse addr={address} />
+                  </div> */}
+                </div>
+                <div className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20`}>
+                  {/* name */}
+                  <div className="flex-1 flex flex-col gap-6" style={ifMobile ? {} : { minWidth: 'calc(50% - 56px)' }}>
+                    <div className="fz-14 fw-400 color-fff inter radio-group">
+                      <div> Rewards Receiving Address </div>
+
+                      <div className="radio-group-box">
+                        <Radio checked={receivingAddressWays} value={0} onChange={changeReceivingAddressWays}>
+                          Set now
+                        </Radio>
+                        <div className="radio-group-box-hr"> </div>
+                        <Radio checked={receivingAddressWays} value={1} onChange={changeReceivingAddressWays}>
+                          Not now
+                        </Radio>
+                      </div>
+                    </div>
+
+                    <Input
+                      disabled={receivingAddressWays === 1}
+                      max={BigNumber(balance?.readable).toString()}
+                      value={newAddress}
+                      solidLight
+                      className="flex-3 fz-22 fw-400 color-000"
+                    />
                   </div>
+                </div>
+                <div
+                  className={`flex ${ifMobile ? 'flex-col' : 'flex-row'} gap-20 confirm-check ${
+                    receivingAddressWays === 1 ? 'visible' : ''
+                  }`}
+                >
+                  {/* name */}
+                  <Checkbox checked={checkbox} onChange={(v) => setCheckbox(v)}>
+                    <div>
+                      Confirm double-check that you own the provided rewards receiving address and that it has been
+                      correctly created and granted access on the Metis network before submitting.
+                    </div>
+                  </Checkbox>
                 </div>
               </div>
 
@@ -396,8 +499,9 @@ export function Component() {
         return (
           <div className="flex flex-col gap-32">
             <div
-              className={`${ifMobile ? 'p-38 pl-20 pr-20' : ' pt-70 pb-34 pl-124 pr-124'
-                } flex flex-col items-center gap-26 cards-container`}
+              className={`${
+                ifMobile ? 'p-38 pl-20 pr-20' : ' pt-70 pb-34 pl-124 pr-124'
+              } flex flex-col items-center gap-26 cards-container`}
             >
               <img
                 className={`${ifMobile ? 's-120' : 's-180'}`}
@@ -447,8 +551,9 @@ export function Component() {
 
   return (
     <Container
-      className={`pages-landing flex flex-col gap-48 items-center ${ifMobile ? 'mobile pt-45 pb-156' : 'pt-156 pb-206'
-        }`}
+      className={`pages-landing flex flex-col gap-48 items-center ${
+        ifMobile ? 'mobile pt-45 pb-156' : 'pt-156 pb-206'
+      }`}
     >
       <div className={`${ifMobile ? 'wvw-100 maxwp-100 pl-22 pr-22' : 'maxw-1440'} m-auto`}>
         <div className="flex flex-col gap-2">

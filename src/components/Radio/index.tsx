@@ -62,9 +62,9 @@ const Radio: React.FC<RadioProps> = React.forwardRef((props: RadioProps, ref: Re
         onChange={handleChange}
       />
       <label htmlFor={uuid}>
-        <div className="choose">
+        {/* <div className="choose">
           <IconCircle />
-        </div>
+        </div> */}
         {memoElement}
       </label>
     </div>
