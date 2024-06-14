@@ -227,7 +227,44 @@ const useLock = () => {
       updateRunOnce();
     }
   };
+  const withdraw = async ({ sequencerId, relockAmount }: { sequencerId: string; relockAmount: bigint }) => {
+    if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
+    try {
+      const latestStatus = await runOnce({ sequencerId, self: true });
+      const signer = await connector?.getWalletClient();
 
+      const txData = calTxData({
+        abi: contracts.lock?.[chain?.id?.toString()]?.abi,
+        functionName: 'withdraw',
+        args: [sequencerId, relockAmount],
+      });
+
+      if (!signer) {
+        throw new Error('Invalid Signer');
+      }
+      console.log(txData, signer, relockAmount, contracts.lock?.[chain?.id?.toString()], chain, '123123');
+      const hash = await sendTx({
+        walletClient: signer,
+        to: contracts.lock?.[chain?.id?.toString()]?.address,
+        value: '0x0',
+        data: txData,
+        chain: chain,
+      });
+      if (!chain?.id) {
+        throw new Error('Invalid Clent');
+      }
+      const tx = await txAwait(hash, chain?.id);
+      message.success('Success');
+
+      return tx;
+    } catch (e) {
+      console.log(e, 'errorE');
+      message.error(catchError(e) || 'Fail');
+      throw e;
+    } finally {
+      updateRunOnce();
+    }
+  };
   // setSequencerRewardRecipient
   const setRewardRecipient = async ({ sequencerId, recipient }: { sequencerId: string; recipient: Address }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
@@ -259,6 +296,6 @@ const useLock = () => {
     return tx;
   };
 
-  return { setRewardRecipient, lockFor, relock, withdrawRewards, unlock, unlockClaim };
+  return { setRewardRecipient, lockFor, relock, withdrawRewards, unlock, unlockClaim, withdraw };
 };
 export default useLock;

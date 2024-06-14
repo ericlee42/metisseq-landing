@@ -13,6 +13,7 @@ import UnlockModal from './components/UnlockModal';
 import DetailModal from './components/DetailModal';
 import WithdrawModal from './components/WithdrawModal';
 import PartialWithdrawModal from './components/PartialWithdrawModal';
+import ClaimAndRelock from './components/ClaimAndRelock';
 import ClaimModal from './components/ClaimModal';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import { ethers } from 'ethers';
@@ -529,6 +530,7 @@ export function Component() {
   const [claimVisible, setClaimVisible] = React.useState(false);
   const [withdrawVisible, setWithdrawVisible] = React.useState(false);
   const [partialWithdrawVisible, setpartialWithdrawVisible] = React.useState(false);
+  const [claimAndRelockVisible, setClaimAndRelockVisible] = React.useState(false);
 
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
   const unclaimed = React.useMemo(() => sequencerInfo?.rewardReadable || '0', [sequencerInfo?.rewardReadable]);
@@ -655,6 +657,20 @@ export function Component() {
         return;
       }
       setClaimVisible(true);
+    } catch (err) {
+    } finally {
+    }
+  };
+  const handleClaimAndRelock = async () => {
+    try {
+      setClaimLoading(true);
+      const res = await runOnce({ sequencerId, self: true });
+      setClaimLoading(false);
+      // if (!res?.[0]?.sequencers?.rewardRecipient || res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient) {
+      //   setRewardRecipientModalVisible(true);
+      //   return;
+      // }
+      setClaimAndRelockVisible(true);
     } catch (err) {
     } finally {
     }
@@ -790,7 +806,7 @@ export function Component() {
                   </div>
 
                   {!ifSelf ? (
-                    !ifInUnlockProgress ? (
+                    ifInUnlockProgress ? (
                       <div className="flex flex-row">
                         <Button
                           className="pl-15 pr-15 m-r-10"
@@ -803,6 +819,23 @@ export function Component() {
                           }}
                         >
                           <span>Withdraw</span>
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-row">
+                        <Button
+                          className="pl-15 pr-15 m-r-10"
+                          type="metis"
+                          loading={!sequencerId}
+                          onClick={() => {
+                            if (BigNumber(lockedup).gt(0)) {
+                              setUnlockVisible(true);
+                            } else {
+                              setIncreaseVisible(true);
+                            }
+                          }}
+                        >
+                          {BigNumber(lockedup).gt(0) ? 'Unlock' : 'Lock'}
                         </Button>
                         <Button
                           className="pl-15 pr-15 white-button"
@@ -817,21 +850,6 @@ export function Component() {
                           <span>Partial Withdraw</span>
                         </Button>
                       </div>
-                    ) : (
-                      <Button
-                        className="pl-15 pr-15"
-                        type="metis"
-                        loading={!sequencerId}
-                        onClick={() => {
-                          if (BigNumber(lockedup).gt(0)) {
-                            setUnlockVisible(true);
-                          } else {
-                            setIncreaseVisible(true);
-                          }
-                        }}
-                      >
-                        {BigNumber(lockedup).gt(0) ? 'Unlock' : 'Lock'}
-                      </Button>
                     )
                   ) : null}
                 </div>
@@ -921,7 +939,7 @@ export function Component() {
                             Claim
                           </Button>
                           <Button
-                            onClick={handleClaim}
+                            onClick={handleClaimAndRelock}
                             disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
                             className={`${ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'} white-button`}
                             type="metis"
@@ -1159,8 +1177,18 @@ export function Component() {
         <PartialWithdrawModal
           refetchGraph={refresh}
           visible={partialWithdrawVisible}
+          lockedup={lockedup}
           onClose={() => {
             setpartialWithdrawVisible(false);
+          }}
+        />
+        <ClaimAndRelock
+          refetchGraph={refresh}
+          visible={claimAndRelockVisible}
+          lockedup={lockedup}
+          unclaimed={unclaimed}
+          onClose={() => {
+            setClaimAndRelockVisible(false);
           }}
         />
 

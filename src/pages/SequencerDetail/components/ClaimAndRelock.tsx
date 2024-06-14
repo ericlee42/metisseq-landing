@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 import { Button, Modal, Input } from '@/components';
+import { calTxData } from '@/utils/tx';
 import { ethers } from 'ethers';
+import { contracts } from '@/configs/common';
+import useChainWatcher from '@/hooks/useChainWatcher';
 import Loading from '@/components/_global/Loading';
 import useLock from '@/hooks/useLock';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
@@ -63,72 +66,70 @@ const Container = styled(Modal)`
   .error-font {
     color: #b50000;
   }
-  .pointer {
-    width: 100px;
-  }
-  .input-style {
-    background: #fff;
-    border-radius: 8px;
-    label {
-      border: none !important;
-    }
-    &-max {
-      border: 1px solid #000;
-      border-radius: 45px;
-      padding: 4px 16px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-  }
-  .max-tooltip {
-    color: #7b7b7b;
-    font-weight: 400;
+  .metis-font {
+    align-items: center;
   }
 `;
 
-const PartialWithdrawModal = ({
+const ClaimAndRelock = ({
   refetchGraph,
   visible,
   onOk,
   onClose,
   lockedup,
+  unclaimed,
 }: {
   refetchGraph?: any;
   visible: boolean;
   onOk?: any;
   onClose?: any;
   lockedup: string;
+  unclaimed: string;
 }) => {
-  const { sequencerInfo, run } = useSequencerInfo();
-  console.log(lockedup, 'lockedup');
+  const { data: sequencerInfoList, run } = useSequencerInfo();
+  const sequencerInfo: any = sequencerInfoList?.[0];
+  console.log(sequencerInfoList, 'lockedup12312312');
   // const lockedup = React.useMemo(
   //   () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
   //   [sequencerInfo?.sequencerLock],
   // );
-  const [relockAmount, setRelockAmount] = React.useState('');
+  const whitelistedAddress = React.useMemo(() => {
+    console.log(sequencerInfo, 'sequencerInfo123123');
+    return sequencerInfo?.sequencers?.owner?.toLowerCase() || '-';
+  }, [sequencerInfo?.sequencers?.owner]);
+
+  const [relockAmount, setRelockAmount] = React.useState(0);
   const unlockTo = useMemo(
     () => dayjs.unix(sequencerInfo?.unlockClaimTime || 0).format('YYYY-MM-DD HH:mm:ss'),
     [sequencerInfo?.unlockClaimTime],
   );
 
-  const [indexPage, setIndexPage] = React.useState(0);
-
   const [countdown, formattedRes] = useCountDown({
     targetDate: unlockTo,
   });
-  const [isError, setIsError] = React.useState(false);
-  const { withdraw } = useLock();
+  const [isError, setIsError] = React.useState(true);
+  const { unlockClaim } = useLock();
   const { sequencerId } = useUpdate();
-
+  const { chain, unsupported } = useChainWatcher();
+  console.log(chain, 'chainchainchain');
+  const txData = calTxData({
+    abi: contracts.lockInfo?.[chain?.id?.toString()]?.abi,
+    functionName: 'minLock',
+    args: [],
+  });
+  const weiValue = ethers.BigNumber.from(txData);
+  const ethValue = ethers.utils.formatEther(weiValue);
+  console.log(ethValue, 'te');
   const [withdrawLoading, { setTrue, setFalse }] = useBoolean(false);
-  const setMax = () => {
-    setRelockAmount(BigNumber(lockedup).minus(20000).toString());
-  };
+  const maxClaim = React.useMemo(() => {
+    const max = BigNumber(100000).minus(BigNumber(lockedup));
+    return BigNumber(unclaimed).gte(max) ? max : BigNumber(unclaimed);
+  }, [unclaimed, lockedup]);
   const handleWithdraw = async () => {
     if (countdown) return;
     try {
       setTrue();
-      await withdraw({ sequencerId, relockAmount: ethers.utils.parseEther(relockAmount) });
+      await unlockClaim({ sequencerId });
       setFalse();
     } catch (e) {
       setFalse();
@@ -140,64 +141,36 @@ const PartialWithdrawModal = ({
   };
 
   return (
-    <Container visible={visible} onCancel={onClose} onClose={onClose} onOk={onOk} title="Partial Withdraw" middleHeader>
-      {indexPage === 0 ? (
+    <Container visible={visible} onCancel={onClose} onClose={onClose} onOk={onOk} title="Claim and Relock" middleHeader>
+      {
         <div className="c flex flex-col gap-24">
-          <div className=" flex flex-col gap-12">
-            <div>Partial withdrawals must maintain the minimum METIS balance required for Sequencer status.</div>
-            <div>Only one withdrawal is allowed per reward cycle; additional attempts will not be processed.</div>
-            {/* <div className="link">Link to withdrawal rules</div> */}
-          </div>
-
-          <div className="flex flex-row items-center gap-20">
-            <Button style={{ padding: '14px 50px' }} type="metis" className="flex-1" onClick={() => setIndexPage(1)}>
-              <div className="flex items-center justify-center">Acknowledge</div>
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="c flex flex-col gap-24">
-          <div className="flex flex-col p-8 gap-12  bg-dark radius-8" style={{ padding: '40px' }}>
-            <div className="flex justify-center p-24">
+          <div className="flex flex-col p-24 gap-12 items-center bg-dark radius-8" style={{ padding: '40px' }}>
+            <div className="f-12">Unclaimed</div>
+            <div className="metis-font flex flex-row">
+              <div className="f-30 m-r-10">{+maxClaim}</div>
               <img className="pointer" src={getImageUrl('@/assets/images/_global/metis_logo_dark.svg')} />
             </div>
-            <Input
-              value={relockAmount}
-              onChange={setRelockAmount}
-              max={BigNumber(lockedup).minus(20000).toString()}
-              solid
-              className="flex-1 p-8 input-style"
-              suffix={
-                <div className="flex flex-row items-center gap-8">
-                  <span className="f-12 input-style-max" onClick={setMax}>
-                    Max
-                  </span>
-                </div>
-              }
-            />
-            <span className="f-14 max-tooltip">
-              {' '}
-              Max. withdrawal: {BigNumber(lockedup).minus(20000).toString()} METIS{' '}
-            </span>
-            {isError ? <span className="f-12 error-font">Insufficient balance for withdrawal</span> : null}
           </div>
-          <div className="f-12">This operation will withdraw your locked-up to your owner address on Ethereum.</div>
+          <div className="f-312">
+            This operation will claim all your unclaimed rewards and relock up to your sequencer on Ethereum.
+            {sequencerInfo}
+          </div>
           <div className="flex flex-row items-center gap-20">
             <Button
-              disabled={BigNumber(relockAmount).gt(0) || withdrawLoading}
+              disabled={!+lockedup || withdrawLoading}
               style={{ padding: '14px 50px' }}
               type="metis"
               className="flex-1"
               onClick={handleWithdraw}
             >
               <div className="flex items-center justify-center">
-                {withdrawLoading ? <Loading color="#fff" /> : 'Withdraw'}
+                {withdrawLoading ? <Loading color="#fff" /> : 'Claim and Relock'}
               </div>
             </Button>
           </div>
         </div>
-      )}
+      }
     </Container>
   );
 };
-export default PartialWithdrawModal;
+export default ClaimAndRelock;
