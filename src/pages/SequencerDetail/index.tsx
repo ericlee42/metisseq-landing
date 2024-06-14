@@ -12,6 +12,7 @@ import IncreaseModal from './components/IncreaseModal';
 import UnlockModal from './components/UnlockModal';
 import DetailModal from './components/DetailModal';
 import WithdrawModal from './components/WithdrawModal';
+import PartialWithdrawModal from './components/PartialWithdrawModal';
 import ClaimModal from './components/ClaimModal';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import { ethers } from 'ethers';
@@ -527,6 +528,7 @@ export function Component() {
   const [unlockVisible, setUnlockVisible] = React.useState(false);
   const [claimVisible, setClaimVisible] = React.useState(false);
   const [withdrawVisible, setWithdrawVisible] = React.useState(false);
+  const [partialWithdrawVisible, setpartialWithdrawVisible] = React.useState(false);
 
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
   const unclaimed = React.useMemo(() => sequencerInfo?.rewardReadable || '0', [sequencerInfo?.rewardReadable]);
@@ -781,7 +783,7 @@ export function Component() {
                 </div>
                 <div className="fz-26 color-000 fw-500 items-center gap-8 flex-wrap">
                   <div className="flex flex-row m-b-10">
-                    <span>
+                    <span className="m-r-10">
                       <NumberText value={lockedup || '0'} />
                     </span>
                     <img src={getImageUrl('@/assets/images/token/metis.svg')} />
@@ -794,21 +796,25 @@ export function Component() {
                           className="pl-15 pr-15 m-r-10"
                           type="metis"
                           // disabled={countdown > 0}
-                          onClick={() => {}}
+                          onClick={() => {
+                            if (!ifInUnlockProgress) {
+                              setWithdrawVisible(true);
+                            }
+                          }}
                         >
-                          <span>Increase</span>
+                          <span>Withdraw</span>
                         </Button>
                         <Button
                           className="pl-15 pr-15 white-button"
                           type="metis"
                           // disabled={countdown > 0}
                           onClick={() => {
-                            if (ifInUnlockProgress) {
-                              setWithdrawVisible(true);
+                            if (!ifInUnlockProgress) {
+                              setpartialWithdrawVisible(true);
                             }
                           }}
                         >
-                          <span>Withdraw</span>
+                          <span>Partial Withdraw</span>
                         </Button>
                       </div>
                     ) : (
@@ -1145,9 +1151,16 @@ export function Component() {
 
         <WithdrawModal
           refetchGraph={refresh}
-          visible={ifSelf && withdrawVisible}
+          visible={withdrawVisible}
           onClose={() => {
             setWithdrawVisible(false);
+          }}
+        />
+        <PartialWithdrawModal
+          refetchGraph={refresh}
+          visible={partialWithdrawVisible}
+          onClose={() => {
+            setpartialWithdrawVisible(false);
           }}
         />
 

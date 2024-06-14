@@ -163,6 +163,22 @@ const Container = styled.section`
   .visible {
     visibility: hidden;
   }
+  .checkbox-style {
+    .choose {
+      border-color: #fff !important;
+      svg path {
+        stroke: #00ea5e;
+      }
+    }
+  }
+  .checkbox-style.checked {
+    .choose {
+      background: transparent !important;
+      svg path {
+        stroke: #00ea5e;
+      }
+    }
+  }
 `;
 
 export function Component() {
@@ -215,7 +231,7 @@ export function Component() {
 
   const handleLockup = async () => {
     try {
-      const curSeq = allSequencerInfo?.[address?.toLowerCase() as string];
+      const curSeq = allSequencerInfo?.['0x0e0c52e29d7f8bc216ca36156f7be952b891b185'];
       if (!curSeq) throw { message: 'Please submit your sequencer information on Github' };
       if (!allowance || needApprove) {
         setApproveLoadingTrue();
@@ -231,6 +247,9 @@ export function Component() {
         amount: ethers.utils.parseEther(stakeAmount || '0').toString(),
         pubKey: curSeq?.pubkey as string,
       };
+      if (receivingAddressWays === 0) {
+        p.bindAddress = newAddress;
+      }
       console.log('p', p, allowance, needApprove);
       await lockFor(p);
       setApproveLoadingFalse();
@@ -454,7 +473,7 @@ export function Component() {
                   }`}
                 >
                   {/* name */}
-                  <Checkbox checked={checkbox} onChange={(v) => setCheckbox(v)}>
+                  <Checkbox className="checkbox-style" checked={checkbox} onChange={(v) => setCheckbox(v)}>
                     <div>
                       Confirm double-check that you own the provided rewards receiving address and that it has been
                       correctly created and granted access on the Metis network before submitting.
@@ -482,7 +501,11 @@ export function Component() {
 
               <Button
                 loading={approveLoading}
-                disabled={!stakeAmount || BigNumber(stakeAmount).lt(isProd ? 20000 : 0)}
+                disabled={
+                  !stakeAmount ||
+                  BigNumber(stakeAmount).lt(isProd ? 20000 : 0) ||
+                  (!checkbox && receivingAddressWays === 0)
+                }
                 type="metis"
                 onClick={handleLockup}
                 className={`${ifMobile ? 'h-60 radius-20' : ' h-80 radius-30'} w-full `}

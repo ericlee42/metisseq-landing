@@ -16,18 +16,30 @@ const useLock = () => {
   const { chain, unsupported } = useChainWatcher();
   const { runOnce } = useSequencerInfo();
 
-  const lockFor = async ({ address, amount, pubKey }: { address: string; amount: string; pubKey: string }) => {
+  const lockFor = async ({
+    address,
+    amount,
+    pubKey,
+    newAddress,
+  }: {
+    address: string;
+    amount: string;
+    pubKey: string;
+    newAddress?: string;
+  }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
 
     const formattedPubKey = pubKey?.replace('0x04', '0x');
     try {
       const signer = await connector?.getWalletClient();
+      const functionName = newAddress ? 'lockWithRewardRecipient' : 'lockFor';
+      const args = newAddress ? [address, newAddress, amount, formattedPubKey] : [address, amount, formattedPubKey];
       const txData = calTxData({
         abi: contracts.lock?.[chain?.id?.toString()]?.abi,
-        functionName: 'lockFor',
-        args: [address, amount, formattedPubKey],
+        functionName,
+        args,
       });
-
+      console.log(txData, signer, 'txData');
       if (!signer) {
         throw new Error('Please submit your sequencer information on Github');
       }
