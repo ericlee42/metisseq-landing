@@ -666,10 +666,10 @@ export function Component() {
       setClaimLoading(true);
       const res = await runOnce({ sequencerId, self: true });
       setClaimLoading(false);
-      // if (!res?.[0]?.sequencers?.rewardRecipient || res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient) {
-      //   setRewardRecipientModalVisible(true);
-      //   return;
-      // }
+      if (!res?.[0]?.sequencers?.rewardRecipient || res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient) {
+        setRewardRecipientModalVisible(true);
+        return;
+      }
       setClaimAndRelockVisible(true);
     } catch (err) {
     } finally {
@@ -805,7 +805,7 @@ export function Component() {
                     <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                   </div>
 
-                  {!ifSelf ? (
+                  {ifSelf ? (
                     ifInUnlockProgress ? (
                       <div className="flex flex-row">
                         <Button
@@ -899,7 +899,7 @@ export function Component() {
           </div>
 
           {/* unclaimed sequencerInfo?.rewardReadable */}
-          {!ifSelf ? (
+          {ifSelf ? (
             <div className={`flex ${ifMobile ? 'flex-col items-center w-full' : 'flex-row items-center'} gap-20`}>
               <div className={`${ifMobile ? 'w-full' : 'flex-1'} wp-50 basic-card gap-21 flex flex-col pb-38`}>
                 <div className="flex flex-row items-center justify-between">

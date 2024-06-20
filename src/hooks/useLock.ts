@@ -20,20 +20,20 @@ const useLock = () => {
     address,
     amount,
     pubKey,
-    newAddress,
+    bindAddress,
   }: {
     address: string;
     amount: string;
     pubKey: string;
-    newAddress?: string;
+    bindAddress?: string;
   }) => {
     if (unsupported || !chain?.id) throw new Error('Unsupported Chain');
 
     const formattedPubKey = pubKey?.replace('0x04', '0x');
     try {
       const signer = await connector?.getWalletClient();
-      const functionName = newAddress ? 'lockWithRewardRecipient' : 'lockFor';
-      const args = newAddress ? [address, newAddress, amount, formattedPubKey] : [address, amount, formattedPubKey];
+      const functionName = bindAddress ? 'lockWithRewardRecipient' : 'lockFor';
+      const args = bindAddress ? [address, bindAddress, amount, formattedPubKey] : [address, amount, formattedPubKey];
       const txData = calTxData({
         abi: contracts.lock?.[chain?.id?.toString()]?.abi,
         functionName,

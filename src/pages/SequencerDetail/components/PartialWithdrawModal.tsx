@@ -184,7 +184,7 @@ const PartialWithdrawModal = ({
           <div className="f-12">This operation will withdraw your locked-up to your owner address on Ethereum.</div>
           <div className="flex flex-row items-center gap-20">
             <Button
-              disabled={BigNumber(relockAmount).gt(0) || withdrawLoading}
+              disabled={!BigNumber(relockAmount).gt(0) || withdrawLoading}
               style={{ padding: '14px 50px' }}
               type="metis"
               className="flex-1"

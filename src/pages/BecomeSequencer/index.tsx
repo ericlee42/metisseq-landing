@@ -206,7 +206,10 @@ export function Component() {
   const [apr, setApr] = React.useState<undefined | string>('20%');
 
   const handleChangeApr = (v: string) => {
-    setApr(v);
+    // setApr(v);
+  };
+  const handleChangeNewAddress = (v: string) => {
+    setNewAddress(v);
   };
   const handleLockupChange = (v: string) => {
     setStakeAmount(v);
@@ -216,7 +219,7 @@ export function Component() {
   const navigate = useNavigate();
 
   const { address, connector } = useAuth();
-  const [newAddress, setNewAddress] = React.useState<string>(address as string);
+  const [newAddress, setNewAddress] = React.useState<string>('');
   const { balance } = useBalance();
 
   const { lockFor } = useLock();
@@ -293,13 +296,8 @@ export function Component() {
   );
 
   const changeReceivingAddressWays = (e) => {
-    console.log(e, 'eeeeeeeeee');
     setReceivingAddressWays(e);
-    if (e === 1) {
-      setNewAddress('');
-    } else {
-      setNewAddress(address as string);
-    }
+    setNewAddress('');
   };
 
   const { ifMobile } = useDevice();
@@ -391,11 +389,18 @@ export function Component() {
                     <div className="fz-14 fw-400 color-fff inter">Owner Address</div>
                     <Input
                       max={BigNumber(balance?.readable).toString()}
+                      disabled={true}
                       value={address}
                       solidLight
                       className="flex-3 fz-22 fw-400 color-000 copy-address"
                       suffix={
-                        <CopyAddress className="align-right fz-14 fw-700 inter color-fff" reverse addr={address} />
+                        <CopyAddress
+                          className="align-right fz-14 fw-700 inter color-fff"
+                          reverse
+                          display={false}
+                          dark={false}
+                          addr={address}
+                        />
                       }
                     />
                   </div>
@@ -460,8 +465,8 @@ export function Component() {
 
                     <Input
                       disabled={receivingAddressWays === 1}
-                      max={BigNumber(balance?.readable).toString()}
                       value={newAddress}
+                      onChange={handleChangeNewAddress}
                       solidLight
                       className="flex-3 fz-22 fw-400 color-000"
                     />
@@ -504,7 +509,7 @@ export function Component() {
                 disabled={
                   !stakeAmount ||
                   BigNumber(stakeAmount).lt(isProd ? 20000 : 0) ||
-                  (!checkbox && receivingAddressWays === 0)
+                  ((!checkbox || !newAddress) && receivingAddressWays === 0)
                 }
                 type="metis"
                 onClick={handleLockup}

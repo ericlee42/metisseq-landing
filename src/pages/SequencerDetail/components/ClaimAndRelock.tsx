@@ -108,7 +108,7 @@ const ClaimAndRelock = ({
     targetDate: unlockTo,
   });
   const [isError, setIsError] = React.useState(true);
-  const { unlockClaim } = useLock();
+  const { relock } = useLock();
   const { sequencerId } = useUpdate();
   const { chain, unsupported } = useChainWatcher();
   console.log(chain, 'chainchainchain');
@@ -129,12 +129,15 @@ const ClaimAndRelock = ({
     if (countdown) return;
     try {
       setTrue();
-      await unlockClaim({ sequencerId });
-      setFalse();
+      await relock({
+        amount: ethers.utils.parseEther(maxClaim.toString() || '0').toString(),
+        lockRewards: true,
+        sequencerId,
+      });
     } catch (e) {
-      setFalse();
       // message.error(catchError(e));
     } finally {
+      setFalse();
       run?.({ sequencerId: sequencerId, self: true });
       refetchGraph?.();
     }
@@ -147,7 +150,7 @@ const ClaimAndRelock = ({
           <div className="flex flex-col p-24 gap-12 items-center bg-dark radius-8" style={{ padding: '40px' }}>
             <div className="f-12">Unclaimed</div>
             <div className="metis-font flex flex-row">
-              <div className="f-30 m-r-10">{+maxClaim}</div>
+              <div className="f-30 m-r-10">{maxClaim.toString()}</div>
               <img className="pointer" src={getImageUrl('@/assets/images/_global/metis_logo_dark.svg')} />
             </div>
           </div>
