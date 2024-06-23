@@ -51,6 +51,7 @@ const Container = styled.section`
 
   .top-banner {
     padding: 0px 0 48px;
+    width: 100% !important;
 
     .f-28 {
       font-size: 28px;
