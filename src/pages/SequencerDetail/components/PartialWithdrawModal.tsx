@@ -100,7 +100,6 @@ const PartialWithdrawModal = ({
   lockedup: string;
 }) => {
   const { sequencerInfo, run } = useSequencerInfo();
-  console.log(lockedup, 'lockedup');
   // const lockedup = React.useMemo(
   //   () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
   //   [sequencerInfo?.sequencerLock],

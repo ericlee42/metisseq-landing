@@ -39,7 +39,7 @@ const useLock = () => {
         functionName,
         args,
       });
-      console.log(txData, signer, 'txData');
+      // console.log(txData, signer, 'txData');
       if (!signer) {
         throw new Error('Please submit your sequencer information on Github');
       }
@@ -141,7 +141,6 @@ const useLock = () => {
 
       return tx;
     } catch (e) {
-      console.log('e', e);
       message.error(catchError(e) || 'Fail');
       throw e;
     } finally {
@@ -242,7 +241,6 @@ const useLock = () => {
       if (!signer) {
         throw new Error('Invalid Signer');
       }
-      console.log(txData, signer, relockAmount, contracts.lock?.[chain?.id?.toString()], chain, '123123');
       const hash = await sendTx({
         walletClient: signer,
         to: contracts.lock?.[chain?.id?.toString()]?.address,
@@ -258,7 +256,6 @@ const useLock = () => {
 
       return tx;
     } catch (e) {
-      console.log(e, 'errorE');
       message.error(catchError(e) || 'Fail');
       throw e;
     } finally {

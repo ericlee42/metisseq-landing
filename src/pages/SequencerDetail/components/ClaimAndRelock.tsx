@@ -88,17 +88,7 @@ const ClaimAndRelock = ({
 }) => {
   const { data: sequencerInfoList, run } = useSequencerInfo();
   const sequencerInfo: any = sequencerInfoList?.[0];
-  console.log(sequencerInfoList, 'lockedup12312312');
-  // const lockedup = React.useMemo(
-  //   () => ethers.utils.formatEther(sequencerInfo?.sequencerLock || '0').toString(),
-  //   [sequencerInfo?.sequencerLock],
-  // );
-  const whitelistedAddress = React.useMemo(() => {
-    console.log(sequencerInfo, 'sequencerInfo123123');
-    return sequencerInfo?.sequencers?.owner?.toLowerCase() || '-';
-  }, [sequencerInfo?.sequencers?.owner]);
 
-  const [relockAmount, setRelockAmount] = React.useState(0);
   const unlockTo = useMemo(
     () => dayjs.unix(sequencerInfo?.unlockClaimTime || 0).format('YYYY-MM-DD HH:mm:ss'),
     [sequencerInfo?.unlockClaimTime],
@@ -107,19 +97,9 @@ const ClaimAndRelock = ({
   const [countdown, formattedRes] = useCountDown({
     targetDate: unlockTo,
   });
-  const [isError, setIsError] = React.useState(true);
   const { relock } = useLock();
   const { sequencerId } = useUpdate();
-  const { chain, unsupported } = useChainWatcher();
-  console.log(chain, 'chainchainchain');
-  const txData = calTxData({
-    abi: contracts.lockInfo?.[chain?.id?.toString()]?.abi,
-    functionName: 'minLock',
-    args: [],
-  });
-  const weiValue = ethers.BigNumber.from(txData);
-  const ethValue = ethers.utils.formatEther(weiValue);
-  console.log(ethValue, 'te');
+
   const [withdrawLoading, { setTrue, setFalse }] = useBoolean(false);
   const maxClaim = React.useMemo(() => {
     const max = BigNumber(100000).minus(BigNumber(lockedup));

@@ -555,8 +555,11 @@ export function Component() {
             )}
 
             <img
+              onClick={() => {
+                jumpLink('https://docs.metis.io/dev/decentralized-sequencer/overview', '_blank');
+              }}
               style={ifMobile ? { objectFit: 'cover' } : {}}
-              className={`${ifMobile ? 'w-full h-452 radius-30' : 'w-784'}`}
+              className={`${ifMobile ? 'w-full h-452 radius-30' : 'w-784 pointer'}`}
               src={
                 ifMobile
                   ? getImageUrl('@/assets/images/_global/m_Decentralized_Sequencer.png')
@@ -583,7 +586,7 @@ export function Component() {
           <Button
             className="light h-60 w-400"
             onClick={() => {
-              jumpLink('https://forms.gle/uxYAieUuudBDWrzF6', '_blank');
+              jumpLink('https://ceg.vote/c/infrastructure-sequencer/30', '_blank');
             }}
           >
             <div className="fz-20 fw-500 color-000 raleway">Apply now for the next round</div>
@@ -592,30 +595,6 @@ export function Component() {
       </div>
 
       {/* FAQ */}
-      <div
-        className={`sc5 main-section flex ${
-          ifMobile
-            ? 'mobile pl-22 pr-22 items-start flex-col gap-33 maxwp-100'
-            : 'items-center flex-row gap-64 maxw-1200'
-        } pt-91 pb-54 m-auto`}
-      >
-        <div className="flex flex-col gap-2 flex-1">
-          <span className="fz-56 fw-700 raleway color-000">FAQ</span>
-          {ifMobile ? null : <span className="fz-20 fw-400 raleway color-000">Frequently asked questions</span>}
-        </div>
-        {ifMobile ? null : (
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="2" height="203" viewBox="0 0 2 203" fill="none">
-              <path d="M1 0L1.00001 203" stroke="black" />
-            </svg>
-          </div>
-        )}
-        <div className="flex flex-row items-center flex-2 w-full">
-          <Faq
-            data={section5}
-          />
-        </div>
-      </div>
     </Container>
   );
 }

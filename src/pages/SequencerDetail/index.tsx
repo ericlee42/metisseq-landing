@@ -516,7 +516,6 @@ export function Component() {
       });
       setRelockAmount('');
     } catch (e) {
-      console.log(e);
       // catchError(e);
     } finally {
       refresh?.();
@@ -624,7 +623,6 @@ export function Component() {
         const curBlockRang = BigNumber(currentBlockNumber).minus(next?.startBlock).plus(1);
         return BigNumber(prev).plus(curBlockRang).toString();
       }, 0);
-    console.log(blocksCol, 'blocksColblocksCol');
     return BigNumber(inprogress).plus(hasProduced).toString();
   }, [blocksCol, currentBlockNumber]);
 

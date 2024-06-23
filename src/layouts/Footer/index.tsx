@@ -64,17 +64,17 @@ const medias = [
   {
     content: <IconTwitter />,
     img: getImageUrl('@/assets/images/_media/twi.svg'),
-    link: 'https://twitter.com/MetisDAO',
+    link: 'https://x.com/metisl2',
   },
   {
     content: <IconTelegram />,
     img: getImageUrl('@/assets/images/_media/telegram.svg'),
-    link: 'https://t.me/MetisDAO',
+    link: 'https://t.me/metis_dev',
   },
   {
     content: <IconMedium />,
     img: getImageUrl('@/assets/images/_media/medium.svg'),
-    link: 'https://metisdao.medium.com/',
+    link: 'https://metisl2.medium.com/',
   },
   {
     content: <IconDiscord />,
@@ -89,12 +89,12 @@ const medias = [
   {
     content: <IconYoutube />,
     img: getImageUrl('@/assets/images/_media/you.svg'),
-    link: 'https://www.youtube.com/@MetisDAO',
+    link: 'https://www.youtube.com/@Metis_L2',
   },
   {
     content: <IconIns />,
     img: getImageUrl('@/assets/images/_media/ins.svg'),
-    link: 'https://www.instagram.com/metisdao',
+    link: 'https://www.instagram.com/metisl2/',
   },
 ];
 

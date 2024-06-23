@@ -184,8 +184,6 @@ const Container = styled.section`
 export function Component() {
   const { allSequencerInfo } = useSequencerInfo();
 
-  console.log('allSequencerInfo', allSequencerInfo);
-
   const [avatar, setAvatar] = React.useState<undefined | string>();
   const [name, setName] = React.useState<undefined | string>();
   const [website, setWebsite] = React.useState<undefined | string>();
@@ -253,13 +251,11 @@ export function Component() {
       if (receivingAddressWays === 0) {
         p.bindAddress = newAddress;
       }
-      console.log('p', p, allowance, needApprove);
       await lockFor(p);
       setApproveLoadingFalse();
 
       handleIndex('3');
     } catch (e) {
-      console.log(e);
       message.error(catchError(e));
       setApproveLoadingFalse();
     }
@@ -284,7 +280,7 @@ export function Component() {
     },
   ];
 
-  const [activeIndex, setActiveIndex] = React.useState('2');
+  const [activeIndex, setActiveIndex] = React.useState('1');
 
   const handleIndex = (index: string) => {
     setActiveIndex(index);
@@ -298,6 +294,7 @@ export function Component() {
   const changeReceivingAddressWays = (e) => {
     setReceivingAddressWays(e);
     setNewAddress('');
+    setCheckbox(false);
   };
 
   const { ifMobile } = useDevice();
@@ -309,7 +306,8 @@ export function Component() {
           <div className="flex flex-col gap-32">
             <div className="flex flex-col gap-20">
               <div
-                className="radius-30 flex flex-col gap-10 p-50"
+                onClick={() => jumpOuterLink('https://github.com/MetisProtocol/metis-charts', '_blank')}
+                className={`pointer radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
                 style={{
                   background:
                     'var(--gradient-glass, linear-gradient(91deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%))',
@@ -321,7 +319,7 @@ export function Component() {
                 <span className="fz-36 fw-700 color-fff raleway">Kubernetes</span>
                 <span className="fz-26 fw-500 color-fff raleway">Set up Sequencer via Kubernetes Helm Charts</span>
               </div>
-              <div
+              {/* <div
                 onClick={() => jumpOuterLink('https://github.com/MetisProtocol/mvm-sequencer-node', '_blank')}
                 className={`pointer radius-30 flex flex-col gap-10 ${ifMobile ? 'p-15 pl-25 pr-25' : 'p-50'}`}
                 style={{
@@ -336,7 +334,7 @@ export function Component() {
                 <span className={`${ifMobile ? 'fz-14' : 'fz-26'} fw-500 color-fff raleway`}>
                   Set up Sequencer via Docker Compose
                 </span>
-              </div>
+              </div> */}
 
               <div className="flex flex-row items-center justify-center">
                 <Button
