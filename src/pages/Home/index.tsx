@@ -54,7 +54,7 @@ const section2 = {
 const section4 = [
   {
     index: '1',
-    content: 'Submit an Application',
+    content: 'Submit a Proposal',
   },
   {
     index: '2',
@@ -90,14 +90,16 @@ const section5 = {
       title: 'How can I run a sequencer?',
       content: (
         <span>
-          Please visit the{' '}
+          Please submit a proposal to become a Sequencer on the Metis Governance forum using the ‘Infrastructure
+          proposal’ type. For more details please check{' '}
           <span
             className="underlined pointer"
-            onClick={() => jumpLink('https://forms.gle/Ut5A8PqeaVZC9awa6', '_blank')}
+            onClick={() =>
+              jumpLink('https://ceg.vote/t/governance-proposal-decentralized-sequencer-governance/1922/24', '_blank')
+            }
           >
-            Sequencer Whitelist Application
+            Decentralized Sequencer Governance Structure
           </span>{' '}
-          form to apply. Once you have filled out the form, we will get in touch with you.
         </span>
       ),
     },
@@ -504,7 +506,7 @@ export function Component() {
           <div className="position-relative">
             {ifMobile ? (
               <div className="flex flex-col gap-21 top-54 left-37 position-absolute">
-                <div className={'lh-120 fz-25 fw-700 color-fff '}>
+                {/* <div className={'lh-120 fz-25 fw-700 color-fff '}>
                   Decentralized
                   <br />
                   Sequencer Overall
@@ -538,7 +540,7 @@ export function Component() {
                     d="M110.239 16.7948C110.126 16.6751 109.99 16.5775 109.839 16.507C109.563 16.3533 109.277 16.215 108.984 16.0928C108.62 15.9372 108.245 15.8075 107.862 15.7048C107.467 15.5952 107.057 15.5394 106.646 15.5391C106.217 15.5148 105.79 15.6068 105.412 15.8051C105.267 15.8883 105.149 16.0083 105.07 16.152C104.991 16.2957 104.954 16.4577 104.963 16.6204C104.957 16.7536 104.985 16.8862 105.042 17.0071C105.1 17.128 105.187 17.2339 105.295 17.3158C105.585 17.5205 105.91 17.6733 106.255 17.7671C106.673 17.8957 107.187 18.0439 107.795 18.2161C108.57 18.4053 109.322 18.6727 110.039 19.014C110.623 19.2839 111.124 19.6981 111.491 20.2152C111.854 20.7996 112.03 21.4758 111.996 22.1576C112.016 22.802 111.873 23.4414 111.578 24.0193C111.313 24.512 110.928 24.9342 110.456 25.2488C109.961 25.5682 109.409 25.7978 108.829 25.9268C108.213 26.0702 107.582 26.1433 106.949 26.1448C106.271 26.1429 105.595 26.0787 104.929 25.9529C104.251 25.8269 103.586 25.6408 102.943 25.397C102.329 25.1685 101.742 24.8761 101.193 24.525L102.562 21.8851C102.712 22.0172 102.878 22.132 103.055 22.2273C103.39 22.42 103.736 22.5925 104.092 22.744C104.539 22.9345 104.999 23.0919 105.47 23.2149C105.972 23.3492 106.489 23.4174 107.009 23.4176C107.441 23.4455 107.871 23.358 108.255 23.1647C108.382 23.0935 108.487 22.9903 108.559 22.866C108.631 22.7417 108.667 22.6009 108.663 22.4584C108.668 22.305 108.631 22.1531 108.557 22.018C108.482 21.8829 108.371 21.7694 108.237 21.6889C107.876 21.4717 107.485 21.3045 107.077 21.1918C106.588 21.0458 106.029 20.8801 105.394 20.697C104.683 20.4971 103.998 20.22 103.352 19.8708C102.858 19.606 102.445 19.2195 102.153 18.7502C101.877 18.2422 101.743 17.6722 101.765 17.0978C101.737 16.2742 101.972 15.4624 102.438 14.774C102.893 14.1404 103.522 13.6441 104.254 13.3417C105.04 13.0122 105.889 12.8466 106.745 12.8556C107.363 12.8524 107.979 12.9257 108.578 13.0736C109.145 13.2123 109.698 13.3975 110.232 13.6273C110.746 13.8453 111.204 14.0633 111.61 14.2922L110.239 16.7948Z"
                     fill="white"
                   />
-                </svg>
+                </svg> */}
               </div>
             ) : (
               <div
@@ -546,25 +548,22 @@ export function Component() {
                   ifMobile ? 'lh-120 fz-22 top-54 left-37' : 'fz-42  top-64 left-67'
                 } fw-700 lh-110 color-fff position-absolute`}
               >
-                Decentralized
+                {/* Decentralized
                 <br />
                 Sequencer Overall
                 <br />
-                Architecture
+                Architecture */}
               </div>
             )}
-
-            <img
-              onClick={() => {
-                jumpLink('https://docs.metis.io/dev/decentralized-sequencer/overview', '_blank');
-              }}
-              style={ifMobile ? { objectFit: 'cover' } : {}}
-              className={`${ifMobile ? 'w-full h-452 radius-30' : 'w-784 pointer'}`}
-              src={
-                ifMobile
-                  ? getImageUrl('@/assets/images/_global/m_Decentralized_Sequencer.png')
-                  : getImageUrl('@/assets/images/_global/Decentralized_Sequencer.png')
-              }
+            <iframe
+              className={`${ifMobile ? 'w-full' : 'w-784'}`}
+              height="452"
+              src="https://www.youtube.com/embed/2HXDWP9BcTE?si=J6IaA74zbNFVGGVk"
+              title="YouTube video player"
+              frame-border="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrer-policy="strict-origin-when-cross-origin"
+              allowfull-screen
             />
           </div>
         </div>
@@ -586,7 +585,7 @@ export function Component() {
           <Button
             className="light h-60 w-400"
             onClick={() => {
-              jumpLink('https://ceg.vote/c/infrastructure-sequencer/30', '_blank');
+              jumpLink('https://ceg.vote/c/infrastruction-sequencer', '_blank');
             }}
           >
             <div className="fz-20 fw-500 color-000 raleway">Apply now for the next round</div>
@@ -595,6 +594,28 @@ export function Component() {
       </div>
 
       {/* FAQ */}
+      <div
+        className={`sc5 main-section flex ${
+          ifMobile
+            ? 'mobile pl-22 pr-22 items-start flex-col gap-33 maxwp-100'
+            : 'items-center flex-row gap-64 maxw-1200'
+        } pt-91 pb-54 m-auto`}
+      >
+        <div className="flex flex-col gap-2 flex-1">
+          <span className="fz-56 fw-700 raleway color-000">FAQ</span>
+          {ifMobile ? null : <span className="fz-20 fw-400 raleway color-000">Frequently asked questions</span>}
+        </div>
+        {ifMobile ? null : (
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="2" height="203" viewBox="0 0 2 203" fill="none">
+              <path d="M1 0L1.00001 203" stroke="black" />
+            </svg>
+          </div>
+        )}
+        <div className="flex flex-row items-center flex-2 w-full">
+          <Faq data={section5} />
+        </div>
+      </div>
     </Container>
   );
 }

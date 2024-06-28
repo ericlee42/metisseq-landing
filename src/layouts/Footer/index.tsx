@@ -17,7 +17,7 @@ const links = [
   },
   {
     content: 'Knowledge',
-    link: 'https://www.metis.io/knowledge',
+    link: 'https://www.metis.io/blog',
   },
   {
     content: 'Carrers',
@@ -29,7 +29,7 @@ const links = [
   },
   {
     content: 'Q&A',
-    link: 'https://www.metis.io/knowledge',
+    link: 'https://www.metis.io/blog',
   },
   {
     content: 'Brand Assets',

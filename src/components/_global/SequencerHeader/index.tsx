@@ -592,7 +592,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                 </span>
 
                 <div className="flex items-center gap-8">
-                  <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+                  <span className="fz-14 fw-400 inter">Total METIS Participating</span>
                 </div>
               </div>
               <div className="opacity-card flex flex-col items-center flex-1">
@@ -634,7 +634,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
               </span>
 
               <div className="flex items-center gap-8">
-                <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+                <span className="fz-14 fw-400 inter">Total METIS Participating</span>
               </div>
             </div>
             <div
@@ -762,7 +762,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                 className="h-48 flex-1 fz-18 fw-500 poppins"
                 type="metis"
                 onClick={() => {
-                  jumpLink('https://ceg.vote/c/infrastructure-sequencer/30', '_blank');
+                  jumpLink('https://ceg.vote/c/infrastructure-sequencer', '_blank');
                 }}
               >
                 Join the Waiting List

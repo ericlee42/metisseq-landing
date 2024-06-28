@@ -837,8 +837,9 @@ export function Component() {
                         </Button>
                         <Button
                           className="pl-15 pr-15 white-button"
-                          type="metis"
+                          type="second"
                           // disabled={countdown > 0}
+                          loading={!sequencerId}
                           onClick={() => {
                             if (!ifInUnlockProgress) {
                               setpartialWithdrawVisible(true);
@@ -936,14 +937,14 @@ export function Component() {
                           >
                             Claim
                           </Button>
-                          <Button
+                          {/* <Button
                             onClick={handleClaimAndRelock}
                             disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
                             className={`${ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'} white-button`}
                             type="metis"
                           >
                             Claim and Relock
-                          </Button>
+                          </Button> */}
                         </div>
                       )}
                     </div>
