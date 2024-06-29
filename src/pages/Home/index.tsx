@@ -556,7 +556,7 @@ export function Component() {
               </div>
             )}
             <iframe
-              className={`${ifMobile ? 'w-full' : 'w-784'}`}
+              className={`${ifMobile ? 'w-full' : 'w-784'} radius-30`}
               height="452"
               src="https://www.youtube.com/embed/2HXDWP9BcTE?si=J6IaA74zbNFVGGVk"
               title="YouTube video player"
@@ -585,7 +585,7 @@ export function Component() {
           <Button
             className="light h-60 w-400"
             onClick={() => {
-              jumpLink('https://ceg.vote/c/infrastruction-sequencer', '_blank');
+              jumpLink('https://ceg.vote/c/infrastructure-sequencer', '_blank');
             }}
           >
             <div className="fz-20 fw-500 color-000 raleway">Apply now for the next round</div>

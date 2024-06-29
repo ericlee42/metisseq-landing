@@ -12,7 +12,7 @@ import { styled } from 'styled-components';
 
 const links = [
   {
-    content: 'Platform',
+    content: 'Developer',
     link: 'https://www.metis.io/platform',
   },
   {
@@ -53,6 +53,10 @@ const link2 = [
   {
     content: 'Terms & conditions',
     link: 'https://drive.google.com/file/d/1wnNbisUREP_gSX1Vfl1Fjmi9PpObmZZQ/view',
+  },
+  {
+    content: 'Events',
+    link: 'https://www.metis.io/events',
   },
   {
     content: 'Contact',

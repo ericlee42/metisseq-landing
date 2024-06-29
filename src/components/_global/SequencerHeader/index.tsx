@@ -741,7 +741,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
               <div className="fz-18 fw-500 raleway  align-center">
                 {isSequencer
                   ? 'Only one Sequencer can be created per account.'
-                  : 'Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.'}
+                  : 'Please submit a proposal to become a Sequencer on the Metis Governance forum.'}
               </div>
             </div>
           </div>
