@@ -20,6 +20,7 @@ import useDevice from '@/hooks/useDevice';
 import WalletModal from '@/components/WalletModal';
 import { deepCopy } from 'ethers/lib/utils';
 import fetchClaimedRewards from '@/graphql/claimedReward';
+import { injectedConnector } from '@/configs/wallet';
 
 const StyledModal = styled(Modal)``;
 
@@ -50,6 +51,7 @@ const Container = styled.section`
 
   .top-banner {
     padding: 0px 0 48px;
+    width: 100% !important;
 
     .f-28 {
       font-size: 28px;
@@ -337,7 +339,7 @@ const Container = styled.section`
 `;
 
 const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
-  const { address, chainId } = useAuth();
+  const { address, chainId, connect } = useAuth();
   const { run, data } = useRequest(fetchOverview, { manual: true });
   const { sequencerTotalInfo, liquidateReward } = useUpdate();
   const { runOnce, allSequencerInfo } = useSequencerInfo();
@@ -368,7 +370,10 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   };
 
   const checkWhiteList = async () => {
-    if (!address) return;
+    if (!address) {
+      connect({ connector: injectedConnector });
+      return;
+    }
     try {
       checkLoadingTrue();
       setIfWhiteListed(false);
@@ -467,7 +472,11 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
         })
         ?.map((i) => {
           let renewTs = i.timestamp;
-          const genesisSignersMainnet = ['0xeca7ae7de0d1978df299a547ee66c4503fba474d', '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04', '0xaff606251d8540f97ca2db12774c0147a170ab9e'];
+          const genesisSignersMainnet = [
+            '0xeca7ae7de0d1978df299a547ee66c4503fba474d',
+            '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04',
+            '0xaff606251d8540f97ca2db12774c0147a170ab9e',
+          ];
           if (chainId == 1 && genesisSignersMainnet.indexOf(i.sequencer.address.toLowerCase()) >= 0) {
             renewTs = 1710406800; // 14/03/2024 9:00:00 UTC
           }
@@ -583,7 +592,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                 </span>
 
                 <div className="flex items-center gap-8">
-                  <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+                  <span className="fz-14 fw-400 inter">Total METIS Participating</span>
                 </div>
               </div>
               <div className="opacity-card flex flex-col items-center flex-1">
@@ -625,7 +634,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
               </span>
 
               <div className="flex items-center gap-8">
-                <span className="fz-14 fw-400 inter">Total Metis Participating</span>
+                <span className="fz-14 fw-400 inter">Total METIS Participating</span>
               </div>
             </div>
             <div
@@ -732,7 +741,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
               <div className="fz-18 fw-500 raleway  align-center">
                 {isSequencer
                   ? 'Only one Sequencer can be created per account.'
-                  : 'Please apply for permission to become a Sequencer. Waiting for the platform to agree before creating.'}
+                  : 'Please submit a proposal to become a Sequencer on the Metis Governance forum.'}
               </div>
             </div>
           </div>
@@ -753,7 +762,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                 className="h-48 flex-1 fz-18 fw-500 poppins"
                 type="metis"
                 onClick={() => {
-                  jumpLink('https://forms.gle/uxYAieUuudBDWrzF6', '_blank');
+                  jumpLink('https://ceg.vote/c/infrastructure-sequencer', '_blank');
                 }}
               >
                 Join the Waiting List

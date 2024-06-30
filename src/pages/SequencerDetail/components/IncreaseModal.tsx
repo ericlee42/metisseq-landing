@@ -58,7 +58,17 @@ const Container = styled(Modal)`
   }
 `;
 
-const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?: any; visible: boolean; onOk?: any; onClose?: any }) => {
+const IncreaseModal = ({
+  refetchGraph,
+  visible,
+  onOk,
+  onClose,
+}: {
+  refetchGraph?: any;
+  visible: boolean;
+  onOk?: any;
+  onClose?: any;
+}) => {
   const { sequencerInfo, run } = useSequencerInfo();
 
   const { address } = useAuth();
@@ -112,7 +122,6 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
       setApproveLoadingFalse();
     } catch (e) {
       setApproveLoadingFalse();
-      console.log(e);
     } finally {
       run?.({ sequencerId: sequencerId, self: true });
       refetchGraph?.();
@@ -147,7 +156,13 @@ const IncreaseModal = ({ refetchGraph, visible, onOk, onClose }: { refetchGraph?
             className="flex items-center justify-center"
           >
             <div className="flex items-center justify-center">
-              {approveLoading ? <Loading color="#fff" /> : needApprove ? <span>Approve</span> : <span>Increase Locked-up</span>}
+              {approveLoading ? (
+                <Loading color="#fff" />
+              ) : needApprove ? (
+                <span>Approve</span>
+              ) : (
+                <span>Increase Locked-up</span>
+              )}
             </div>
           </Button>
         </div>

@@ -40,6 +40,7 @@
   /* base */
   &.checked {
     .choose {
+      
       border: 1px solid #00ba3d;
     }
   }
@@ -81,4 +82,27 @@
   }
   &.lg {
   }
+  
+}
+.md.checked{
+  position: relative;
+  .choose{
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    svg{
+      height: 16px;
+      width: 16px;
+    }
+  }
+  
+}
+.md {
+display: flex;
+align-items: center;
+  input{
+    width: 16px;
+    height: 16px;
+  }
+ 
 }

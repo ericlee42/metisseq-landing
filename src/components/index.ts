@@ -21,6 +21,8 @@ export type { TabsProps } from './Tabs';
 
 export { default as Checkbox } from './Checkbox';
 export type { CheckboxProps } from './Checkbox';
+export { default as Radio } from './Radio';
+export type { RadioProps } from './Radio';
 
 export { default as Slider } from './Slider';
 export type { SliderProps } from './Slider';
