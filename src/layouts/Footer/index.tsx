@@ -73,7 +73,7 @@ const medias = [
   {
     content: <IconTelegram />,
     img: getImageUrl('@/assets/images/_media/telegram.svg'),
-    link: 'https://t.me/metis_dev',
+    link: 'https://t.me/MetisL2',
   },
   {
     content: <IconMedium />,
@@ -83,7 +83,7 @@ const medias = [
   {
     content: <IconDiscord />,
     img: getImageUrl('@/assets/images/_media/discord.svg'),
-    link: 'https://discord.com/invite/RqfEJZXnxd',
+    link: 'https://discord.com/invite/metis',
   },
   {
     content: <IconGithub />,
