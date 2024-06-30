@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { cloneElement } from '../_util/reactNode';
-
+import './index.scss';
 type SizeType = 'sm' | 'md' | 'lg';
 
 export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'checked'> {
@@ -62,9 +62,11 @@ const Radio: React.FC<RadioProps> = React.forwardRef((props: RadioProps, ref: Re
         onChange={handleChange}
       />
       <label htmlFor={uuid}>
-        <div className="choose">
-          <IconCircle />
-        </div>
+        {visible && (
+          <div className="choose">
+            <IconCircle />
+          </div>
+        )}
         {memoElement}
       </label>
     </div>

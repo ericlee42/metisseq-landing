@@ -100,7 +100,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
     if (decimal && !max) {
       if (value && verifyValidNumber(value, decimal)) return;
       // const result = new BigNumber(value).decimalPlaces(decimal).toString();
-      console.log(value);
+      value;
       onChange?.(value, name);
       return;
     }
