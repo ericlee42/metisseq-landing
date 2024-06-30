@@ -11,6 +11,7 @@ import BigNumber from 'bignumber.js';
 import React, { useMemo } from 'react';
 import { styled } from 'styled-components';
 import { getImageUrl } from '@/utils/tools';
+import NumberText from '@/components/NumberText';
 const Container = styled(Modal)`
   .f-12 {
     font-size: 12px;
@@ -176,7 +177,7 @@ const PartialWithdrawModal = ({
             />
             <span className="f-14 max-tooltip">
               {' '}
-              Max. withdrawal: {BigNumber(lockedup).minus(20000).toString()} METIS{' '}
+              Max. withdrawal: <NumberText value={BigNumber(lockedup).minus(20000).toString() || '0'} /> METIS{' '}
             </span>
             {isError ? <span className="f-12 error-font">Insufficient balance for withdrawal</span> : null}
           </div>
