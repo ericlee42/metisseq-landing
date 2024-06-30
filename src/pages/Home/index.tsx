@@ -121,6 +121,9 @@ const Container = styled.section`
     width: 50%;
   }
 
+  .mobile-width {
+    width: 100%;
+  }
   .p-0-72 {
     padding: 0px 72px;
   }
@@ -503,7 +506,7 @@ export function Component() {
           </span>
         </div>
         <div className="flex flex-col items-center">
-          <div className="position-relative">
+          <div className={`position-relative ${ifMobile ? 'mobile-width' : ''}`}>
             {ifMobile ? (
               <div className="flex flex-col gap-21 top-54 left-37 position-absolute">
                 {/* <div className={'lh-120 fz-25 fw-700 color-fff '}>
@@ -581,16 +584,14 @@ export function Component() {
 
         <Progress col={section4} activeIndex="1" verticle={ifMobile} />
 
-        {ifMobile ? null : (
-          <Button
-            className="light h-60 w-400"
-            onClick={() => {
-              jumpLink('https://ceg.vote/c/infrastructure-sequencer', '_blank');
-            }}
-          >
-            <div className="fz-20 fw-500 color-000 raleway">Apply now for the next round</div>
-          </Button>
-        )}
+        <Button
+          className={`light h-60 w-400 ${ifMobile ? 'mobile-width' : ''}`}
+          onClick={() => {
+            jumpLink('https://ceg.vote/c/infrastructure-sequencer', '_blank');
+          }}
+        >
+          <div className="fz-20 fw-500 color-000 raleway">Apply now for the next round</div>
+        </Button>
       </div>
 
       {/* FAQ */}
