@@ -12,12 +12,12 @@ import { styled } from 'styled-components';
 
 const links = [
   {
-    content: 'Platform',
+    content: 'Developer',
     link: 'https://www.metis.io/platform',
   },
   {
     content: 'Knowledge',
-    link: 'https://www.metis.io/knowledge',
+    link: 'https://www.metis.io/blog',
   },
   {
     content: 'Carrers',
@@ -29,7 +29,7 @@ const links = [
   },
   {
     content: 'Q&A',
-    link: 'https://www.metis.io/knowledge',
+    link: 'https://www.metis.io/blog',
   },
   {
     content: 'Brand Assets',
@@ -55,6 +55,10 @@ const link2 = [
     link: 'https://drive.google.com/file/d/1wnNbisUREP_gSX1Vfl1Fjmi9PpObmZZQ/view',
   },
   {
+    content: 'Events',
+    link: 'https://www.metis.io/events',
+  },
+  {
     content: 'Contact',
     link: 'https://www.metis.io/contact-us',
   },
@@ -64,22 +68,22 @@ const medias = [
   {
     content: <IconTwitter />,
     img: getImageUrl('@/assets/images/_media/twi.svg'),
-    link: 'https://twitter.com/MetisDAO',
+    link: 'https://x.com/metisl2',
   },
   {
     content: <IconTelegram />,
     img: getImageUrl('@/assets/images/_media/telegram.svg'),
-    link: 'https://t.me/MetisDAO',
+    link: 'https://t.me/MetisL2',
   },
   {
     content: <IconMedium />,
     img: getImageUrl('@/assets/images/_media/medium.svg'),
-    link: 'https://metisdao.medium.com/',
+    link: 'https://metisl2.medium.com/',
   },
   {
     content: <IconDiscord />,
     img: getImageUrl('@/assets/images/_media/discord.svg'),
-    link: 'https://discord.com/invite/RqfEJZXnxd',
+    link: 'https://discord.com/invite/metis',
   },
   {
     content: <IconGithub />,
@@ -89,12 +93,12 @@ const medias = [
   {
     content: <IconYoutube />,
     img: getImageUrl('@/assets/images/_media/you.svg'),
-    link: 'https://www.youtube.com/@MetisDAO',
+    link: 'https://www.youtube.com/@Metis_L2',
   },
   {
     content: <IconIns />,
     img: getImageUrl('@/assets/images/_media/ins.svg'),
-    link: 'https://www.instagram.com/metisdao',
+    link: 'https://www.instagram.com/metisl2/',
   },
 ];
 

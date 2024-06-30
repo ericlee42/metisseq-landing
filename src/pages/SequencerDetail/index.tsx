@@ -12,6 +12,8 @@ import IncreaseModal from './components/IncreaseModal';
 import UnlockModal from './components/UnlockModal';
 import DetailModal from './components/DetailModal';
 import WithdrawModal from './components/WithdrawModal';
+import PartialWithdrawModal from './components/PartialWithdrawModal';
+import ClaimAndRelock from './components/ClaimAndRelock';
 import ClaimModal from './components/ClaimModal';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import { ethers } from 'ethers';
@@ -275,6 +277,14 @@ const Container = styled.section`
       }
     }
   }
+
+  .white-button {
+    background: #fff;
+    border: 1px solid #000;
+    span {
+      color: #000;
+    }
+  }
 `;
 
 const txPageSize = 10;
@@ -320,9 +330,9 @@ export function Component() {
 
   const curUserActiveSequencerId = React.useMemo(
     () =>
-      (fetchUserTxData?.histories?.[0]?.sequencer?.id
+      fetchUserTxData?.histories?.[0]?.sequencer?.id
         ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-        : undefined),
+        : undefined,
     [fetchUserTxData?.histories],
   );
 
@@ -431,18 +441,24 @@ export function Component() {
 
   const blocksTotal = React.useMemo(() => blocksCol?.length || 0, [blocksCol?.length]);
 
-  const needLoading = React.useMemo(() => (BigNumber(blocksCurrentPage).gt(6) ? fetchBlockTxLoading : false), [blocksCurrentPage, fetchBlockTxLoading]);
+  const needLoading = React.useMemo(
+    () => (BigNumber(blocksCurrentPage).gt(6) ? fetchBlockTxLoading : false),
+    [blocksCurrentPage, fetchBlockTxLoading],
+  );
 
   const handleNextPage = async (v) => {
-    const nextSkipTriggerPage = BigNumber(blocksCol?.length).div(blocksPageSize).minus(1).toFixed(0, BigNumber.ROUND_DOWN);
+    const nextSkipTriggerPage = BigNumber(blocksCol?.length)
+      .div(blocksPageSize)
+      .minus(1)
+      .toFixed(0, BigNumber.ROUND_DOWN);
     if (v >= +nextSkipTriggerPage) {
-        const newSkip = (skip + blocksPageSize * 6);
-        setSkip(newSkip);
-        setPrevBlockData(blocksCol);
-        fetchBlockTxRun(id, chainId, newSkip);
-        // if (BigNumber(blocksCurrentPage).gt(6)) {
-        //   document.querySelectorAll('#block-produced')?.[0]?.scrollIntoView();
-        // }
+      const newSkip = skip + blocksPageSize * 6;
+      setSkip(newSkip);
+      setPrevBlockData(blocksCol);
+      fetchBlockTxRun(id, chainId, newSkip);
+      // if (BigNumber(blocksCurrentPage).gt(6)) {
+      //   document.querySelectorAll('#block-produced')?.[0]?.scrollIntoView();
+      // }
     }
     setBlocksCurrentPage(v);
   };
@@ -500,7 +516,6 @@ export function Component() {
       });
       setRelockAmount('');
     } catch (e) {
-      console.log(e);
       // catchError(e);
     } finally {
       refresh?.();
@@ -513,6 +528,8 @@ export function Component() {
   const [unlockVisible, setUnlockVisible] = React.useState(false);
   const [claimVisible, setClaimVisible] = React.useState(false);
   const [withdrawVisible, setWithdrawVisible] = React.useState(false);
+  const [partialWithdrawVisible, setpartialWithdrawVisible] = React.useState(false);
+  const [claimAndRelockVisible, setClaimAndRelockVisible] = React.useState(false);
 
   const ifInUnlockProgress = sequencerInfo?.ifInUnlockProgress;
   const unclaimed = React.useMemo(() => sequencerInfo?.rewardReadable || '0', [sequencerInfo?.rewardReadable]);
@@ -520,7 +537,11 @@ export function Component() {
   const joinedDuration = React.useMemo(() => {
     // desc，todo make sure sort without error
     let fromDate = fetchUserTxData?.histories?.filter((i) => i.action === 'Lock')?.[0]?.timestamp;
-    const genesisSignersMainnet = ['0xeca7ae7de0d1978df299a547ee66c4503fba474d', '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04', '0xaff606251d8540f97ca2db12774c0147a170ab9e'];
+    const genesisSignersMainnet = [
+      '0xeca7ae7de0d1978df299a547ee66c4503fba474d',
+      '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04',
+      '0xaff606251d8540f97ca2db12774c0147a170ab9e',
+    ];
     if (chainId == 1 && genesisSignersMainnet.indexOf(id!.toLowerCase()) >= 0) {
       fromDate = 1710406800; // 14/03/2024 9:00:00 UTC
     }
@@ -572,12 +593,7 @@ export function Component() {
     ) {
       return '0';
     }
-    return BigNumber(rrs)
-      .div(days)
-      .div(lockedup)
-      .multipliedBy(365)
-      .multipliedBy(100)
-      .toFixed(2, BigNumber.ROUND_CEIL);
+    return BigNumber(rrs).div(days).div(lockedup).multipliedBy(365).multipliedBy(100).toFixed(2, BigNumber.ROUND_CEIL);
   }, [joinedDuration, lockedup, fetchBlockTxData, fetchUserTxData]);
 
   const { l2Block: currentBlockNumber, l2BlockLoading } = useL2EpochStatus();
@@ -607,7 +623,6 @@ export function Component() {
         const curBlockRang = BigNumber(currentBlockNumber).minus(next?.startBlock).plus(1);
         return BigNumber(prev).plus(curBlockRang).toString();
       }, 0);
-
     return BigNumber(inprogress).plus(hasProduced).toString();
   }, [blocksCol, currentBlockNumber]);
 
@@ -640,6 +655,20 @@ export function Component() {
         return;
       }
       setClaimVisible(true);
+    } catch (err) {
+    } finally {
+    }
+  };
+  const handleClaimAndRelock = async () => {
+    try {
+      setClaimLoading(true);
+      const res = await runOnce({ sequencerId, self: true });
+      setClaimLoading(false);
+      if (!res?.[0]?.sequencers?.rewardRecipient || res?.[0]?.sequencers?.rewardRecipient === defaultRewardRecipient) {
+        setRewardRecipientModalVisible(true);
+        return;
+      }
+      setClaimAndRelockVisible(true);
     } catch (err) {
     } finally {
     }
@@ -766,40 +795,60 @@ export function Component() {
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
                   </Tooltip>
                 </div>
-                <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8 flex-wrap">
-                  <span>
-                    <NumberText value={lockedup || '0'} />
-                  </span>
-                  <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                <div className="fz-26 color-000 fw-500 items-center gap-8 flex-wrap">
+                  <div className="flex flex-row m-b-10">
+                    <span className="m-r-10">
+                      <NumberText value={lockedup || '0'} />
+                    </span>
+                    <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                  </div>
+
                   {ifSelf ? (
                     ifInUnlockProgress ? (
-                      <Button
-                        className="pl-15 pr-15"
-                        type="metis"
-                        // disabled={countdown > 0}
-                        onClick={() => {
-                          if (ifInUnlockProgress) {
-                            setWithdrawVisible(true);
-                          }
-                        }}
-                      >
-                        <span>Withdraw</span>
-                      </Button>
+                      <div className="flex flex-row">
+                        <Button
+                          className="pl-15 pr-15 m-r-10"
+                          type="metis"
+                          // disabled={countdown > 0}
+                          onClick={() => {
+                            if (!ifInUnlockProgress) {
+                              setWithdrawVisible(true);
+                            }
+                          }}
+                        >
+                          <span>Withdraw</span>
+                        </Button>
+                      </div>
                     ) : (
-                      <Button
-                        className="pl-15 pr-15"
-                        type="metis"
-                        loading={!sequencerId}
-                        onClick={() => {
-                          if (BigNumber(lockedup).gt(0)) {
-                            setUnlockVisible(true);
-                          } else {
-                            setIncreaseVisible(true);
-                          }
-                        }}
-                      >
-                        {BigNumber(lockedup).gt(0) ? 'Unlock' : 'Lock'}
-                      </Button>
+                      <div className="flex flex-row">
+                        <Button
+                          className="pl-15 pr-15 m-r-10"
+                          type="metis"
+                          loading={!sequencerId}
+                          onClick={() => {
+                            if (BigNumber(lockedup).gt(0)) {
+                              setUnlockVisible(true);
+                            } else {
+                              setIncreaseVisible(true);
+                            }
+                          }}
+                        >
+                          {BigNumber(lockedup).gt(0) ? 'Unlock' : 'Lock'}
+                        </Button>
+                        <Button
+                          className="pl-15 pr-15 white-button"
+                          type="second"
+                          // disabled={countdown > 0}
+                          loading={!sequencerId}
+                          onClick={() => {
+                            if (!ifInUnlockProgress) {
+                              setpartialWithdrawVisible(true);
+                            }
+                          }}
+                        >
+                          <span>Partial Withdraw</span>
+                        </Button>
+                      </div>
                     )
                   ) : null}
                 </div>
@@ -811,7 +860,9 @@ export function Component() {
                   <div className="color-848484 fz-20 fw-500">Mining Rewards Rate(MRR)</div>
                   <Tooltip
                     title={
-                      <span>The expected rewards rate from the sequencer mining. (Data may be delayed by up to 72 hours.)</span>
+                      <span>
+                        The expected rewards rate from the sequencer mining. (Data may be delayed by up to 72 hours.)
+                      </span>
                     }
                   >
                     <img src={getImageUrl('@/assets/images/_global/ic_q.svg')} />
@@ -827,7 +878,8 @@ export function Component() {
                   <Tooltip
                     title={
                       <span>
-                        Total METIS tokens earned by this sequencer through sequencer mining.(Data may be delayed by up to 72 hours.)
+                        Total METIS tokens earned by this sequencer through sequencer mining.(Data may be delayed by up
+                        to 72 hours.)
                       </span>
                     }
                   >
@@ -863,7 +915,8 @@ export function Component() {
                       <Tooltip
                         title={
                           <span>
-                            Mining rewards are calculated and distributed every 3 days. You can claim your earned rewards to L2 at any time.
+                            Mining rewards are calculated and distributed every 3 days. You can claim your earned
+                            rewards to L2 at any time.
                           </span>
                         }
                       >
@@ -874,15 +927,25 @@ export function Component() {
                       <span>{unclaimed}</span>
                       <img src={getImageUrl('@/assets/images/token/metis.svg')} />
                       {ifMobile ? null : (
-                        <Button
-                          onClick={handleClaim}
-                          disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
-                          loading={claimLoading || !sequencerId}
-                          className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'}
-                          type="metis"
-                        >
-                          Claim
-                        </Button>
+                        <div className="flex">
+                          <Button
+                            onClick={handleClaim}
+                            disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
+                            loading={claimLoading || !sequencerId}
+                            className={ifMobile ? 'w-120 h-36' : 'pl-15 pr-15 m-r-10'}
+                            type="metis"
+                          >
+                            Claim
+                          </Button>
+                          {/* <Button
+                            onClick={handleClaimAndRelock}
+                            disabled={!sequencerId ? false : BigNumber(unclaimed).lte(0) || claimLoading}
+                            className={`${ifMobile ? 'w-120 h-36' : 'pl-15 pr-15'} white-button`}
+                            type="metis"
+                          >
+                            Claim and Relock
+                          </Button> */}
+                        </div>
                       )}
                     </div>
                     <span className="color-848484 fz-14 fw-400 inter">{unclaimedUsdValue} USD</span>
@@ -964,7 +1027,9 @@ export function Component() {
           {/* Blocks Signed */}
           <div className="sc2 w-full basic-card gap-20">
             <div className="flex flex-col gap-20">
-              <div className="fz-28 fw-500" id="block-produced">Block Produced</div>
+              <div className="fz-28 fw-500" id="block-produced">
+                Block Produced
+              </div>
               <div className="h-1 bg-color-DFDFDF" />
             </div>
 
@@ -990,13 +1055,15 @@ export function Component() {
                   </tr>
                 </thead>
                 <tbody>
-                  {needLoading ? (<div className="position-absolute translateCenter topr-50 leftr-50 color-848484">Loading</div>) : filteredBlocksCol?.map((i, index) => (
-                    <Row key={index} col={i} />
-                  ))}
+                  {needLoading ? (
+                    <div className="position-absolute translateCenter topr-50 leftr-50 color-848484">Loading</div>
+                  ) : (
+                    filteredBlocksCol?.map((i, index) => <Row key={index} col={i} />)
+                  )}
                 </tbody>
               </table>
 
-              {(needLoading || filteredBlocksCol?.length) ? null : (
+              {needLoading || filteredBlocksCol?.length ? null : (
                 <div className="position-absolute translateCenter topr-50 leftr-50 color-848484">No Data</div>
               )}
             </div>
@@ -1077,7 +1144,7 @@ export function Component() {
       <>
         <IncreaseModal
           refetchGraph={refresh}
-          visible={ifSelf && increaseVisible}
+          visible={increaseVisible}
           onClose={() => {
             setIncreaseVisible(false);
           }}
@@ -1101,9 +1168,26 @@ export function Component() {
 
         <WithdrawModal
           refetchGraph={refresh}
-          visible={ifSelf && withdrawVisible}
+          visible={withdrawVisible}
           onClose={() => {
             setWithdrawVisible(false);
+          }}
+        />
+        <PartialWithdrawModal
+          refetchGraph={refresh}
+          visible={partialWithdrawVisible}
+          lockedup={lockedup}
+          onClose={() => {
+            setpartialWithdrawVisible(false);
+          }}
+        />
+        <ClaimAndRelock
+          refetchGraph={refresh}
+          visible={claimAndRelockVisible}
+          lockedup={lockedup}
+          unclaimed={unclaimed}
+          onClose={() => {
+            setClaimAndRelockVisible(false);
           }}
         />
 

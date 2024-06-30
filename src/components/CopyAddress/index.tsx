@@ -1,6 +1,5 @@
 import useAuth from '@/hooks/useAuth';
 import { filterHideText, getImageUrl } from '@/utils/tools';
-import classNames from 'classnames';
 import { styled } from 'styled-components';
 import clipboard from 'copy-to-clipboard';
 import { message } from '..';
@@ -26,6 +25,7 @@ const CopyAddress = ({
   hide = true,
   copyTrigger,
   dark = true,
+  display = true,
 }: {
   addr?: string;
   className?: any;
@@ -33,6 +33,7 @@ const CopyAddress = ({
   hide?: boolean;
   copyTrigger?: any;
   dark?: boolean;
+  display?: boolean;
 }) => {
   const { address } = useAuth();
 
@@ -50,9 +51,11 @@ const CopyAddress = ({
       }}
       onClick={copy}
     >
-      <span className={`copy-content ${className}`}>
-        {addr || address ? (hide ? filterHideText(addr || (address as string), 6, 4) : addr) : '-'}
-      </span>
+      {display && (
+        <span className={`copy-content ${className}`}>
+          {addr || address ? (hide ? filterHideText(addr || (address as string), 6, 4) : addr) : '-'}
+        </span>
+      )}
 
       {copyTrigger || (
         <img
