@@ -20,7 +20,7 @@ const links = [
     link: 'https://www.metis.io/blog',
   },
   {
-    content: 'Carrers',
+    content: 'Careers',
     link: 'https://www.metis.io/jobs',
   },
   {
