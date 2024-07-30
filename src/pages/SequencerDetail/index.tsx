@@ -563,7 +563,8 @@ export function Component() {
     }
     let realRewards = ethers.BigNumber.from('0');
     if (rbs && rbs.length > 0 && eps && eps.length > 0) {
-      const rb = rbs[rbs.length - 1];
+      const sortedRbs = rbs.sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
+      const rb = sortedRbs[0];
       const rbStart = ethers.BigNumber.from(rb.startEpoch);
       const rbEnd = ethers.BigNumber.from(rb.endEpoch);
       const rpb = ethers.BigNumber.from(rb.rpb);
