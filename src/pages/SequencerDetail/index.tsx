@@ -557,13 +557,13 @@ export function Component() {
     let days = BigNumber(joinedDuration).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
     const eps = fetchBlockTxData?.epoches;
     const rbs = fetchUserTxData?.rewardBatches;
-    if (rbs && rbs.length > 1) {
-      const ts = rbs[rbs.length - 1].timestamp - rbs[rbs.length - 2].timestamp;
-      days = BigNumber(ts).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
-    }
     let realRewards = ethers.BigNumber.from('0');
     if (rbs && rbs.length > 0 && eps && eps.length > 0) {
       const sortedRbs = rbs.sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
+      if (rbs.length > 1) {
+        const ts = sortedRbs[0].timestamp - sortedRbs[1].timestamp;
+        days = BigNumber(ts).div(3600).div(24).toFixed(0, BigNumber.ROUND_DOWN);
+      }
       const rb = sortedRbs[0];
       const rbStart = ethers.BigNumber.from(rb.startEpoch);
       const rbEnd = ethers.BigNumber.from(rb.endEpoch);
@@ -584,17 +584,21 @@ export function Component() {
     }
 
     const rrs = ethers.utils.formatEther(realRewards);
+    const bigDays = BigNumber(days);
+    const bigLockedup = BigNumber(lockedup);
+    const bigRrs = BigNumber(rrs);
     if (
-      BigNumber(days).isZero() ||
-      BigNumber(days).isNaN() ||
-      BigNumber(rrs).isZero() ||
-      BigNumber(rrs).isNaN() ||
-      BigNumber(lockedup).isZero() ||
-      BigNumber(lockedup).isNaN()
+      bigDays.isZero() ||
+      bigDays.isNaN() ||
+      bigDays.lt(BigNumber(0)) ||
+      bigRrs.isZero() ||
+      bigRrs.isNaN() ||
+      bigLockedup.isZero() ||
+      bigLockedup.isNaN()
     ) {
       return '0';
     }
-    return BigNumber(rrs).div(days).div(lockedup).multipliedBy(365).multipliedBy(100).toFixed(2, BigNumber.ROUND_CEIL);
+    return bigRrs.div(bigDays).div(bigLockedup).multipliedBy(365).multipliedBy(100).toFixed(2, BigNumber.ROUND_CEIL);
   }, [joinedDuration, lockedup, fetchBlockTxData, fetchUserTxData]);
 
   const { l2Block: currentBlockNumber, l2BlockLoading } = useL2EpochStatus();
