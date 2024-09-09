@@ -360,7 +360,7 @@ const MyAccount = ({
             >
               <div className="fz-14 fw-400 color-000 poppins">Balance on L1</div>
               <div className="flex flex-row items-center gap-8">
-                <img className="s-15" src={getImageUrl('@/assets/images/token/metis.svg')} />
+                <img className="s-15" style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                 <div className="fz-18 fw-400 color-000 poppins">{balance?.readable || 0} METIS</div>
               </div>
             </div>
@@ -373,7 +373,7 @@ const MyAccount = ({
                 >
                   <div className="fz-14 fw-400 color-000 poppins">Locked-Up</div>
                   <div className="flex flex-row items-center gap-8">
-                    <img className="s-15" src={getImageUrl('@/assets/images/token/metis.svg')} />
+                    <img className="s-15" style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                     <div className="fz-18 fw-400 color-000 poppins">{lockedup || 0} METIS</div>
                   </div>
                 </div>
@@ -384,7 +384,7 @@ const MyAccount = ({
                 >
                   <div className="fz-14 fw-400 color-000 poppins">Total Rewards</div>
                   <div className="flex flex-row items-center gap-8">
-                    <img className="s-15" src={getImageUrl('@/assets/images/token/metis.svg')} />
+                    <img className="s-15" style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                     <div className="fz-18 fw-400 color-000 poppins">{totalRewards || 0} METIS</div>
                   </div>
                 </div>
@@ -393,7 +393,7 @@ const MyAccount = ({
                   <div className="flex flex-col gap-5">
                     <div className="fz-14 fw-400 color-000 poppins">Unclaimed Rewards</div>
                     <div className="flex flex-row items-center gap-8">
-                      <img className="s-15" src={getImageUrl('@/assets/images/token/metis.svg')} />
+                      <img className="s-15" style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                       <div className="fz-18 fw-400 color-000 poppins">{unclaimedAmount || 0} METIS</div>
                     </div>
                   </div>
