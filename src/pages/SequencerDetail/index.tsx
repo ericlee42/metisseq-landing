@@ -805,7 +805,7 @@ export function Component() {
                     <span className="m-r-10">
                       <NumberText value={lockedup || '0'} />
                     </span>
-                    <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                    <img style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                   </div>
 
                   {ifSelf ? (
@@ -896,7 +896,7 @@ export function Component() {
                   <span>
                     <NumberText value={totalRewards || '0'} />
                   </span>{' '}
-                  <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                  <img style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                 </div>
               </div>
             </div>
@@ -930,7 +930,7 @@ export function Component() {
                     </div>
                     <div className="fz-26 color-000 fw-500 flex flex-row items-center gap-8">
                       <span>{unclaimed}</span>
-                      <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                      <img style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                       {ifMobile ? null : (
                         <div className="flex">
                           <Button
@@ -989,7 +989,7 @@ export function Component() {
                         onChange={setRelockAmount}
                         className="fz-26"
                         solid
-                        suffix={<img className="s-22" src={getImageUrl('@/assets/images/token/metis.svg')} />}
+                        suffix={<img className="s-22" style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />}
                       />
                     </div>
                   </div>
@@ -1004,7 +1004,7 @@ export function Component() {
                           .multipliedBy(0.2)
                           .toString()}
                       </span>
-                      <img src={getImageUrl('@/assets/images/token/metis.svg')} />
+                      <img style={{ height: '22px', width: '23px' }} src={getImageUrl('@/assets/images/token/metis-dark.svg')} />
                     </div>
                   </div>
                   {/* confirm */}
