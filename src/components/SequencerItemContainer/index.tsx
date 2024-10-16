@@ -69,7 +69,7 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
     <SequencerStatusContainer
       onClick={onClick}
       style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
-      className="pointer radius-30 w-340 pt-37 pl-30 pr-30 pb-20 flex flex-col gap-42 items-center position-relative"
+      className="pointer radius-30 w-340 pt-37 pl-30 pr-30 pb-20 flex flex-col gap-8 items-center position-relative"
     >
       <div className="flex flex-row items-center gap-8 position-absolute top-14 right-20">
         {currentActiveSeqAddressLoading ? (
@@ -102,10 +102,13 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
         ) : (
           <div className={'avatar s-90 radiusp-50'} />
         )}
-
         <div className="align-center fz-20 fw-700 poppins">{ele?.infos?.name || '-'}</div>
         {/* {ele?.infos?.desc ? <div className="align-center fz-20 fw-700 poppins">{ele?.infos?.desc || '-'}</div> : null} */}
       </div>
+      {ele?.infos?.lst_name ? <div className="flex flex-row items-center justify-center bg-color-00D2FF1A w-100 h-30 radius-10">
+        <a className="color-00D2FF fz-12" target="_blank" href={ele?.infos?.lst_url}>{ele?.infos?.lst_name}</a>
+        <img className="s-11 m-4" src={getImageUrl('@/assets/images/_global/ic_export.svg')}></img>
+      </div> : <div className='flex flex-row items-center justify-center w-100 h-30 radius-10'/>}
       <div className="flex flex-col w-full gap-4">
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center w-full">
