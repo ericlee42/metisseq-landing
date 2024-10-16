@@ -313,6 +313,14 @@ export function Component() {
     if (!allSequencerInfo || !whitelistedAddress) return null;
     return allSequencerInfo?.[whitelistedAddress?.toLowerCase()];
   }, [allSequencerInfo, whitelistedAddress]);
+  
+  const lstName = React.useMemo(() => 
+    currentSequencerInfo?.lst_name || '', 
+  [currentSequencerInfo]);
+
+  const lstLink = React.useMemo(() => 
+    currentSequencerInfo?.lst_url || '',
+  [currentSequencerInfo])
 
   const { sequencerId, blockReward, metisBalance } = useUpdate();
 
@@ -737,18 +745,25 @@ export function Component() {
               <div className="fz-26 fw-500 color-fff">Signer</div>
               <CopyAddress dark={false} addr={id} className={'flex-1 fz-16 fw-400 inter color-fff'} />
             </div>
-            <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
-              <div className="fz-26 fw-500 color-fff">Blocks Signed</div>
-              <div className="flex flex-col gap-4">
-                <div className="fz-12 fw-700 color-fff inter align-right">{+signedPercent || '-'}%</div>
-                <div
-                  className="progress w-full h-2 radius-50"
-                  style={{
-                    background: 'linear-gradient(90deg, #00D2FF 0%, #FFF 100%)',
-                  }}
-                />
-              </div>
-            </div>
+            {
+              (lstName.length > 0 ? 
+                <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
+                  <div className="fz-26 fw-500 color-fff">LST</div>
+                    <div className="flex flex-col gap-4">
+                      {/* <div className="fz-12 fw-700 color-fff inter align-right">{+signedPercent || '-'}%</div> */}
+                      {/* <div
+                        className="progress w-full h-2 radius-50"
+                        style={{
+                          background: 'linear-gradient(90deg, #00D2FF 0%, #FFF 100%)',
+                        }}
+                      /> */}
+                      
+                      <a href={lstLink} target="_blank" className={'flex-1 fz-16 fw-400 inter color-fff'}>{lstName}</a>
+                    </div>
+                </div> :
+                <div className="flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10" />
+              )
+            }
           </div>
         </div>
 
