@@ -13,8 +13,8 @@ const Container = styled.div`
     line-height: 21px;
   }
   img {
-    width: 21px;
-    height: 21px;
+    width: 12px;
+    height: 12px;
   }
 `;
 
