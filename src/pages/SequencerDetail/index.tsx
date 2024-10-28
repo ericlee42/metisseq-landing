@@ -746,23 +746,17 @@ export function Component() {
               <CopyAddress dark={false} addr={id} className={'flex-1 fz-16 fw-400 inter color-fff'} />
             </div>
             {
-              (lstName.length > 0 ? 
-                <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
-                  <div className="fz-26 fw-500 color-fff">LST</div>
-                    <div className="flex flex-row gap-8">
-                      {/* <div className="fz-12 fw-700 color-fff inter align-right">{+signedPercent || '-'}%</div> */}
-                      {/* <div
-                        className="progress w-full h-2 radius-50"
-                        style={{
-                          background: 'linear-gradient(90deg, #00D2FF 0%, #FFF 100%)',
-                        }}
-                      /> */}
-                      <a href={lstLink} target="_blank" className={'fz-16 fw-400 inter color-fff underlined'}>{lstName}</a>
-                      <img className="s-16" src={getImageUrl('@/assets/images/_global/ic_export_w.svg')}/>
-                    </div>
-                </div> :
-                <div className="flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10" />
-              )
+              lstName.length > 0 ? 
+              <div className="overview-item flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10">
+                <div className="fz-26 fw-500 color-fff">LST</div>
+                <div className='flex flex-row items-center gap-8 pointer' style={{ fontFamily: 'Poppins-Regular, Poppins' }}
+                  onClick={() => window.open(lstLink, '_blank')}>
+                  <span className="flex-1 fz-16 fw-400 inter color-fff underlined lh-21" style={{fontFamily: 'Poppins-Regular, Poppins'}}>{ lstName }</span>
+                  <img className="s-12" src={getImageUrl('@/assets/images/_global/ic_export_w.svg')}/>
+                </div>
+              </div>
+               :
+              <div className="flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10" />
             }
           </div>
         </div>
