@@ -21,7 +21,7 @@ const SequencerStatusContainer = styled.div`
   }
 `;
 
-const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick, totalLockUp, since }: any) => {
+const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick, totalLockUp, since, handleLSTName }: any) => {
   const { currentEpochRelatedSeqAddress, nextEpochRelatedSeqAddress, currentActiveSeqAddressLoading } =
     useL2EpochStatus();
 
@@ -108,8 +108,9 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
       </div>
       {
         ele?.infos?.lst_name ? 
-        <div className="flex flex-row items-center justify-center bg-color-00D2FF1A w-100 h-30 radius-10 gap-4">
-          <a className="color-00D2FF fz-12" target="_blank" href={ele?.infos?.lst_url}>{ele?.infos?.lst_name}</a>
+        <div className="flex flex-row items-center justify-center bg-color-00D2FF1A w-100 h-30 radius-10 gap-4 pointer"
+          onClick={handleLSTName}>
+          <span className="color-00D2FF fz-12">{ele?.infos?.lst_name}</span>
           <img className="s-11" src={getImageUrl('@/assets/images/_global/ic_export_b.svg')}></img>
         </div> 
         : 

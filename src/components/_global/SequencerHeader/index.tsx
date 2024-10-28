@@ -696,8 +696,13 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                   .div(1e18)
                   .toString()}
                 since={dayjs(i?.timestamp * 1000).format('YYYY-MM-DD')}
-                onClick={() => {
+                onClick={(event) => {
                   jumpSequencer(i?.sequencer?.address);
+                  event.stopPropagation();
+                }}
+                handleLSTName={(event) => {
+                  window.open(i?.infos?.lst_url, '_blank')
+                  event.stopPropagation();
                 }}
                 key={index}
               />
