@@ -731,7 +731,7 @@ export function Component() {
             </div>
           </div>
           {ifMobile ? (
-            <div className="fz-16 fw-400 inter maxwp-100 mb-22">{currentSequencerInfo?.desc || '-'}</div>
+            <div className="fz-16 fw-400 inter maxwp-100 mb-22 color-fff">{currentSequencerInfo?.desc || '-'}</div>
           ) : null}
 
           <div
