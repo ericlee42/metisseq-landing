@@ -756,7 +756,7 @@ export function Component() {
                 </div>
               </div>
                :
-              <div className="flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10" />
+              ifMobile ? null : <div className="flex-1 pt-12 pb-12 pl-30 pr-30 flex flex-col justify-center gap-10" />
             }
           </div>
         </div>
