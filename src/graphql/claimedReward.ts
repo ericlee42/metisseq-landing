@@ -4,7 +4,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const userTxs = gql`
   query ClaimHistory($address: [String]) {
-    histories(where: { action: Claim, sequencer_: { address_in: $address } }) {
+    histories(where: { action: Claim, sequencer_: { address_in: $address } }, first: 1000) {
       action
       amount
       block
