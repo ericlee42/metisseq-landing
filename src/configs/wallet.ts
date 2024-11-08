@@ -67,10 +67,10 @@ export const _sepolia = defineChain({
       webSocket: ['wss://sepolia.infura.io/ws/v3'],
     },
     default: {
-      http: ['https://lb.drpc.org/ogrpc?network=ethereum&dkey=ArAUTX6RD0lbvBRkMslCxKwPuC6CnaoR76UfFhW5UfFk'],
+      http: ['https://rpc.sepolia.org'],
     },
     public: {
-      http: ['https://lb.drpc.org/ogrpc?network=ethereum&dkey=ArAUTX6RD0lbvBRkMslCxKwPuC6CnaoR76UfFhW5UfFk'],
+      http: ['https://rpc.sepolia.org'],
     },
   },
   blockExplorers: {
