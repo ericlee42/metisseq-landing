@@ -51,7 +51,6 @@ export const _mainnet = defineChain({
   },
 });
 
-
 export const _sepolia = defineChain({
   id: 11_155_111,
   network: 'sepolia',
@@ -67,10 +66,10 @@ export const _sepolia = defineChain({
       webSocket: ['wss://sepolia.infura.io/ws/v3'],
     },
     default: {
-      http: ['https://rpc.sepolia.org'],
+      http: ['https://eth-sepolia.public.blastapi.io'],
     },
     public: {
-      http: ['https://rpc.sepolia.org'],
+      http: ['https://eth-sepolia.public.blastapi.io'],
     },
   },
   blockExplorers: {
@@ -158,4 +157,3 @@ export const txPublicClients = {
 };
 
 export { WagmiConfig as WagmiProvider, config, publicClient };
-
