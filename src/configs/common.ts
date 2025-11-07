@@ -9,7 +9,7 @@ import { holesky, sepolia } from 'viem/chains';
 import { ethers } from 'ethers';
 import { getL2ChainIdByL1ChainId, getL2RpcByL1ChainId } from '@/utils/tools';
 
-export const defaultExpectedApr = 0.2; // 20%
+export const defaultExpectedApr = 0.15; // 15%
 
 export const MAX_ALLOWANCE = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 export const defaultRewardRecipient = '0x0000000000000000000000000000000000000000';
