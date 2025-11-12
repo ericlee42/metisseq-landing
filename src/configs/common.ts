@@ -99,9 +99,9 @@ export const setL2Provider = (rpcUrl, chainId) => {
 
 export const graphUrl = {
   staking: {
-    [mainnet.id.toString()]: 'https://subgraph.satsuma-prod.com/0697841d0c2a/metis/metis-sequencer-locking/api',
+    [mainnet.id.toString()]: 'https://api.goldsky.com/api/public/project_cmgznvjth00jo5np250c30uyr/subgraphs/metis-sequencer-locking/v0.0.5/gn',
     [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-locking',
-    [sepolia.id.toString()]: 'https://subgraph.satsuma-prod.com/0697841d0c2a/metis/metis-sepolia-sequencer-locking/api',
+    [sepolia.id.toString()]: 'https://api.goldsky.com/api/public/project_cmgznvjth00jo5np250c30uyr/subgraphs/metis-sepolia-sequencer-locking/v0.0.5/gn',
   },
   block: {
     [mainnet.id.toString()]: 'https://andromeda-subgraph.metisdevops.link/subgraphs/name/metisio/sequencer-set',
