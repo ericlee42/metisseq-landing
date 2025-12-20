@@ -1,7 +1,7 @@
 {
   "name": "metis-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "start": "vite --open --host",
     "start:prod": "vite --open --host --mode production",
@@ -84,5 +84,6 @@
     "vite": "^4.3.2",
     "vite-plugin-node-polyfills": "^0.8.2",
     "vite-plugin-virtual-mpa": "^1.8.2"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
