@@ -69,7 +69,7 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
     <SequencerStatusContainer
       onClick={onClick}
       style={{ boxShadow: '0px 10px 30px 0px rgba(0, 0, 0, 0.10)' }}
-      className="pointer radius-30 w-340 pt-37 pl-30 pr-30 pb-20 flex flex-col gap-8 items-center position-relative"
+      className="radius-30 w-340 pt-37 pl-30 pr-30 pb-20 flex flex-col gap-8 items-center position-relative"
     >
       <div className="flex flex-row items-center gap-8 position-absolute top-14 right-20">
         {currentActiveSeqAddressLoading ? (

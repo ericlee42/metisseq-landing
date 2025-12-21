@@ -38,8 +38,6 @@
     "dayjs": "^1.11.7",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.7",
-    "graphql": "^16.6.0",
-    "graphql-request": "^6.0.0",
     "hamburger-react": "^2.5.0",
     "lodash-es": "^4.17.21",
     "mac-scrollbar": "^0.10.6",
