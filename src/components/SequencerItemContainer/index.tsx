@@ -131,10 +131,10 @@ const SequencerItemContainer = ({ claimedInfoLoading, claimedInfo, ele, onClick,
             <div className="fz-14 color-000 fw-400">Uptime</div>
             <div className="fz-14 fw-700 color-000">{fromNow || '-'}</div>
           </div> */}
-          <div className="flex flex-row justify-between items-center w-full">
+          {/* <div className="flex flex-row justify-between items-center w-full">
             <div className="fz-14 color-000 fw-400">Sequencing Since</div>
             <div className="fz-14 fw-700 color-000">{since || '-'}</div>
-          </div>
+          </div> */}
         </div>
         <div className="h-1 w-full mt-10 mb-10 bg-color-CDCDCD" />
         <div className="flex flex-row justify-between items-center w-full">
