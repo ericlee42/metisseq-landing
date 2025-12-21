@@ -2,11 +2,10 @@
 import { Button, Modal, message } from '@/components';
 import SequencerItemContainer from '@/components/SequencerItemContainer';
 import { contracts, defaultExpectedApr } from '@/configs/common';
-import fetchOverview from '@/graphql/overview';
 import useAuth from '@/hooks/useAuth';
 import useUpdate from '@/hooks/useUpdate';
 import { getImageUrl, jumpLink } from '@/utils/tools';
-import { useBoolean, useRequest } from 'ahooks';
+import { useBoolean } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -19,7 +18,6 @@ import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
 import WalletModal from '@/components/WalletModal';
 import { deepCopy } from 'ethers/lib/utils';
-import fetchClaimedRewards from '@/graphql/claimedReward';
 import { injectedConnector } from '@/configs/wallet';
 
 const StyledModal = styled(Modal)``;
@@ -340,20 +338,12 @@ const Container = styled.section`
 
 const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   const { address, chainId, connect } = useAuth();
-  const { run, data } = useRequest(fetchOverview, { manual: true });
   const { sequencerTotalInfo, liquidateReward } = useUpdate();
-  const { runOnce, allSequencerInfo } = useSequencerInfo();
+  const { runOnce, allSequencerInfo, seqOwners } = useSequencerInfo();
   const [checkLoading, { setTrue: checkLoadingTrue, setFalse: checkLoadingFalse }] = useBoolean(false);
-  const [ifWhiteListed, setIfWhiteListed] = useState<boolean>(false);
   const [isSequencer, setSequencer] = useState<boolean>(false);
   const [visible, { setTrue, setFalse }] = useBoolean(false);
   const [signerAddr, setSignerAddr] = useState<undefined | string>(undefined);
-
-  useEffect(() => {
-    if (chainId) {
-      run(+chainId);
-    }
-  }, [chainId]);
 
   const jumpSequencer = (id: string | undefined) => {
     if (!id) {
@@ -376,7 +366,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     }
     try {
       checkLoadingTrue();
-      setIfWhiteListed(false);
 
       const multiP: any = [
         {
@@ -406,12 +395,10 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
 
         setSignerAddr(batchInfo?.[0]?.sequencers?.signer);
 
-        setIfWhiteListed(true);
         setSequencer(true);
       } else if (isWhiteListed) {
         jumpLinkBecomeSequencer();
       } else {
-        setIfWhiteListed(false);
         setSequencer(false);
       }
       checkLoadingFalse();
@@ -422,41 +409,49 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     }
   };
 
-  const sequencerCards = React.useMemo(() => {
-    if (!data?.length) return [];
-    return data?.map((i) => ({
-      id: i?.sequencer?.address,
-      ...i,
-    }));
-  }, [data]);
+  // Get sequencer addresses from allSequencerInfo instead of GraphQL
+  const sequencerOwners = React.useMemo(() => {
+    if (!allSequencerInfo) return [];
+    return Object.keys(allSequencerInfo);
+  }, [allSequencerInfo]);
 
   const fetchBatchSequencerInfo = async () => {
-    if (!sequencerCards?.length) return undefined;
-    const ids = Array.from(new Set(sequencerCards?.map((i) => i?.sequencer?.id)));
+    if (!sequencerOwners?.length) return undefined;
+
+    // Get sequencer IDs from owner addresses using seqOwners function
+    const idsPromises = sequencerOwners.map(async (owner) => {
+      try {
+        const id = await seqOwners(owner);
+        return id;
+      } catch {
+        return null;
+      }
+    });
+
+    const allIds = await Promise.all(idsPromises);
+    const ids = allIds.filter((id: any) => id != null && id !== '0');
+
+    if (!ids.length) return undefined;
 
     const batchInfo = await runOnce({
       sequencerIds: ids,
     });
 
-    return batchInfo?.map((i, index) => {
-      return {
-        ...i,
-        ...sequencerCards?.find((j) => j?.sequencer?.owner?.toLowerCase() === i?.sequencers?.owner?.toLowerCase()),
-      };
-    });
+    return batchInfo;
   };
 
-  const {
-    run: fetchBatchSequencerInfoRun,
-    data: fetchBatchSequencerInfoData,
-    loading: fetchBatchSequencerInfoLoading,
-  } = useRequest(fetchBatchSequencerInfo, { manual: true });
+  const [fetchBatchSequencerInfoData, setFetchBatchSequencerInfoData] = useState<any>(undefined);
+  const [fetchBatchSequencerInfoLoading, setFetchBatchSequencerInfoLoading] = useState<boolean>(false);
 
-  const {
-    run: fetchClaimedRewardsRun,
-    data: fetchClaimedRewardsData,
-    loading: fetchClaimedRewardsLoading,
-  } = useRequest(fetchClaimedRewards, { manual: true });
+  const fetchBatchSequencerInfoRun = async () => {
+    setFetchBatchSequencerInfoLoading(true);
+    const result = await fetchBatchSequencerInfo();
+    setFetchBatchSequencerInfoData(result);
+    setFetchBatchSequencerInfoLoading(false);
+  };
+
+  const fetchClaimedRewardsData: any = undefined;
+  const fetchClaimedRewardsLoading = false;
 
   const filteredFetchBatchSequencerInfoData = useMemo(
     () =>
@@ -477,12 +472,16 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
             '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04',
             '0xaff606251d8540f97ca2db12774c0147a170ab9e',
           ];
-          if (chainId == 1 && genesisSignersMainnet.indexOf(i.sequencer.address.toLowerCase()) >= 0) {
+          if (chainId == 1 && i?.sequencers?.signer && genesisSignersMainnet.indexOf(i.sequencers.signer.toLowerCase()) >= 0) {
             renewTs = 1710406800; // 14/03/2024 9:00:00 UTC
           }
           return {
             ...i,
             timestamp: renewTs,
+            sequencer: {
+              address: i?.sequencers?.signer,
+              owner: i?.sequencers?.owner,
+            },
             infos: {
               ...allSequencerInfo?.[i?.sequencers?.owner?.toLowerCase()],
             },
@@ -492,30 +491,19 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   );
 
   const totalReward = useMemo(() => {
-    // ele?.rewardReadable
-    const amount = fetchBatchSequencerInfoData?.reduce((prev, next) => {
-      return BigNumber(prev).plus(next?.rewardReadable).toString();
-    }, 0);
+    // Total Rewards = liquidated rewards + all unclaimed rewards from sequencers
+    const unclaimedAmount = fetchBatchSequencerInfoData?.reduce((prev, next) => {
+      return BigNumber(prev).plus(next?.rewardReadable || 0).toString();
+    }, '0');
     return BigNumber(liquidateReward || '0')
-      .plus(amount || '0')
+      .plus(unclaimedAmount || '0')
       .toString();
   }, [fetchBatchSequencerInfoData, liquidateReward]);
 
   useEffect(() => {
-    if (!sequencerCards?.length) return;
+    if (!sequencerOwners?.length) return;
     fetchBatchSequencerInfoRun();
-  }, [sequencerCards, chainId]);
-
-  const totalSignerAddressList = useMemo(
-    () => fetchBatchSequencerInfoData?.map((i) => i?.sequencers?.signer?.toLowerCase()),
-    [fetchBatchSequencerInfoData],
-  );
-
-  useEffect(() => {
-    if (totalSignerAddressList?.length) {
-      fetchClaimedRewardsRun(totalSignerAddressList, +chainId);
-    }
-  }, [totalSignerAddressList, chainId]);
+  }, [sequencerOwners, chainId]);
 
   const { ifMobile } = useDevice();
 
@@ -696,10 +684,6 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                   .div(1e18)
                   .toString()}
                 since={dayjs(i?.timestamp * 1000).format('YYYY-MM-DD')}
-                onClick={(event) => {
-                  jumpSequencer(i?.sequencer?.address);
-                  event.stopPropagation();
-                }}
                 handleLSTName={(event) => {
                   window.open(i?.infos?.lst_url, '_blank')
                   event.stopPropagation();

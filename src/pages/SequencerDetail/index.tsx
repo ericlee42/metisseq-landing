@@ -18,14 +18,12 @@ import ClaimModal from './components/ClaimModal';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import { ethers } from 'ethers';
 import useUpdate from '@/hooks/useUpdate';
-import { useBoolean, useRequest } from 'ahooks';
-import fetchUserTx from '@/graphql/tx';
+import { useBoolean } from 'ahooks';
 import BigNumber from 'bignumber.js';
 import useAuth from '@/hooks/useAuth';
 import useAllowance from '@/hooks/useAllowance';
 import useLock from '@/hooks/useLock';
 import { defaultRewardRecipient, explorer, isDev } from '@/configs/common';
-import fetchBlock from '@/graphql/blocks';
 import useMetisPrice from '@/hooks/useMetisPrice';
 import NumberText from '@/components/NumberText';
 import useDevice from '@/hooks/useDevice';
@@ -324,24 +322,13 @@ export function Component() {
 
   const { sequencerId, blockReward, metisBalance } = useUpdate();
 
-  const {
-    run: fetchUserTxRun,
-    loading: fetchUserTxLoading,
-    data: fetchUserTxData,
-  }: any = useRequest(fetchUserTx, { manual: true });
-
-  const {
-    run: fetchBlockTxRun,
-    loading: fetchBlockTxLoading,
-    data: fetchBlockTxData,
-  }: any = useRequest(fetchBlock, { manual: true });
+  const fetchUserTxData: any = undefined;
+  const fetchBlockTxData: any = undefined;
+  const fetchBlockTxLoading = false;
 
   const curUserActiveSequencerId = React.useMemo(
-    () =>
-      fetchUserTxData?.histories?.[0]?.sequencer?.id
-        ? BigNumber(fetchUserTxData?.histories?.[0]?.sequencer?.id).toString()
-        : undefined,
-    [fetchUserTxData?.histories],
+    () => undefined,
+    [],
   );
 
   const ifSelf = React.useMemo(
@@ -367,22 +354,9 @@ export function Component() {
     handleInitCheck();
   }, [curUserActiveSequencerId, ifSelf, whitelistedAddress]);
 
-  const refetchGraph = () => {
-    if (id) {
-      fetchUserTxRun(id, chainId);
-      fetchBlockTxRun(id, chainId);
-      // fetchrewardBatchesRun(chainId);
-    }
-  };
-
   const refresh = () => {
     run({ sequencerId: curUserActiveSequencerId, self: ifSelf });
-    refetchGraph();
   };
-
-  React.useEffect(() => {
-    refetchGraph();
-  }, [id, chainId]);
 
   const txCol = React.useMemo(() => {
     return fetchUserTxData?.histories?.sort((a, b) => +b?.timestamp - +a?.timestamp);
@@ -463,10 +437,6 @@ export function Component() {
       const newSkip = skip + blocksPageSize * 6;
       setSkip(newSkip);
       setPrevBlockData(blocksCol);
-      fetchBlockTxRun(id, chainId, newSkip);
-      // if (BigNumber(blocksCurrentPage).gt(6)) {
-      //   document.querySelectorAll('#block-produced')?.[0]?.scrollIntoView();
-      // }
     }
     setBlocksCurrentPage(v);
   };
@@ -494,7 +464,7 @@ export function Component() {
   );
 
   const handleApprove = async () => {
-    const res = await approve();
+    await approve();
   };
 
   const handleRelock = async () => {

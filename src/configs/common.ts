@@ -97,25 +97,6 @@ export const setL2Provider = (rpcUrl, chainId) => {
 };
 
 
-export const graphUrl = {
-  staking: {
-    [mainnet.id.toString()]: 'https://api.goldsky.com/api/public/project_cmgznvjth00jo5np250c30uyr/subgraphs/metis-sequencer-locking/v0.0.5/gn',
-    [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-locking',
-    [sepolia.id.toString()]: 'https://api.goldsky.com/api/public/project_cmgznvjth00jo5np250c30uyr/subgraphs/metis-sepolia-sequencer-locking/v0.0.5/gn',
-  },
-  block: {
-    [mainnet.id.toString()]: 'https://andromeda-subgraph.metisdevops.link/subgraphs/name/metisio/sequencer-set',
-    [holesky.id.toString()]: 'https://graphnode.holesky.metisdevops.link/subgraphs/name/metisio/sequencer-set',
-    [sepolia.id.toString()]: 'https://sepolia-subgraph.metisdevops.link/subgraphs/name/metisio/sequencer-set',
-  },
-};
-
-export const baseGraphUrl = {
-  [mainnet.id.toString()]: graphUrl.staking[mainnet.id.toString()],
-  [holesky.id.toString()]: graphUrl.staking[holesky.id.toString()],
-  [sepolia.id.toString()]: graphUrl.staking[sepolia.id.toString()],
-};
-
 export const explorer = {
   [mainnet.id.toString()]: 'https://etherscan.io',
   [holesky.id.toString()]: 'https://holesky.etherscan.io',

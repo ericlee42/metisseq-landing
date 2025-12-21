@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { Button, Modal } from '..';
 import { filterHideText, getImageUrl, jumpLink } from '@/utils/tools';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import CopyAddress from '../CopyAddress';
 import useAuth from '@/hooks/useAuth';
 import useBalance from '@/hooks/useBalance';
@@ -10,8 +10,6 @@ import { ethers } from 'ethers';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import BigNumber from 'bignumber.js';
 import useUpdate from '@/hooks/useUpdate';
-import { useRequest } from 'ahooks';
-import fetchUserTx from '@/graphql/tx';
 import ClaimModal from '@/pages/SequencerDetail/components/ClaimModal';
 import { useNavigate } from 'react-router-dom';
 import { defaultChainId, explorer, explorerName, l2explorer } from '@/configs/common';
@@ -155,13 +153,7 @@ const MyAccount = ({
   const { sequencerId, whiteListed } = useUpdate();
   const { balance } = useBalance();
 
-  const { run, data } = useRequest(fetchUserTx, { manual: true });
-
-  useEffect(() => {
-    if (sequencerId && address && chainId) {
-      run(address, +chainId);
-    }
-  }, [address, chainId, sequencerId]);
+  const data: any = undefined;
 
   const [claimVisible, setClaimVisible] = useState(false);
 
