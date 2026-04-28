@@ -66,10 +66,10 @@ export const _sepolia = defineChain({
       webSocket: ['wss://sepolia.infura.io/ws/v3'],
     },
     default: {
-      http: ['https://ethereum-sepolia.gateway.tatum.io'],
+      http: ['https://1rpc.io/sepolia'],
     },
     public: {
-      http: ['https://ethereum-sepolia.gateway.tatum.io'],
+      http: ['https://1rpc.io/sepolia'],
     },
   },
   blockExplorers: {
