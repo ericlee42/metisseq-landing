@@ -3,6 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { PropsWithChildren } from 'react';
 import Select from '@/components/Select';
 import Modal from '@/components/Modal';
+import Progress from '@/components/Progress';
 
 vi.mock('@/components/Scrollbar', () => ({
   default: ({ children }: PropsWithChildren) => <div>{children}</div>,
@@ -10,6 +11,21 @@ vi.mock('@/components/Scrollbar', () => ({
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+});
+
+it.each([true, false])('keeps progress styling props off the DOM with verticle=%s', (verticle) => {
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const col = [
+    { index: '1', content: 'First' },
+    { index: '2', content: 'Second' },
+  ];
+  const { container, rerender } = render(<Progress col={col} activeIndex="1" verticle={verticle} />);
+  const bar = container.querySelector('.bar')!;
+  const initialClass = bar.className;
+  rerender(<Progress col={col} activeIndex="2" verticle={verticle} />);
+  expect(bar.className).not.toBe(initialClass);
+  expect(bar.getAttributeNames().sort()).toEqual(['class', 'style']);
+  expect(errors).not.toHaveBeenCalled();
 });
 
 it.each([true, false])('positions and selects portal options with follow=%s', async (follow) => {

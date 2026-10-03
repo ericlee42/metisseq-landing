@@ -523,10 +523,10 @@ export function Component() {
               height="452"
               src="https://www.youtube.com/embed/2HXDWP9BcTE?si=J6IaA74zbNFVGGVk"
               title="YouTube video player"
-              frame-border="0"
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrer-policy="strict-origin-when-cross-origin"
-              allowfull-screen
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
             />
           </div>
         </div>

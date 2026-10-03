@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { styled } from 'styled-components';
 
-const Bar = styled.div<{ activePercent?: string; activeIndex?: string }>`
+const Bar = styled.div<{ $activePercent?: string; $activeIndex?: string }>`
   width: 100%;
   position: absolute;
   /* top: calc(50% - 10px); */
@@ -18,8 +18,8 @@ const Bar = styled.div<{ activePercent?: string; activeIndex?: string }>`
     transition: all linear 0.2s;
     display: inline-block;
     border-radius: 26px;
-    width: ${({ activePercent, activeIndex }) => {
-      return Number(activePercent) > 0 ? `calc(${activePercent || 0}% + ${Number(activeIndex || 0) - 1}px)` : '0';
+    width: ${({ $activePercent, $activeIndex }) => {
+      return Number($activePercent) > 0 ? `calc(${$activePercent || 0}% + ${Number($activeIndex || 0) - 1}px)` : '0';
     }};
     height: 100%;
     background: rgba(0, 210, 193, 1);
@@ -172,8 +172,8 @@ const Progress = ({
                 }
           }
           className={'bar z-1'}
-          activeIndex={activeIndex}
-          activePercent={activePercent}
+          $activeIndex={activeIndex}
+          $activePercent={activePercent}
         />
         {verticle ? (
           <>
