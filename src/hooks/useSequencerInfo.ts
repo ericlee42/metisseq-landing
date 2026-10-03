@@ -47,24 +47,27 @@ const useSequencerInfo = () => {
     if (getAllUserData) {
       setAllSequencerInfo(getAllUserData);
     }
-  }, [getAllUserData]);
+  }, [getAllUserData, setAllSequencerInfo]);
 
-  const seqOwners = async (address?: string) => {
-    if (!address || !chainId) return;
-    try {
-      const data = await readContract(config, {
-        chainId: Number(chainId),
-        address: contracts.lock?.[chainId?.toString()].address,
-        abi: contracts.lock?.[chainId?.toString()].abi,
-        functionName: 'seqOwners', // seqOwners
-        args: [address],
-      });
+  const seqOwners = React.useCallback(
+    async (address?: string) => {
+      if (!address || !chainId) return;
+      try {
+        const data = await readContract(config, {
+          chainId: Number(chainId),
+          address: contracts.lock?.[chainId?.toString()].address,
+          abi: contracts.lock?.[chainId?.toString()].abi,
+          functionName: 'seqOwners', // seqOwners
+          args: [address],
+        });
 
-      return data?.toString();
-    } catch {
-      return undefined;
-    }
-  };
+        return data?.toString();
+      } catch {
+        return undefined;
+      }
+    },
+    [chainId],
+  );
 
   const handleSequencerCal = (sequencerInfo: any, multicallFuntions: any, curBatchState?: any) => {
     let finalRes: any = {};

@@ -28,7 +28,7 @@ function BasicLayout() {
 
   useEffect(() => {
     getMetisPrice();
-  }, []);
+  }, [getMetisPrice]);
 
   React.useEffect(() => {
     updateCancel();
@@ -36,7 +36,7 @@ function BasicLayout() {
     return () => {
       updateCancel();
     };
-  }, [ownerAddress, address, chainId]);
+  }, [ownerAddress, address, chainId, updateCancel, updateRun]);
 
   React.useEffect(() => {
     sequencerInfoCancel();
@@ -44,7 +44,7 @@ function BasicLayout() {
     return () => {
       sequencerInfoCancel();
     };
-  }, [sequencerId, chainId, address]);
+  }, [sequencerId, chainId, address, sequencerInfoCancel, sequencerInfoRun]);
 
   const { hash, pathname } = useLocation();
 
@@ -62,7 +62,7 @@ function BasicLayout() {
   useL2Block(Number(chainId));
   useEffect(() => {
     getAllUserRun();
-  }, [chainId]);
+  }, [chainId, getAllUserRun]);
 
   return (
     <React.Fragment>

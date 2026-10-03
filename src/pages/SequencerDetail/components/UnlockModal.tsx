@@ -8,7 +8,7 @@ import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
 import { getImageUrl } from '@/utils/tools';
 import { useBoolean } from 'ahooks';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { styled } from 'styled-components';
 import { formatEther } from 'viem';
 
@@ -94,11 +94,11 @@ const UnlockModal = ({
     setShowWarning(true);
   };
 
-  useEffect(() => {
-    if (!visible) {
-      setShowWarning(false);
-    }
-  }, [visible]);
+  const [previousVisible, setPreviousVisible] = useState(visible);
+  if (previousVisible !== visible) {
+    setPreviousVisible(visible);
+    if (!visible) setShowWarning(false);
+  }
 
   const { unlock } = useLock();
 

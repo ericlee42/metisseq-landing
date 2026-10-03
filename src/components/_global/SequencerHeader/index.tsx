@@ -10,7 +10,7 @@ import useDevice from '@/hooks/useDevice';
 import useSequencerInfo from '@/hooks/useSequencerInfo';
 import useUpdate from '@/hooks/useUpdate';
 import { getImageUrl, jumpLink } from '@/utils/tools';
-import { useBoolean } from 'ahooks';
+import { useBoolean, useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -441,15 +441,11 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
     return batchInfo;
   };
 
-  const [fetchBatchSequencerInfoData, setFetchBatchSequencerInfoData] = useState<any>(undefined);
-  const [fetchBatchSequencerInfoLoading, setFetchBatchSequencerInfoLoading] = useState<boolean>(false);
-
-  const fetchBatchSequencerInfoRun = async () => {
-    setFetchBatchSequencerInfoLoading(true);
-    const result = await fetchBatchSequencerInfo();
-    setFetchBatchSequencerInfoData(result);
-    setFetchBatchSequencerInfoLoading(false);
-  };
+  const {
+    data: fetchBatchSequencerInfoData,
+    loading: fetchBatchSequencerInfoLoading,
+    run: fetchBatchSequencerInfoRun,
+  } = useRequest(fetchBatchSequencerInfo, { manual: true });
 
   const fetchClaimedRewardsData: any = undefined;
   const fetchClaimedRewardsLoading = false;
@@ -467,7 +463,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
           return false;
         })
         ?.map((i) => {
-          let renewTs = i.timestamp;
+          let renewTs: number | undefined;
           const genesisSignersMainnet = [
             '0xeca7ae7de0d1978df299a547ee66c4503fba474d',
             '0xa233cc81fc6c12e3318ea71ec5d7bba78c706b04',
@@ -492,7 +488,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
             },
           };
         }),
-    [fetchBatchSequencerInfoData, allSequencerInfo, filterBy],
+    [fetchBatchSequencerInfoData, allSequencerInfo, filterBy, chainId],
   );
 
   const totalReward = useMemo(() => {
@@ -505,7 +501,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
   useEffect(() => {
     if (!sequencerOwners?.length) return;
     fetchBatchSequencerInfoRun();
-  }, [sequencerOwners, chainId]);
+  }, [sequencerOwners, chainId, fetchBatchSequencerInfoRun]);
 
   const { ifMobile } = useDevice();
 
@@ -681,7 +677,7 @@ const SequencerHeader = ({ filterBy = 'all' }: { filterBy?: string }) => {
                 claimedInfo={fetchClaimedRewardsData?.[i?.sequencers?.signer?.toLowerCase()]}
                 ele={i}
                 totalLockUp={divideDecimals(i?.sequencerLock || 0, 1e18)}
-                since={dayjs(i?.timestamp * 1000).format('YYYY-MM-DD')}
+                since={i.timestamp === undefined ? '-' : dayjs(i.timestamp * 1000).format('YYYY-MM-DD')}
                 handleLSTName={(event) => {
                   window.open(i?.infos?.lst_url, '_blank');
                   event.stopPropagation();

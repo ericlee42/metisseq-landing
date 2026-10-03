@@ -70,7 +70,7 @@ function NoMatch() {
 
   useEffect(() => {
     navigate('/home');
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

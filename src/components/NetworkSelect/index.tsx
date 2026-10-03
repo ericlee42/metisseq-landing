@@ -1,7 +1,7 @@
 import { network } from '@/configs/wallet';
 import useChainWatcher from '@/hooks/useChainWatcher';
 import useDevice from '@/hooks/useDevice';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { styled } from 'styled-components';
 import { useConnection } from 'wagmi';
 import { Select } from '..';
@@ -31,26 +31,19 @@ const NetworkSelect = () => {
 
   const { chain } = useConnection();
 
-  const [curOption, setCurOption] = useState<number>();
+  const curOption = options.find((option) => option.id === chain?.id)?.value;
 
   const curOptionName = useMemo(() => options.find((i) => i.value === curOption)?.name, [curOption]);
 
-  const handleOption = (ele: any) => {
-    setCurOption(ele?.value);
-  };
-  const handleChange = async (ele: any) => {
-    if (!ele?.value) return;
-    try {
-      await setupNetwork(ele?.value);
-    } catch {}
-  };
-
-  useEffect(() => {
-    const t = options.find((i) => i.id === chain?.id);
-    if (t) {
-      handleOption(t);
-    }
-  }, [chain?.id]);
+  const handleChange = useCallback(
+    async (ele: { value: number }) => {
+      if (!ele?.value) return;
+      try {
+        await setupNetwork(ele.value);
+      } catch {}
+    },
+    [setupNetwork],
+  );
 
   useEffect(() => {
     if (unsupported) {
@@ -62,7 +55,7 @@ const NetworkSelect = () => {
         handleChange(options?.[0]);
       }
     }
-  }, [curOption, unsupported, chain?.id]);
+  }, [curOption, unsupported, chain?.id, setupNetwork, handleChange]);
 
   const { ifMobile } = useDevice();
 
@@ -82,7 +75,7 @@ const NetworkSelect = () => {
           allowClear={false}
           placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
           onChange={(ele) => {
-            handleChange?.(ele);
+            handleChange({ value: Number(ele.value) });
           }}
         />
       </Container>
@@ -104,7 +97,7 @@ const NetworkSelect = () => {
         allowClear={false}
         placeholder={<div className="fz-15 fw-500 color-000">Wrong network</div>}
         onChange={(ele) => {
-          handleChange?.(ele);
+          handleChange({ value: Number(ele.value) });
         }}
       />
     </Container>

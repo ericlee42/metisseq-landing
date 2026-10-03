@@ -132,19 +132,6 @@ export function Component() {
 
   console.log('allSequencerInfo', allSequencerInfo);
 
-  const [name] = React.useState<undefined | string>();
-  const [website] = React.useState<undefined | string>();
-  const [account] = React.useState<undefined | string>();
-  const [pubKey] = React.useState<undefined | string>();
-  const [desc] = React.useState<undefined | string>();
-
-  const formattedPubKey = React.useMemo(() => {
-    if (pubKey?.startsWith('0x04')) {
-      return pubKey?.replace('0x04', '0x');
-    }
-    return pubKey;
-  }, [pubKey]);
-
   const [stakeAmount, setStakeAmount] = React.useState('');
   const [apr, setApr] = React.useState<undefined | string>();
 
@@ -223,14 +210,9 @@ export function Component() {
     setActiveIndex(index);
   };
 
-  const validStep2 = React.useMemo(
-    () => name && website && account && formattedPubKey,
-    [name, website, account, formattedPubKey],
-  );
-
   const { ifMobile } = useDevice();
 
-  const step = React.useMemo(() => {
+  const step = (() => {
     switch (activeIndex) {
       case '1':
         return (
@@ -397,25 +379,7 @@ export function Component() {
           </div>
         );
     }
-  }, [
-    activeIndex,
-    name,
-    website,
-    account,
-    pubKey,
-    formattedPubKey,
-    desc,
-    validStep2,
-    balance?.readable,
-    stakeAmount,
-    handleLockupChange,
-    apr,
-    address,
-    approveLoading,
-    handleLockup,
-    needApprove,
-    navigate,
-  ]);
+  })();
 
   return (
     <Container

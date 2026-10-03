@@ -6,7 +6,7 @@ import useUpdate from '@/hooks/useUpdate';
 import { rewardRecipientModalVisibleAtom } from '@/models';
 import { catchError, getImageUrl } from '@/utils/tools';
 import { useAtom } from 'jotai';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { styled } from 'styled-components';
 import { Address, checksumAddress, isAddress } from 'viem';
 
@@ -85,34 +85,19 @@ const RewardReceipientModal = () => {
   const [checkbox, setCheckbox] = useState(false);
   const [doubleCheckbox, setDoubleCheckbox] = useState(false);
 
-  const [errorMsg, setErrorMsg] = useState<undefined | string>();
-  const [hintMsg, setHintMsg] = useState<undefined | string>();
+  const errorMsg =
+    rewardRecipientModalVisible && recipient && !isAddress(recipient)
+      ? 'You entered the wrong address, please check. The wrong address will cause you to lose the rewards and require you to recreate the sequencer.'
+      : undefined;
+  const hintMsg =
+    rewardRecipientModalVisible &&
+    recipient &&
+    !errorMsg &&
+    recipient.toLowerCase() === sequencerInfo?.sequencers?.rewardRecipient?.toLowerCase()
+      ? 'You have changed the receiving address, which cannot be changed after confirmation.'
+      : undefined;
 
-  const handleRecipientChange = (v) => {
-    if (!v) {
-      setErrorMsg(undefined);
-    }
-    setRecipient(v);
-  };
-
-  useEffect(() => {
-    if (rewardRecipientModalVisible && !!recipient) {
-      const t = isAddress(recipient as Address);
-      if (!t) {
-        setErrorMsg(
-          'You entered the wrong address, please check. The wrong address will cause you to lose the rewards and require you to recreate the sequencer.',
-        );
-        return;
-      }
-      const ifSameAddress =
-        (recipient as Address)?.toLowerCase() ===
-        (sequencerInfo?.sequencers?.rewardRecipient as Address)?.toLowerCase();
-      if (ifSameAddress) {
-        setHintMsg('You have changed the receiving address, which cannot be changed after confirmation.');
-      }
-      setErrorMsg(undefined);
-    }
-  }, [rewardRecipientModalVisible, recipient, sequencerInfo?.sequencers?.rewardRecipient]);
+  const handleRecipientChange = (value: string) => setRecipient(value);
 
   const [handleSubmitRecipientChangeLoading, setHandleSubmitRecipientChangeLoading] = useState(false);
   const handleSubmitRecipientChange = async () => {
@@ -142,14 +127,15 @@ const RewardReceipientModal = () => {
     }
   };
 
-  useEffect(() => {
+  const [previousVisible, setPreviousVisible] = useState(rewardRecipientModalVisible);
+  if (previousVisible !== rewardRecipientModalVisible) {
+    setPreviousVisible(rewardRecipientModalVisible);
     if (!rewardRecipientModalVisible) {
       setRecipient(undefined);
       setCheckbox(false);
       setDoubleCheckbox(false);
-      setErrorMsg(undefined);
     }
-  }, [rewardRecipientModalVisible]);
+  }
 
   return (
     <Container

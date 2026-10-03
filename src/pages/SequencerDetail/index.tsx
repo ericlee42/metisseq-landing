@@ -342,23 +342,20 @@ export function Component() {
     [address, whitelistedAddress],
   );
 
-  const handleInitCheck = async () => {
-    let activeSequencerId: string | undefined = curUserActiveSequencerId;
-    if (!activeSequencerId) {
-      activeSequencerId = await seqOwners(whitelistedAddress);
-    }
-
-    if (!activeSequencerId) return;
-    cancel();
-    run({ sequencerId: activeSequencerId, self: ifSelf });
+  React.useEffect(() => {
+    let cancelled = false;
+    const handleInitCheck = async () => {
+      const activeSequencerId = curUserActiveSequencerId || (await seqOwners(whitelistedAddress));
+      if (cancelled || !activeSequencerId) return;
+      cancel();
+      run({ sequencerId: activeSequencerId, self: ifSelf });
+    };
+    void handleInitCheck();
     return () => {
+      cancelled = true;
       cancel();
     };
-  };
-
-  React.useEffect(() => {
-    handleInitCheck();
-  }, [curUserActiveSequencerId, ifSelf, whitelistedAddress]);
+  }, [curUserActiveSequencerId, ifSelf, whitelistedAddress, seqOwners, cancel, run]);
 
   const refresh = () => {
     run({ sequencerId: curUserActiveSequencerId, self: ifSelf });

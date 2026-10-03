@@ -44,12 +44,15 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
 
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const handleCloseWithMask = (e) => {
-    e.stopPropagation();
-    if (visible && e.target === ref.current) {
-      onClose?.();
-    }
-  };
+  const handleCloseWithMask = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      if (visible && e.target === ref.current) {
+        onClose?.();
+      }
+    },
+    [visible, onClose],
+  );
 
   const classes = classNames(className, 'component-modal flex flex-col items-stretch justify-center', {});
 
@@ -82,7 +85,7 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
         )}
       </div>
     );
-  }, [title, closable, handleCancel]);
+  }, [title, closable, handleCancel, middleHeader]);
 
   const renderFooter = React.useMemo(() => {
     return (
@@ -113,7 +116,7 @@ const Portal: React.FC<ModalProps> = (props: ModalProps) => {
     );
 
     return <RemoveScroll>{renderPortal}</RemoveScroll>;
-  }, [classes, title, closable, renderHeader, children, cancel, ok, renderFooter]);
+  }, [classes, title, closable, renderHeader, children, cancel, ok, renderFooter, handleCloseWithMask]);
 
   return createPortal(memoElement, window.document.body);
 };

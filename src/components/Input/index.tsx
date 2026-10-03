@@ -79,7 +79,7 @@ const Input: React.FC<InputProps> = React.forwardRef((props: InputProps, ref: Re
     if (max && compareDecimals(value?.toString() || 0, max) > 0) {
       onChange?.(max, null);
     }
-  }, [max, value]);
+  }, [max, value, onChange]);
   const classes = classNames(className, 'component-input flex flex-row items-center justify-between', {
     danger,
     disabled,

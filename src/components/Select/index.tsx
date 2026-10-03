@@ -48,7 +48,7 @@ interface SelectProps {
 }
 
 interface TriggerProps extends RequiredField<SelectProps, 'options'> {
-  selectorRef: React.RefObject<HTMLDivElement | null>;
+  selectorElement: HTMLDivElement;
   onDestroy: (...args: any[]) => any;
 }
 
@@ -61,7 +61,7 @@ interface PositionProps {
 
 const Portal: React.FC<TriggerProps> = (props: TriggerProps) => {
   const {
-    selectorRef,
+    selectorElement,
     triggerClassName,
     type,
     value,
@@ -74,44 +74,40 @@ const Portal: React.FC<TriggerProps> = (props: TriggerProps) => {
 
   const classes = classNames(triggerClassName, 'global-select', { [`${type}`]: type });
 
-  const triggerRef = React.useRef<HTMLUListElement>(null);
   const [direction, setDirection] = React.useState<PositionProps>();
 
-  const filterPosition = React.useCallback(() => {
-    if (!selectorRef.current || !triggerRef.current) return;
-    const { top, left, width, height } = selectorRef.current.getBoundingClientRect();
-    const { width: triggerWidth } = triggerRef.current.getBoundingClientRect();
-    const siteMap = {
-      left: left,
-      right: left - triggerWidth + width,
-    };
-    const rectSize: PositionProps = {
-      top: (follow ? 0 : top) + height,
-    };
-    if (type === 'primary' && !follow) {
-      rectSize.left = siteMap[placement];
-    }
-    if (type === 'primary' && follow) {
-      rectSize[placement] = 0;
-    }
-    if (type === 'second') {
-      rectSize.left = follow ? 0 : left;
-      rectSize.width = width;
-    }
-    return rectSize;
-  }, [selectorRef, triggerRef, type, follow, placement]);
-
-  React.useEffect(() => {
-    const result = filterPosition();
-    setDirection(result);
-  }, [filterPosition]);
+  const measureTrigger = React.useCallback(
+    (trigger: HTMLUListElement | null) => {
+      if (!trigger) return;
+      const { top, left, width, height } = selectorElement.getBoundingClientRect();
+      const { width: triggerWidth } = trigger.getBoundingClientRect();
+      const siteMap = {
+        left: left,
+        right: left - triggerWidth + width,
+      };
+      const rectSize: PositionProps = {
+        top: (follow ? 0 : top) + height,
+      };
+      if (type === 'primary' && !follow) {
+        rectSize.left = siteMap[placement];
+      }
+      if (type === 'primary' && follow) {
+        rectSize[placement] = 0;
+      }
+      if (type === 'second') {
+        rectSize.left = follow ? 0 : left;
+        rectSize.width = width;
+      }
+      setDirection(rectSize);
+    },
+    [selectorElement, type, follow, placement],
+  );
 
   const selectTrigger = React.useMemo(() => {
-    if (!selectorRef.current) return;
     return (
       <motion.ul
         className={classes}
-        ref={triggerRef}
+        ref={measureTrigger}
         style={direction}
         onClick={(e) => e.stopPropagation()}
         {...fadeConfig}
@@ -137,11 +133,14 @@ const Portal: React.FC<TriggerProps> = (props: TriggerProps) => {
         </Scrollbar>
       </motion.ul>
     );
-  }, [selectorRef, classes, direction, options, value, onChange, onDestroy]);
+  }, [classes, direction, options, value, onChange, onDestroy, measureTrigger]);
 
-  useClickAway(() => onDestroy?.(), selectorRef);
+  useClickAway(
+    () => onDestroy?.(),
+    () => selectorElement,
+  );
 
-  const DOM = (follow && selectorRef.current ? selectorRef.current : window.document.body) as HTMLElement;
+  const DOM = (follow && selectorElement ? selectorElement : window.document.body) as HTMLElement;
   return createPortal(selectTrigger, DOM);
 };
 
@@ -171,7 +170,7 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
     'flex-row-reverse': arrowPlacement === 'left',
   });
 
-  const selectorRef = React.useRef<HTMLDivElement>(null);
+  const [selectorElement, setSelectorElement] = React.useState<HTMLDivElement | null>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
 
   const handleVisible: React.MouseEventHandler<HTMLDivElement> = () => {
@@ -191,7 +190,7 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
         className={`gap-8 ${classes} ${visible ? 'open' : ''} ${
           allowClear && value ? 'select-allow-clear' : ''
         }`.trimEnd()}
-        ref={selectorRef}
+        ref={setSelectorElement}
         onClick={handleVisible}
       >
         {renderSelector ? cloneElement(renderSelector) : filterLabel}
@@ -211,13 +210,13 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
         </div>
       </div>
       <AnimatePresence>
-        {visible && (
+        {visible && selectorElement && (
           <Portal
             type={type}
             value={value}
             options={options}
             follow={follow}
-            selectorRef={selectorRef}
+            selectorElement={selectorElement}
             onDestroy={handleVisible}
             {...props}
           />
