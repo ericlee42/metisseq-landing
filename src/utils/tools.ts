@@ -44,14 +44,18 @@ export const verifyValidNumber = (value: string, decimal = 4) => {
   return !new RegExp(regexp).test(value);
 };
 
-/**
- * import image -> Vite
- * @param value
- * @returns
- */
+// Recursively register images so Vite resolves nested paths in dev and emits build assets.
+const imageUrls = import.meta.glob<string>('/src/assets/images/**/*.{svg,png,jpg,jpeg,gif,webp,avif}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
 export function getImageUrl(value: string) {
-  const result = value.replace('@/', '');
-  return new URL(`/src/${result}`, import.meta.url).href;
+  const path = `/src/${value.replace(/^@\//, '')}`;
+  const url = imageUrls[path];
+  if (!url) throw new Error(`Unknown image: ${value}`);
+  return url;
 }
 
 /**

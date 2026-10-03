@@ -199,7 +199,7 @@ const Select: React.FC<SelectProps> = (props: SelectProps) => {
           {allowClear && value && (
             <img
               className="colse"
-              src={getImageUrl('@/assets/images/_global/icon-select_close.svg')}
+              src={getImageUrl('@/assets/images/_global/ic_close.svg')}
               alt="icon"
               onClick={() => {
                 onChange?.({ value: '', label: '', name: '' });
