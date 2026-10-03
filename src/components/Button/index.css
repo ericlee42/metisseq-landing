@@ -1,0 +1,94 @@
+.component-button {
+  width: fit-content;
+  background: transparent;
+  border: none;
+  border-radius: 28px;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.component-button:not(.loading, .disabled):hover {
+  filter: opacity(0.6);
+}
+.component-button span {
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
+}
+.component-button.metis-solid {
+  border: 1px solid #878787;
+}
+.component-button.metis-solid span {
+  color: #878787;
+}
+.component-button.metis {
+  background-color: #000;
+}
+.component-button.metis span {
+  color: #fff;
+}
+.component-button.dark {
+  background-color: #000;
+}
+.component-button.dark span {
+  color: #fff;
+}
+.component-button.light {
+  background-color: #fff;
+}
+.component-button.light span {
+  color: #000;
+}
+.component-button.primary span {
+  color: #000;
+}
+.component-button.solid {
+  border: 1px solid #313144;
+}
+.component-button.solid span {
+  color: #333347;
+}
+.component-button.short-solid {
+  border: 1px solid rgb(255, 104, 104);
+}
+.component-button.short-solid span {
+  color: #ff6868;
+}
+.component-button.long-solid {
+  border: 1px solid #29c18b;
+}
+.component-button.long-solid span {
+  color: #29c18b;
+}
+.component-button.short {
+  background: rgba(255, 104, 104, 0.1);
+}
+.component-button.short span {
+  color: #ff6868;
+}
+.component-button.long {
+  background: #29c18b;
+}
+.component-button.long span {
+  color: #fff;
+}
+.component-button.second {
+  background: #efefef;
+  border: none;
+}
+.component-button.second span {
+  color: #141313;
+}
+.component-button.text span {
+  color: #fff;
+}
+.component-button.disabled {
+  filter: opacity(0.5);
+}
+.component-button.loading {
+  cursor: not-allowed;
+}
+.component-button.loading svg:has(~ span) {
+  margin-right: 6px;
+}

@@ -1,0 +1,249 @@
+/* -----------------  Global  ----------------- */
+:root {
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: none;
+  -webkit-text-size-adjust: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:root::-webkit-scrollbar {
+  height: 0;
+  background-color: transparent;
+}
+
+._root {
+  width: 100%;
+}
+._root > .ms-container {
+  height: calc(100vh - 64px);
+  transition: all 0.3s ease-in-out;
+}
+._root > .ms-container .ms-thumb {
+  overflow: hidden;
+}
+._root > .ms-container main {
+  min-height: calc(100vh - 64px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #fff;
+}
+html body {
+  margin: 0;
+  padding: 0;
+}
+html body * {
+  font-family: 'Poppins-Regular';
+}
+
+img {
+  display: block;
+  outline: none;
+}
+
+hr {
+  margin: 0;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(47, 50, 65, 0.5);
+  color: #316ed8;
+}
+
+/* -----------------  Global  ----------------- */
+/* NProgress */
+#nprogress .bar {
+  background: rgba(255, 255, 255, 0.85);
+}
+#nprogress .peg {
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.85),
+    0 0 5px rgba(255, 255, 255, 0.85);
+}
+#nprogress .spinner-icon {
+  border-top-color: rgba(255, 255, 255, 0.85);
+  border-left-color: rgba(255, 255, 255, 0.85);
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.short-color {
+  color: #fd4772 !important;
+}
+
+.sub-active-color {
+  color: #d2a12b !important;
+}
+
+.sub-active-color-2 {
+  color: #d2a12b;
+}
+
+.main-color {
+  color: #fff;
+}
+
+.main-color-0-85 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sub-color {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.disabled-filter {
+  cursor: not-allowed;
+  filter: opacity(0.5);
+}
+
+.disabled-color {
+  filter: brightness(0.5);
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.f-12 {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 120%;
+}
+
+.f-14 {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+}
+
+.f-15 {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.f-16 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 120%;
+}
+
+.f-20 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 120%;
+}
+
+.f-24 {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 120%;
+}
+
+.f-30 {
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 120%;
+}
+
+.f-38 {
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 120%;
+}
+
+.m-r-10 {
+  margin-right: 10px;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.p-8-0 {
+  padding: 8px 0;
+}
+
+.capitalized {
+  text-transform: capitalize;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.relative {
+  position: relative;
+}
+
+.st236 {
+  fill-rule: evenodd;
+  clip-rule: evenodd;
+  fill: #fff;
+}
+
+.st237 {
+  display: inline;
+  fill: none;
+}
+
+.st71 {
+  fill: #fff;
+}
+
+.st97 {
+  fill: #00dacc;
+}
+
+.st238 {
+  fill: none;
+}
+
+.pending-color {
+  color: rgb(234, 179, 98);
+}
+
+.success-color {
+  color: rgb(21, 183, 29);
+}
+
+.danger-color {
+  color: rgb(235, 5, 5);
+}
+
+@font-face {
+  font-family: 'Poppins-ExtraBold';
+  src: url('../fonts/Poppins-ExtraBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins-Regular';
+  src: url('../fonts/Poppins-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/Poppins.woff2') format('woff2');
+}

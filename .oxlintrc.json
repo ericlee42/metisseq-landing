@@ -1,0 +1,99 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": ["dist/**", "dist-ssr/**", "node_modules/**", "**/*.min.js", "**/*-min.js"],
+  "rules": {
+    "typescript/ban-types": ["warn"],
+    "typescript/no-unnecessary-type-constraint": ["error"],
+    "typescript/no-non-null-asserted-nullish-coalescing": ["warn"],
+    "typescript/no-non-null-asserted-optional-chain": ["warn"],
+    "typescript/prefer-literal-enum-member": ["warn"],
+    "typescript/prefer-namespace-keyword": ["error"],
+    "typescript/no-confusing-non-null-assertion": ["error"],
+    "typescript/no-extra-non-null-assertion": ["error"],
+    "typescript/ban-ts-comment": [
+      "warn",
+      {
+        "ts-expect-error": "allow-with-description",
+        "ts-ignore": "allow-with-description",
+        "ts-nocheck": "allow-with-description"
+      }
+    ],
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "eslint/no-const-assign": ["warn"],
+    "eslint/no-var": ["error"],
+    "eslint/no-useless-constructor": ["warn"],
+    "eslint/no-dupe-class-members": ["warn"],
+    "eslint/constructor-super": ["warn"],
+    "eslint/no-this-before-super": ["warn"],
+    "eslint/no-useless-rename": [
+      "error",
+      {
+        "ignoreDestructuring": false,
+        "ignoreImport": false,
+        "ignoreExport": false
+      }
+    ],
+    "eslint/no-restricted-globals": [
+      "warn",
+      {
+        "name": "isFinite",
+        "message": "Use Number.isFinite instead https://github.com/airbnb/javascript#standard-library--isfinite"
+      },
+      {
+        "name": "isNaN",
+        "message": "Use Number.isNaN instead https://github.com/airbnb/javascript#standard-library--isnan"
+      }
+    ],
+    "eslint/no-delete-var": ["warn"],
+    "eslint/no-unneeded-ternary": [
+      "error",
+      {
+        "defaultAssignment": false
+      }
+    ],
+    "eslint/no-negated-condition": ["warn"],
+    "eslint/no-prototype-builtins": ["warn"],
+    "eslint/use-isnan": ["warn"],
+    "eslint/valid-typeof": [
+      "warn",
+      {
+        "requireStringLiterals": true
+      }
+    ],
+    "eslint/no-extra-boolean-cast": ["error"],
+    "eslint/no-regex-spaces": ["error"],
+    "eslint/no-debugger": ["warn"],
+    "eslint/no-obj-calls": ["warn"],
+    "eslint/no-dupe-keys": ["warn"],
+    "eslint/no-eval": ["warn"],
+    "eslint/no-implied-eval": ["warn"],
+    "eslint/array-callback-return": [
+      "warn",
+      {
+        "allowImplicit": true,
+        "checkForEach": false,
+        "allowVoid": false
+      }
+    ],
+    "eslint/no-useless-escape": ["warn"],
+    "eslint/no-case-declarations": ["warn"],
+    "eslint/no-caller": ["warn"],
+    "eslint/no-new-wrappers": ["warn"],
+    "eslint/radix": ["warn"],
+    "eslint/no-unused-labels": ["error"],
+    "eslint/no-unused-vars": "error",
+    "import/no-duplicates": "error",
+    "react/set-state-in-effect": "warn",
+    "react/refs": "warn",
+    "react/preserve-manual-memoization": "warn"
+  }
+}

@@ -1,0 +1,129 @@
+.component-select {
+  line-height: 100%;
+  user-select: none;
+  transition: all 0.3s ease-in-out;
+}
+.component-select:hover .arrow {
+  opacity: 0.6;
+}
+.component-select .placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+.component-select .arrow {
+  width: 12px;
+  height: 12px;
+  transition: all 0.3s ease-in-out;
+}
+.component-select .colse {
+  display: none;
+  user-select: none;
+  transition: all 0.3s ease-in-out;
+}
+.component-select .colse:hover {
+  opacity: 0.6;
+}
+.component-select.open .arrow {
+  transform: rotateZ(-180deg);
+}
+.component-select.follow {
+  position: relative;
+}
+.component-select.primary {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+}
+.component-select.primary .arrow {
+  margin-left: 8px;
+}
+.component-select.select-allow-clear:hover .colse {
+  display: block;
+}
+.component-select.select-allow-clear:hover .arrow {
+  display: none;
+}
+
+.global-select {
+  position: absolute;
+  max-height: 24vh;
+  overflow: hidden;
+  z-index: 10;
+}
+.global-select > .ms-container {
+  padding: 4px;
+  max-height: inherit;
+}
+.global-select.primary {
+  background: #24262c;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+.global-select.primary li {
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.3s ease-in-out;
+}
+.global-select.primary li + li {
+  margin-top: 4px;
+}
+.global-select.primary .check {
+  margin-left: 8px;
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
+}
+.global-select.primary .active {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.25);
+}
+.global-select.primary .default .check {
+  opacity: 0;
+}
+.global-select.primary .default:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+.global-select.light {
+  background: #fff;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+.global-select.light li {
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 32px;
+  color: rgb(51, 51, 71);
+  transition: all 0.3s ease-in-out;
+}
+.global-select.light li + li {
+  margin-top: 4px;
+}
+.global-select.light .check {
+  margin-left: 8px;
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
+}
+.global-select.light .active {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.25);
+}
+.global-select.light .default .check {
+  opacity: 0;
+}
+.global-select.light .default:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(51, 51, 71, 0.6);
+}

@@ -1,0 +1,26 @@
+.component-message {
+  margin: 18px auto 0;
+  padding: 12px 16px;
+  width: max-content;
+  max-width: 60vw;
+  background: #24262c;
+  border-radius: 6px;
+}
+.component-message img,
+.component-message svg {
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+}
+.component-message span {
+  font-size: 14px;
+  line-height: 22px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+#global-bedrock {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 0;
+  z-index: 999999;
+}

@@ -1,0 +1,63 @@
+{
+  "name": "metis-seq-web",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "vite --open --host",
+    "start:prod": "vite --open --host --mode production",
+    "build": "vite build --mode production",
+    "build:qa": "vite build --mode test",
+    "preview": "vite preview",
+    "lint": "oxlint .",
+    "format": "oxfmt --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint:fix": "oxlint --fix .",
+    "format:check": "oxfmt --check .",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.104.1",
+    "ahooks": "3.10.0",
+    "classnames": "^2.5.1",
+    "copy-to-clipboard": "^4.0.2",
+    "dayjs": "^1.11.23",
+    "framer-motion": "^14.0.0",
+    "hamburger-react": "^2.5.2",
+    "jotai": "3.0.1",
+    "mac-scrollbar": "^0.13.8",
+    "nprogress": "^0.2.0",
+    "react": "19.3.0",
+    "react-burger-menu": "^3.1.0",
+    "react-dom": "19.3.0",
+    "react-remove-scroll": "2.7.2",
+    "react-router-dom": "^7.18.4",
+    "styled-components": "^6.5.3",
+    "viem": "2.57.2",
+    "wagmi": "3.7.7"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "^26.6.4",
+    "@types/nprogress": "^0.2.3",
+    "@types/react": "^19.3.0",
+    "@types/react-burger-menu": "^2.8.7",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react-swc": "^4.3.3",
+    "jsdom": "^30.1.1",
+    "oxfmt": "0.71.0",
+    "oxlint": "1.86.0",
+    "terser": "^5.51.2",
+    "typescript": "7.0.2",
+    "vite": "^8.3.2",
+    "vite-plugin-virtual-mpa": "^1.12.1",
+    "vitest": "^5.0.3"
+  },
+  "packageManager": "npm@11.19.1",
+  "engines": {
+    "node": "^24.15.0 || >=26.0.0",
+    "npm": ">=11"
+  }
+}

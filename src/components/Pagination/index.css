@@ -1,0 +1,42 @@
+.component-pagination {
+  gap: 8px;
+  margin-top: 16px;
+}
+.component-pagination li {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.1s ease-in;
+  justify-content: center !important;
+  border: 1px solid rgb(239, 239, 239);
+  border-radius: 6px;
+}
+.component-pagination li svg {
+  fill: rgb(177, 178, 203);
+  transition: all 0.1s ease-in;
+}
+.component-pagination li.selected {
+  background: #000;
+}
+.component-pagination li:not(.disabled, .omit):hover {
+  background: #000;
+  color: rgb(255, 255, 255);
+}
+.component-pagination .item {
+  font-size: 14px;
+  color: rgb(177, 178, 203);
+  transition: all 0.3s ease-in;
+}
+.component-pagination .selected {
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  background: #000;
+}
+.component-pagination .disabled {
+  cursor: not-allowed;
+}
+.component-pagination .disabled svg {
+  fill: rgba(0, 0, 0, 0.1);
+}

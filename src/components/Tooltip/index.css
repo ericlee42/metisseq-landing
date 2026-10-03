@@ -1,0 +1,39 @@
+.component-tooltip {
+  position: fixed;
+  z-index: 999999;
+}
+.component-tooltip .tooltip {
+  position: relative;
+}
+.component-tooltip .tooltip .content {
+  padding: 12px;
+  background: #24262c;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.45);
+}
+.component-tooltip .tooltip .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+.component-tooltip .tooltip-top {
+  padding-bottom: 16px;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.08));
+}
+.component-tooltip .tooltip-top .arrow {
+  bottom: 8px;
+  border-width: 8px 9px 0;
+  border-color: #24262c transparent transparent;
+}
+.component-tooltip .tooltip-bottom {
+  padding-top: 16px;
+  filter: drop-shadow(0 -6px 16px rgba(0, 0, 0, 0.08));
+}
+.component-tooltip .tooltip-bottom .arrow {
+  top: 8px;
+  border-width: 0 9px 8px;
+  border-color: transparent transparent #24262c;
+}

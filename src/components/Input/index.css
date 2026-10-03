@@ -1,0 +1,90 @@
+.component-input {
+  position: relative;
+  padding: 0 16px;
+  height: 40px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.component-input input {
+  width: 100%;
+  flex: 1;
+  height: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.3s ease-in-out;
+}
+.component-input input:focus {
+  outline: none;
+}
+.component-input input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+.component-input {
+  /* chrome autocomplete background color */
+}
+.component-input input:-webkit-autofill,
+.component-input input:-webkit-autofill:focus {
+  color: #fff;
+  transition:
+    background-color 99999s 0s,
+    color 99999s 0s;
+}
+.component-input {
+  /* input[data-autocompleted] {
+    background-color: transparent !important;
+  } */
+  /* chrome autocomplete background color */
+}
+.component-input label {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+.component-input:not(.danger, .disabled, .solid, .solidLight):hover label,
+.component-input input:focus + label {
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+.component-input.danger input {
+  color: #fd4772;
+}
+.component-input.danger label,
+.component-input.danger input:focus + label {
+  border: 1px solid #fd4772;
+}
+.component-input.solid input {
+  color: rgb(49, 49, 68);
+}
+.component-input.solid label,
+.component-input.solid input:focus + label {
+  border: 1px solid rgb(49, 49, 68);
+}
+.component-input.solidLight label {
+  background-color: #fff;
+  z-index: -1;
+}
+.component-input.solidLight input {
+  color: #000;
+}
+.component-input.solidLight label,
+.component-input.solidLight input:focus + label {
+  border: 1px solid #fff;
+}
+.component-input.disabled {
+  user-select: none;
+  cursor: not-allowed;
+}
+.component-input.disabled input {
+  color: rgba(255, 255, 255, 0.3);
+}
+.component-input.disabled label {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+}

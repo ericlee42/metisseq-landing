@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no" />
+    <!-- Describe -->
+    <meta name="title" content="Metis" />
+    <meta name="description" content="Sequencer Mining – Metis-Smart L2" />
+    <meta name="keywords" content="Metis" />
+    <meta name="author" content="Metis" />
+    <meta name="robots" content="all" />
+    <!-- Other -->
+    <meta name="theme-color" content="#121213" />
+    <title>Sequencer Mining – Metis-Smart L2</title>
+    <link rel="icon" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Raleway:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Speed -->
+    <style type="text/css">
+      @-webkit-keyframes stretchDelay {
+        0%,
+        40%,
+        100% {
+          transform: scaleY(0.4);
+          -webkit-transform: scaleY(0.4);
+        }
+
+        20% {
+          transform: scaleY(1);
+          -webkit-transform: scaleY(1);
+        }
+      }
+
+      @keyframes stretchDelay {
+        0%,
+        40%,
+        100% {
+          transform: scaleY(0.4);
+          -webkit-transform: scaleY(0.4);
+        }
+
+        20% {
+          transform: scaleY(1);
+          -webkit-transform: scaleY(1);
+        }
+      }
+
+      .full-center {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .full-screen {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: #ffffff;
+      }
+
+      .spinner {
+        justify-content: space-between;
+        width: 50px;
+        height: 40px;
+      }
+
+      .spinner > li {
+        height: inherit;
+        width: 6px;
+        background: #121213;
+        animation: stretchDelay 1.2s infinite ease-in-out;
+        -webkit-animation: stretchDelay 1.2s infinite ease-in-out;
+      }
+
+      .spinner .rect2 {
+        animation-delay: -1.1s;
+        -webkit-animation-delay: -1.1s;
+      }
+
+      .spinner .rect3 {
+        animation-delay: -1s;
+        -webkit-animation-delay: -1s;
+      }
+
+      .spinner .rect4 {
+        animation-delay: -0.9s;
+        -webkit-animation-delay: -0.9s;
+      }
+
+      .spinner .rect5 {
+        animation-delay: -0.8s;
+        -webkit-animation-delay: -0.8s;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div class="full-screen full-center">
+        <ul class="spinner full-center">
+          <li class="rect1"></li>
+          <li class="rect2"></li>
+          <li class="rect3"></li>
+          <li class="rect4"></li>
+          <li class="rect5"></li>
+        </ul>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVVM84909X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-GVVM84909X');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+.component-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999998;
+}
+.component-modal > .inside {
+  max-width: calc(100% - 22px);
+  margin: 0 auto;
+  width: max-content;
+  max-height: 80vh;
+  background: #fff;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  color: #000;
+}
+.component-modal .header {
+  padding: 0 16px 0 24px;
+  height: 56px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.component-modal .header .title {
+  font-weight: 700;
+  font-size: 16px;
+  font-family: Poppins-Bold, Poppins;
+  font-weight: bold;
+  color: #313146;
+  line-height: 25px;
+}
+.component-modal .header .close {
+  padding: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.component-modal .header .close:hover {
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.08);
+}
+.component-modal .middle-header {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.component-modal .middle-header .close {
+  position: absolute;
+  right: 24px;
+  width: 24px;
+  height: 24px;
+}
+.component-modal .content {
+  flex: 1;
+}
+.component-modal .footer {
+  gap: 8px;
+  padding: 24px;
+}
+.component-modal .footer button {
+  flex: 1;
+  height: 40px;
+}
+.component-modal .footer span {
+  font-weight: 700;
+  font-size: 16px;
+}
+.component-modal .footer .solid {
+  border: 1px solid #efefef;
+  border-radius: 6px;
+}
